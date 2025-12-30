@@ -2,14 +2,17 @@
 <!-- QChannel Crypto Service -->
 <component name="CryptoService" extends="Task">
     <interface>
-        <field id="tickerData" type="array" />
-        <field id="zoneData" type="array" />
+        <field id="newsRequest" type="boolean" value="false" />
+        <field id="newsData" type="array" />
+        
+        <field id="coinRequest" type="string" />
+        <field id="coinData" type="assocarray" />
+        
         <field id="prerollVastUrl" type="string" />
         <field id="apiBaseUrl" type="string" value="https://qryptomarket-news.vercel.app" />
         <!-- Zone detail requests - Task polls these -->
         <field id="zoneCoinsRequest" type="string" />
         <field id="zoneCoins" type="array" />
-        <field id="newsRequest" type="boolean" value="false" />
         <field id="newsData" type="array" />
     </interface>
     

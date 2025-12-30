@@ -47,12 +47,15 @@ sub onDataChanged()
     ' Let's use a "step" chart appearance or just many dots.
     ' For 7D data (168 points hourly?), dots will look like a line.
     
-    ' Reduce resolution if too many points
+    ' Reduce resolution if too many points - DISABLED for now to ensure smooth lines
     stepSize = 1
-    if pointCount > 100 then stepSize = 2
+    ' if pointCount > 100 then stepSize = 2
     
     color = m.top.lineColor
     if data[pointCount-1] < data[0] then color = "#ef4444" ' Red if down
+    
+    ' Clear previous points
+    m.lineContainer.removeChildren(m.lineContainer.getChildren(m.lineContainer.getChildCount(), 0))
     
     for i = 0 to pointCount - 1 step stepSize
         val = data[i]
@@ -66,8 +69,8 @@ sub onDataChanged()
         rect.color = color
         rect.translation = [x, y]
         
-        ' Optional: Draw vertical fill (bar chart style) for cooler look?
-        ' No, let's stick to line.
+        ' Add subtle opacity variation for "sparkle" effect?
+        ' rect.opacity = 0.8
     end for
     
     ' Determine trend color

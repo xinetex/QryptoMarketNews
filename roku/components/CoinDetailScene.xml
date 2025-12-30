@@ -14,6 +14,20 @@
             width="1920"
             height="1080"
             color="#060606" />
+            
+        <!-- Premium Backdrop (Coin Image Blown Up) -->
+        <Poster id="heroBackdrop"
+            width="1920"
+            height="1080"
+            loadDisplayMode="scaleToFill"
+            opacity="0.3"
+            translation="[0,0]" />
+            
+        <!-- Gradient Overlay -->
+        <Rectangle id="backdropOverlay"
+            width="1920"
+            height="1080"
+            color="#060606e0" />
 
         <!-- Back Button Hint -->
         <Group id="backHint" translation="[60,40]">
@@ -35,12 +49,12 @@
             <!-- Coin Name & Symbol -->
             <Group id="coinHeader" translation="[140,10]">
                 <Label id="coinName"
-                    text="Bitcoin"
+                    text=""
                     font="font:LargeBoldSystemFont"
                     color="#ffffff" />
                 <Label id="coinSymbol"
                     translation="[0,45]"
-                    text="BTC"
+                    text=""
                     font="font:MediumSystemFont"
                     color="#ffffff70" />
             </Group>
@@ -48,71 +62,74 @@
             <!-- Price -->
             <Group id="priceSection" translation="[0,150]">
                 <Label id="priceLabel"
-                    text="$94,500.00"
+                    text=""
                     font="font:LargeBoldSystemFont"
                     color="#ffffff" />
                 <Label id="priceChange"
                     translation="[300,10]"
-                    text="+2.5%"
+                    text=""
                     font="font:MediumBoldSystemFont"
                     color="#10b981" />
             </Group>
 
-            <!-- Stats Grid -->
+            <!-- Stats Grid - Glass Cards -->
             <Group id="statsSection" translation="[0,220]">
-                <Rectangle id="statsBg"
-                    width="500"
-                    height="200"
-                    color="#0a0a0f" />
-                
-                <!-- Market Cap -->
-                <Group id="marketCapRow" translation="[20,20]">
+                <!-- Market Cap Card -->
+                <Group id="marketCapRow" translation="[0,0]">
+                    <Rectangle width="500" height="40" color="#ffffff05" translation="[0,-5]" />
                     <Label id="marketCapLabel"
+                        translation="[15,5]"
                         text="Market Cap"
                         font="font:SmallSystemFont"
                         color="#ffffff70" />
                     <Label id="marketCapValue"
-                        translation="[250,0]"
-                        text="$1.8T"
+                        translation="[250,5]"
+                        text=""
                         font="font:SmallBoldSystemFont"
                         color="#ffffff" />
                 </Group>
 
-                <!-- Volume -->
-                <Group id="volumeRow" translation="[20,60]">
+                <!-- Volume Card -->
+                <Group id="volumeRow" translation="[0,50]">
+                    <Rectangle width="500" height="40" color="#ffffff05" translation="[0,-5]" />
                     <Label id="volumeLabel"
+                        translation="[15,5]"
                         text="24h Volume"
                         font="font:SmallSystemFont"
                         color="#ffffff70" />
                     <Label id="volumeValue"
-                        translation="[250,0]"
-                        text="$42B"
+                        translation="[250,5]"
+                        text=""
                         font="font:SmallBoldSystemFont"
                         color="#ffffff" />
                 </Group>
 
-                <!-- Circulating Supply -->
-                <Group id="supplyRow" translation="[20,100]">
+                <!-- Supply Card -->
+                <Group id="supplyRow" translation="[0,100]">
+                    <Rectangle width="500" height="40" color="#ffffff05" translation="[0,-5]" />
                     <Label id="supplyLabel"
+                        translation="[15,5]"
                         text="Circulating Supply"
                         font="font:SmallSystemFont"
                         color="#ffffff70" />
                     <Label id="supplyValue"
-                        translation="[250,0]"
-                        text="19.5M BTC"
+                        translation="[250,5]"
+                        text=""
                         font="font:SmallBoldSystemFont"
                         color="#ffffff" />
                 </Group>
 
-                <!-- ATH -->
-                <Group id="athRow" translation="[20,140]">
+                <!-- ATH Card -->
+                <Group id="athRow" translation="[0,150]">
+                    <Rectangle width="500" height="40" color="#ffffff05" translation="[0,-5]" />
                     <Label id="athLabel"
+                        translation="[15,5]"
                         text="All-Time High"
                         font="font:SmallSystemFont"
                         color="#ffffff70" />
                     <Label id="athValue"
-                        translation="[250,0]"
-                        text="$108,000"
+                        translation="[250,5]"
+                        text=""
                         font="font:SmallBoldSystemFont"
                         color="#ffffff" />
                 </Group>
@@ -121,11 +138,11 @@
             <!-- Description -->
             <Label id="coinDescription"
                 translation="[0,440]"
-                text="Bitcoin is a decentralized digital currency..."
+                text=""
                 font="font:SmallSystemFont"
                 color="#ffffff80"
                 width="500"
-                maxLines="4"
+                maxLines="6"
                 wrap="true" />
         </Group>
 

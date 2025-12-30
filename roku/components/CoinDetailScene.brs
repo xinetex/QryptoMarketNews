@@ -16,18 +16,52 @@ sub init()
     m.athValue = m.top.findNode("athValue")
     m.coinDescription = m.top.findNode("coinDescription")
     m.chartSection = m.top.findNode("chartSection")
-    m.simpleChart = m.top.findNode("simpleChart")
-    m.nftGallery = m.top.findNode("nftGallery")
     m.nftGrid = m.top.findNode("nftGrid")
+    m.heroBackdrop = m.top.findNode("heroBackdrop")
+    
+    ' Get CryptoService
+    m.cryptoService = invalid
+    scene = m.top.getScene()
+    if scene <> invalid
+        m.cryptoService = scene.findNode("cryptoService")
+    end if
 end sub
 
 sub onCoinSet()
     coin = m.top.coin
     if coin = invalid then return
     
-    ' Set coin image
+    ' Setup Listener for Live Updates
+    if m.cryptoService <> invalid
+        m.cryptoService.observeField("coinData", "onCoinDataReceived")
+        
+        ' If data is minimal (missing description/sparkline), request full details
+        ' Or just always request to get latest live price
+        if coin.id <> invalid
+            m.cryptoService.coinRequest = coin.id
+        end if
+    end if
+    
+    updateUI(coin)
+end sub
+
+sub onCoinDataReceived()
+    if m.cryptoService = invalid then return
+    data = m.cryptoService.coinData
+    
+    ' Ensure data matches current coin
+    currentCoin = m.top.coin
+    if currentCoin <> invalid and data.id = currentCoin.id
+        ' Merge data ? checking updateUI handles full data object
+        updateUI(data)
+    end if
+end sub
+
+sub updateUI(coin as object)
+    ' Set coin image & backdrop
     if coin.image <> invalid
         m.coinImage.uri = coin.image
+        m.heroBackdrop.uri = coin.image
     end if
     
     ' Set name and symbol
@@ -57,21 +91,38 @@ sub onCoinSet()
     ' Set market cap
     if coin.market_cap <> invalid
         m.marketCapValue.text = formatLargeNumber(coin.market_cap)
+    else
+        m.marketCapValue.text = "---"
     end if
     
     ' Set volume
     if coin.total_volume <> invalid
         m.volumeValue.text = formatLargeNumber(coin.total_volume)
+    else
+        m.volumeValue.text = "---"
     end if
     
     ' Set circulating supply
     if coin.circulating_supply <> invalid and coin.symbol <> invalid
         m.supplyValue.text = formatLargeNumber(coin.circulating_supply) + " " + ucase(coin.symbol)
+    else
+        m.supplyValue.text = "---"
     end if
     
     ' Set ATH
     if coin.ath <> invalid
         m.athValue.text = formatPrice(coin.ath)
+    else
+        m.athValue.text = "---"
+    end if
+    
+    ' Set Description
+    if coin.description <> invalid and coin.description.en <> invalid
+        m.coinDescription.text = coin.description.en
+    else if coin.description <> invalid and type(coin.description) = "roString"
+        m.coinDescription.text = coin.description
+    else
+        m.coinDescription.text = "Loading details..."
     end if
     
     ' Check if NFT (show gallery instead of chart)
@@ -80,8 +131,13 @@ sub onCoinSet()
     m.nftGallery.visible = isNFT
     
     ' Update chart data
-    if not isNFT and coin.sparkline_in_7d <> invalid and coin.sparkline_in_7d.price <> invalid
-        m.simpleChart.data = coin.sparkline_in_7d.price
+    if not isNFT
+        if coin.sparkline_in_7d <> invalid and coin.sparkline_in_7d.price <> invalid
+            m.simpleChart.data = coin.sparkline_in_7d.price
+        else
+            ' Clear chart or show loading?
+            ' m.simpleChart.data = []
+        end if
     end if
     
     ' For NFTs, could load collection images here
@@ -156,6 +212,12 @@ function onKeyEvent(key as string, press as boolean) as boolean
     if not press then return false
     
     if key = "back"
+        ' Stop asking for updates
+        if m.cryptoService <> invalid
+            m.cryptoService.unobserveField("coinData")
+            m.cryptoService.coinRequest = ""
+        end if
+        
         m.top.visible = false
         return true
     end if

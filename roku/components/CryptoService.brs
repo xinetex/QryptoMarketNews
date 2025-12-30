@@ -14,6 +14,7 @@ sub runLoop()
     ' Track pending requests
     m.pendingZoneCoinsRequest = ""
     m.pendingNewsRequest = false
+    m.pendingCoinRequest = ""
     
     ' Polling loop - refresh every 60 seconds for ticker, 5 minutes for zones
     tickerTimer = 0
@@ -40,8 +41,19 @@ sub runLoop()
             m.pendingNewsRequest = false
         end if
         
+        ' Check for coin request (detail page)
+        if m.top.coinRequest <> invalid and m.top.coinRequest <> "" and m.top.coinRequest <> m.pendingCoinRequest
+            m.pendingCoinRequest = m.top.coinRequest
+            fetchCoinDetails(m.top.coinRequest)
+        end if
+        
         ' Ticker refresh every 60 seconds (600 * 100ms)
         if tickerTimer >= 600
+            ' Also refresh active coin detail if open
+            if m.top.coinRequest <> ""
+                fetchCoinDetails(m.top.coinRequest)
+            end if
+            
             fetchTickerData()
             tickerTimer = 0
         end if
@@ -60,6 +72,17 @@ sub fetchTickerData()
     
     if response <> invalid and response.data <> invalid
         m.top.tickerData = response.data
+    end if
+end sub
+
+sub fetchCoinDetails(coinId as string)
+    if coinId = "" then return
+    
+    url = m.top.apiBaseUrl + "/api/crypto/coin/" + coinId
+    response = makeApiRequest(url)
+    
+    if response <> invalid and response.data <> invalid
+        m.top.coinData = response.data
     end if
 end sub
 

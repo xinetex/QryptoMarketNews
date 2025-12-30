@@ -161,6 +161,7 @@ sub onCoinSelected(event as object)
         
         ' Build coin data object from ContentNode fields
         coin = {
+            id: coinNode.id,
             name: coinNode.title,
             symbol: coinNode.symbol,
             image: coinNode.image,
