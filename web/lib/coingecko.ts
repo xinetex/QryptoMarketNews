@@ -176,7 +176,7 @@ export async function getCoinsByCategory(categoryId: string): Promise<CoinGeckoM
         const apiCategoryId = zoneConfig.categoryIds[0];
 
         const response = await fetch(
-            `${COINGECKO_API_BASE}/coins/markets?vs_currency=usd&category=${apiCategoryId}&order=market_cap_desc&per_page=20&sparkline=false`,
+            `${COINGECKO_API_BASE}/coins/markets?vs_currency=usd&category=${apiCategoryId}&order=market_cap_desc&per_page=20&sparkline=true`,
             {
                 next: { revalidate: 120 },
             }

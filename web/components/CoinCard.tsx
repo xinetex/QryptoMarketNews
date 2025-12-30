@@ -4,6 +4,7 @@ import { formatPrice, formatChange, formatMarketCap } from "@/lib/coingecko";
 import type { CoinGeckoMarketResponse } from "@/lib/types/crypto";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import Image from "next/image";
+import Sparkline from "./Sparkline";
 
 interface CoinCardProps {
     coin: CoinGeckoMarketResponse;
@@ -12,6 +13,9 @@ interface CoinCardProps {
 
 export default function CoinCard({ coin, rank }: CoinCardProps) {
     const isPositive = (coin.price_change_percentage_24h || 0) >= 0;
+
+    // Get sparkline data (7-day prices)
+    const sparklineData = coin.sparkline_in_7d?.price || [];
 
     return (
         <div className="glass-card hover-lift group relative p-4 flex items-center gap-4 cursor-pointer overflow-hidden">
@@ -45,6 +49,18 @@ export default function CoinCard({ coin, rank }: CoinCardProps) {
                     MCap: {formatMarketCap(coin.market_cap)}
                 </div>
             </div>
+
+            {/* Sparkline Chart (7D) */}
+            {sparklineData.length > 0 && (
+                <div className="flex-shrink-0 hidden sm:block">
+                    <Sparkline
+                        data={sparklineData}
+                        width={100}
+                        height={32}
+                        color="auto"
+                    />
+                </div>
+            )}
 
             {/* Price & Change */}
             <div className="flex-shrink-0 text-right">
