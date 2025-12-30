@@ -12,13 +12,13 @@
         <Group id="itemContainer">
             <!-- Background -->
             <Rectangle id="itemBg"
-                width="380"
+                width="320"
                 height="100"
                 color="#0f0f0f" />
             
             <!-- Focus Border -->
             <Rectangle id="focusBorder"
-                width="388"
+                width="328"
                 height="108"
                 translation="[-4,-4]"
                 color="#00f3ff"

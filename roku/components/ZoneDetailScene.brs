@@ -95,7 +95,7 @@ sub onZoneCoinsReceived()
     
     coinCount = 0
     for each coin in coins
-        if coinCount >= 12 then exit for ' Limit to 12 coins for 3x4 grid
+        if coinCount >= 20 then exit for ' Limit to 20 coins for 5x4 grid
         
         item = content.createChild("ContentNode")
         
