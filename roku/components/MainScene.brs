@@ -24,7 +24,20 @@ sub init()
     m.cryptoService.observeField("zoneData", "onZoneDataChanged")
     m.cryptoService.control = "run"
     
-    ' Zone grid focus handling
+    ' Setup Ad Timers
+    m.adTimer = m.top.findNode("adTimer")
+    m.adRevertTimer = m.top.findNode("adRevertTimer")
+    
+    m.adTimer.observeField("fire", "onAdTimerFired")
+    m.adRevertTimer.observeField("fire", "onAdRevertTimerFired")
+    
+    m.adTimer.control = "start"
+    
+    ' Track original data for reverting
+    m.originalZoneData = invalid
+    m.adIndex = -1
+    
+    ' Setup focus observers for row list
     m.zoneGrid.observeField("rowItemFocused", "onZoneFocused")
     m.zoneGrid.observeField("rowItemSelected", "onZoneSelected")
     

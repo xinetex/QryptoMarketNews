@@ -77,6 +77,10 @@
                 loadDisplayMode="scaleToFill"
                 uri="pkg:/images/zones/solana-hero.png" />
 
+            <!-- Timers for Ad Injection -->
+            <Timer id="adTimer" repeat="true" duration="15" />
+            <Timer id="adRevertTimer" repeat="false" duration="8" />
+            
             <!-- Zone Info -->
             <Group id="spotlightContent" translation="[20,220]">
                 <Label id="spotlightZoneName"
