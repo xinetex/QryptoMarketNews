@@ -1,5 +1,5 @@
 ' QChannel Crypto Service
-' BrightScript Task for fetching API data
+' BrightScript Task for fetching API data and ad tags
 
 sub init()
     m.top.functionName = "runLoop"
@@ -9,6 +9,7 @@ sub runLoop()
     ' Initial fetch
     fetchTickerData()
     fetchZoneData()
+    fetchAdTags()
     
     ' Polling loop - refresh every 60 seconds for ticker, 5 minutes for zones
     tickerTimer = 0
@@ -42,12 +43,27 @@ sub fetchTickerData()
 end sub
 
 sub fetchZoneData()
-    url = m.top.apiBaseUrl + "/api/crypto/categories"
+    ' Use AgentCache QChannel zones endpoint for managed content
+    url = m.top.apiBaseUrl + "/api/qchannel/zones"
     response = makeApiRequest(url)
     
     if response <> invalid and response.data <> invalid
         m.top.zoneData = response.data
+    else
+        ' Fallback to CoinGecko categories if AgentCache unavailable
+        url = m.top.apiBaseUrl + "/api/crypto/categories"
+        response = makeApiRequest(url)
+        if response <> invalid and response.data <> invalid
+            m.top.zoneData = response.data
+        end if
     end if
+end sub
+
+sub fetchAdTags()
+    ' Fetch VAST preroll tag for ad integration
+    url = m.top.apiBaseUrl + "/api/qchannel/ads/vast/preroll"
+    ' Note: This is used by RAF (Roku Ad Framework) - we just store the URL
+    m.top.prerollVastUrl = url
 end sub
 
 function makeApiRequest(url as string) as object
@@ -67,3 +83,24 @@ function makeApiRequest(url as string) as object
     
     return invalid
 end function
+
+' Log analytics event to AgentCache
+sub logAnalyticsEvent(eventType as string, zoneId as string)
+    url = m.top.apiBaseUrl + "/api/qchannel/analytics/view"
+    
+    request = CreateObject("roUrlTransfer")
+    request.setUrl(url)
+    request.setCertificatesFile("common:/certs/ca-bundle.crt")
+    request.initClientCertificates()
+    request.addHeader("Content-Type", "application/json")
+    
+    deviceInfo = CreateObject("roDeviceInfo")
+    payload = {
+        zone_id: zoneId,
+        content_type: "zone",
+        device_type: "roku",
+        device_id: deviceInfo.getChannelClientId()
+    }
+    
+    request.postFromString(FormatJson(payload))
+end sub
