@@ -86,7 +86,8 @@
                 numRows="2"
                 itemSize="[400,120]"
                 itemSpacing="[20,20]"
-                drawFocusFeedback="false" />
+                focusable="true"
+                drawFocusFeedback="true" />
         </Group>
 
         <!-- News Section -->
@@ -104,7 +105,8 @@
                 itemSize="[1720,150]"
                 rowItemSize="[[400,150]]"
                 rowItemSpacing="[[20,0]]"
-                showRowLabel="false" />
+                showRowLabel="false"
+                focusable="true" />
         </Group>
 
         <!-- Ad Preroll Indicator -->
