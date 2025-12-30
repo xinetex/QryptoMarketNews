@@ -11,22 +11,43 @@ sub runLoop()
     fetchZoneData()
     fetchAdTags()
     
+    ' Track pending requests
+    m.pendingZoneCoinsRequest = ""
+    m.pendingNewsRequest = false
+    
     ' Polling loop - refresh every 60 seconds for ticker, 5 minutes for zones
     tickerTimer = 0
     zoneTimer = 0
     
     while true
-        sleep(1000) ' Sleep 1 second
+        sleep(100) ' Sleep 100ms for responsive polling
         
         tickerTimer = tickerTimer + 1
         zoneTimer = zoneTimer + 1
         
-        if tickerTimer >= 60
+        ' Check for zone coins request
+        currentRequest = m.top.zoneCoinsRequest
+        if currentRequest <> "" and currentRequest <> m.pendingZoneCoinsRequest
+            m.pendingZoneCoinsRequest = currentRequest
+            fetchZoneCoins(currentRequest)
+        end if
+        
+        ' Check for news request
+        if m.top.newsRequest and not m.pendingNewsRequest
+            m.pendingNewsRequest = true
+            fetchNews()
+            m.top.newsRequest = false
+            m.pendingNewsRequest = false
+        end if
+        
+        ' Ticker refresh every 60 seconds (600 * 100ms)
+        if tickerTimer >= 600
             fetchTickerData()
             tickerTimer = 0
         end if
         
-        if zoneTimer >= 300
+        ' Zone refresh every 5 minutes (3000 * 100ms)
+        if zoneTimer >= 3000
             fetchZoneData()
             zoneTimer = 0
         end if
@@ -66,6 +87,30 @@ sub fetchAdTags()
     m.top.prerollVastUrl = url
 end sub
 
+sub fetchZoneCoins(zoneId as string)
+    if zoneId = "" then return
+    
+    url = m.top.apiBaseUrl + "/api/crypto/zone/" + zoneId
+    response = makeApiRequest(url)
+    
+    if response <> invalid and response.data <> invalid
+        m.top.zoneCoins = response.data
+    else
+        m.top.zoneCoins = []
+    end if
+end sub
+
+sub fetchNews()
+    url = m.top.apiBaseUrl + "/api/news"
+    response = makeApiRequest(url)
+    
+    if response <> invalid and response.data <> invalid
+        m.top.newsData = response.data
+    else
+        m.top.newsData = []
+    end if
+end sub
+
 function makeApiRequest(url as string) as object
     request = CreateObject("roUrlTransfer")
     request.setUrl(url)
@@ -103,31 +148,4 @@ sub logAnalyticsEvent(eventType as string, zoneId as string)
     }
     
     request.postFromString(FormatJson(payload))
-end sub
-
-' Fetch coins for a specific zone (called via field observer)
-sub onZoneCoinsRequest()
-    zoneId = m.top.zoneCoinsRequest
-    if zoneId = "" or zoneId = invalid then return
-    
-    url = m.top.apiBaseUrl + "/api/crypto/zone/" + zoneId
-    response = makeApiRequest(url)
-    
-    if response <> invalid and response.data <> invalid
-        m.top.zoneCoins = response.data
-    else
-        m.top.zoneCoins = []
-    end if
-end sub
-
-' Fetch news (called via field observer)
-sub onNewsRequest()
-    url = m.top.apiBaseUrl + "/api/news"
-    response = makeApiRequest(url)
-    
-    if response <> invalid and response.data <> invalid
-        m.top.newsData = response.data
-    else
-        m.top.newsData = []
-    end if
 end sub

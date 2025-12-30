@@ -6,10 +6,10 @@
         <field id="zoneData" type="array" />
         <field id="prerollVastUrl" type="string" />
         <field id="apiBaseUrl" type="string" value="https://qryptomarket-news.vercel.app" />
-        <!-- Zone detail requests -->
-        <field id="zoneCoinsRequest" type="string" alwaysNotify="true" onChange="onZoneCoinsRequest" />
+        <!-- Zone detail requests - Task polls these -->
+        <field id="zoneCoinsRequest" type="string" />
         <field id="zoneCoins" type="array" />
-        <field id="newsRequest" type="boolean" alwaysNotify="true" onChange="onNewsRequest" />
+        <field id="newsRequest" type="boolean" value="false" />
         <field id="newsData" type="array" />
     </interface>
     
