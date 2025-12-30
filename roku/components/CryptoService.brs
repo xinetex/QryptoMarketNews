@@ -104,3 +104,30 @@ sub logAnalyticsEvent(eventType as string, zoneId as string)
     
     request.postFromString(FormatJson(payload))
 end sub
+
+' Fetch coins for a specific zone (called via field observer)
+sub onZoneCoinsRequest()
+    zoneId = m.top.zoneCoinsRequest
+    if zoneId = "" or zoneId = invalid then return
+    
+    url = m.top.apiBaseUrl + "/api/crypto/zone/" + zoneId
+    response = makeApiRequest(url)
+    
+    if response <> invalid and response.data <> invalid
+        m.top.zoneCoins = response.data
+    else
+        m.top.zoneCoins = []
+    end if
+end sub
+
+' Fetch news (called via field observer)
+sub onNewsRequest()
+    url = m.top.apiBaseUrl + "/api/news"
+    response = makeApiRequest(url)
+    
+    if response <> invalid and response.data <> invalid
+        m.top.newsData = response.data
+    else
+        m.top.newsData = []
+    end if
+end sub

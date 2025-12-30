@@ -6,6 +6,11 @@
         <field id="zoneData" type="array" />
         <field id="prerollVastUrl" type="string" />
         <field id="apiBaseUrl" type="string" value="https://qryptomarket-news.vercel.app" />
+        <!-- Zone detail requests -->
+        <field id="zoneCoinsRequest" type="string" alwaysNotify="true" onChange="onZoneCoinsRequest" />
+        <field id="zoneCoins" type="array" />
+        <field id="newsRequest" type="boolean" alwaysNotify="true" onChange="onNewsRequest" />
+        <field id="newsData" type="array" />
     </interface>
     
     <script type="text/brightscript" uri="CryptoService.brs" />

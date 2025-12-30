@@ -17,8 +17,8 @@ sub init()
     
     m.coinsGrid.observeField("itemSelected", "onCoinSelected")
     
-    ' Store API base URL
-    m.apiBaseUrl = "https://qryptomarket-news.vercel.app"
+    ' Get reference to CryptoService for API calls
+    m.cryptoService = invalid
 end sub
 
 sub onZoneSet()
@@ -51,42 +51,44 @@ sub onZoneSet()
         m.accentLine.color = zone.zoneColor
     end if
     
-    ' Fetch zone-specific coins
-    fetchZoneCoins(zone)
+    ' Get CryptoService reference from parent scene
+    scene = m.top.getScene()
+    if scene <> invalid
+        m.cryptoService = scene.findNode("cryptoService")
+    end if
     
-    ' Fetch related news
-    fetchZoneNews(zone)
-end sub
-
-sub fetchZoneCoins(zone as object)
-    ' Determine API endpoint based on zone
-    zoneId = ""
-    if zone.id <> invalid then zoneId = zone.id
-    if zone.coingeckoId <> invalid then zoneId = zone.coingeckoId
-    
-    if zoneId = "" then return
-    
-    url = m.apiBaseUrl + "/api/crypto/zone/" + zoneId
-    
-    request = CreateObject("roUrlTransfer")
-    request.setUrl(url)
-    request.setCertificatesFile("common:/certs/ca-bundle.crt")
-    request.initClientCertificates()
-    request.enableEncodings(true)
-    request.addHeader("Accept", "application/json")
-    
-    response = request.getToString()
-    
-    if response <> invalid and response <> ""
-        json = ParseJson(response)
-        if json <> invalid and json.data <> invalid and json.data.coins <> invalid
-            populateCoins(json.data.coins)
+    ' Request zone coins via CryptoService Task
+    if m.cryptoService <> invalid
+        ' Set up observer for response
+        m.cryptoService.observeField("zoneCoins", "onZoneCoinsReceived")
+        m.cryptoService.observeField("newsData", "onNewsReceived")
+        
+        ' Determine zone ID
+        zoneId = ""
+        if zone.coingeckoId <> invalid then zoneId = zone.coingeckoId
+        if zoneId = "" and zone.id <> invalid then zoneId = zone.id
+        
+        ' Request coins
+        if zoneId <> ""
+            m.cryptoService.zoneCoinsRequest = zoneId
         end if
+        
+        ' Request news
+        m.cryptoService.newsRequest = true
+    else
+        ' Fallback - show empty state
+        m.protocolsLabel.text = "Coins: Loading..."
     end if
 end sub
 
-sub populateCoins(coins as object)
-    if coins = invalid or coins.count() = 0 then return
+sub onZoneCoinsReceived()
+    if m.cryptoService = invalid then return
+    
+    coins = m.cryptoService.zoneCoins
+    if coins = invalid or coins.count() = 0
+        m.protocolsLabel.text = "Coins: 0"
+        return
+    end if
     
     ' Populate coins grid
     content = CreateObject("roSGNode", "ContentNode")
@@ -133,39 +135,10 @@ sub populateCoins(coins as object)
     m.protocolsLabel.text = "Coins: " + str(coins.count()).trim()
 end sub
 
-sub onCoinSelected(event as object)
-    index = event.getData()
-    content = m.coinsGrid.content
-    if content <> invalid and index < content.getChildCount()
-        coin = content.getChild(index)
-        print "Selected coin: " + coin.title
-        ' Could open browser or show more details
-    end if
-end sub
-
-' Fetch zone-related news
-sub fetchZoneNews(zone as object)
-    ' Fetch news from API
-    url = m.apiBaseUrl + "/api/news"
+sub onNewsReceived()
+    if m.cryptoService = invalid then return
     
-    request = CreateObject("roUrlTransfer")
-    request.setUrl(url)
-    request.setCertificatesFile("common:/certs/ca-bundle.crt")
-    request.initClientCertificates()
-    request.enableEncodings(true)
-    request.addHeader("Accept", "application/json")
-    
-    response = request.getToString()
-    
-    if response <> invalid and response <> ""
-        json = ParseJson(response)
-        if json <> invalid and json.data <> invalid
-            populateNews(json.data)
-        end if
-    end if
-end sub
-
-sub populateNews(news as object)
+    news = m.cryptoService.newsData
     if news = invalid or news.count() = 0 then return
     
     ' Populate news row
@@ -199,21 +172,33 @@ sub populateNews(news as object)
     m.newsRow.content = content
 end sub
 
+sub onCoinSelected(event as object)
+    index = event.getData()
+    content = m.coinsGrid.content
+    if content <> invalid and index < content.getChildCount()
+        coin = content.getChild(index)
+        print "Selected coin: " + coin.title
+    end if
+end sub
+
 function onKeyEvent(key as string, press as boolean) as boolean
     if not press then return false
     
     if key = "back"
+        ' Clean up observers
+        if m.cryptoService <> invalid
+            m.cryptoService.unobserveField("zoneCoins")
+            m.cryptoService.unobserveField("newsData")
+        end if
         ' Navigate back to main scene
         m.top.visible = false
         return true
     else if key = "up"
-        ' Move from news to coins grid
         if m.newsRow.hasFocus()
             m.coinsGrid.setFocus(true)
             return true
         end if
     else if key = "down"
-        ' Move from coins grid to news
         if m.coinsGrid.hasFocus()
             m.newsRow.setFocus(true)
             return true
