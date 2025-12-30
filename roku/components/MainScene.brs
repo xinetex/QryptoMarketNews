@@ -25,8 +25,8 @@ sub init()
     m.cryptoService.control = "run"
     
     ' Zone grid focus handling
-    m.zoneGrid.observeField("itemFocused", "onZoneFocused")
-    m.zoneGrid.observeField("itemSelected", "onZoneSelected")
+    m.zoneGrid.observeField("rowItemFocused", "onZoneFocused")
+    m.zoneGrid.observeField("rowItemSelected", "onZoneSelected")
     
     ' Start live indicator animation
     startLiveAnimation()
