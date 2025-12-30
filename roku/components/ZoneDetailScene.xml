@@ -75,18 +75,16 @@
                 font="font:SmallBoldSystemFont"
                 color="#ffffff70" />
             
-            <!-- Large 5x5 Coin Grid with horizontal scroll -->
+            <!-- 4x5 Coin Grid - fits 720p safe area (no scroll needed) -->
             <MarkupGrid id="coinsGrid"
                 translation="[60,45]"
                 itemComponentName="CoinItem"
-                numColumns="5"
+                numColumns="4"
                 numRows="5"
-                itemSize="[320,85]"
-                itemSpacing="[15,10]"
+                itemSize="[420,85]"
+                itemSpacing="[20,10]"
                 focusable="true"
-                drawFocusFeedback="true"
-                vertFocusAnimationStyle="floatingFocus"
-                horizFocusAnimationStyle="floatingFocus" />
+                drawFocusFeedback="true" />
         </Group>
 
         <!-- Bottom News Ticker (60px) -->

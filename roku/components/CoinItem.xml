@@ -12,13 +12,13 @@
         <Group id="itemContainer">
             <!-- Background -->
             <Rectangle id="itemBg"
-                width="320"
+                width="400"
                 height="80"
                 color="#0f0f0f" />
             
             <!-- Focus Border -->
             <Rectangle id="focusBorder"
-                width="328"
+                width="408"
                 height="88"
                 translation="[-4,-4]"
                 color="#00f3ff"
@@ -47,7 +47,7 @@
             </Group>
 
             <!-- Price & Change (compact) -->
-            <Group id="priceInfo" translation="[190,8]">
+            <Group id="priceInfo" translation="[260,8]">
                 <Label id="coinPrice"
                     text="$94,500"
                     font="font:SmallBoldSystemFont"
