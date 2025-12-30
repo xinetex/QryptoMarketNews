@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QChannel - Project Intelligence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #09090b; /* Zinc 950 */
+            color: #a1a1aa; /* Zinc 400 */
+        }
+
+        /* Custom Scrollbar for sleek look */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3f3f46;
+        }
+
+        /* Hide default chart elements for pure CSS approach */
+        .chart-grid {
+            background-image: linear-gradient(#27272a 1px, transparent 1px),
+            linear-gradient(90deg, #27272a 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: -1px -1px;
+            mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col selection:bg-indigo-500/20 selection:text-indigo-200">
+
+    <!-- Navigation -->
+    <nav class="border-b border-white/5 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
+            <div class="flex items-center gap-8">
+                <!-- Logo -->
+                <div class="flex items-center gap-2 text-zinc-100">
+                    <div class="w-6 h-6 bg-zinc-100 text-zinc-950 rounded flex items-center justify-center font-bold text-xs tracking-tighter">
+                        QC
+                    </div>
+                    <span class="font-medium tracking-tight text-sm">QChannel</span>
+                </div>
+
+                <!-- Nav Links -->
+                <div class="hidden md:flex items-center gap-6 text-sm">
+                    <a href="#" class="text-zinc-100 font-medium">Markets</a>
+                    <a href="#" class="hover:text-zinc-200 transition-colors">Screeners</a>
+                    <a href="#" class="hover:text-zinc-200 transition-colors">Intelligence</a>
+                    <a href="#" class="hover:text-zinc-200 transition-colors">Portfolio</a>
+                </div>
+            </div>
+
+            <!-- Right Actions -->
+            <div class="flex items-center gap-4">
+                <div class="relative hidden sm:block">
+                    <iconify-icon icon="lucide:search" class="absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-500" width="16"></iconify-icon>
+                    <input type="text" placeholder="Search tokens, pairs..." class="bg-zinc-900 border border-white/10 rounded-md py-1.5 pl-9 pr-4 text-xs text-zinc-300 focus:outline-none focus:ring-1 focus:ring-zinc-700 w-64 placeholder:text-zinc-600">
+                    <div class="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
+                        <span class="text-[10px] bg-zinc-800 border border-white/5 px-1.5 rounded text-zinc-500">⌘K</span>
+                    </div>
+                </div>
+                <button class="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-400 hover:text-zinc-100 border border-white/5 transition-colors">
+                    <iconify-icon icon="lucide:bell" width="16"></iconify-icon>
+                </button>
+                <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-6 py-8 flex-grow">
+        
+        <!-- Header / Top Strip -->
+        <header class="mb-8">
+            <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                <!-- Token Identity -->
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center text-zinc-100">
+                        <iconify-icon icon="lucide:hexagon" width="24" class="text-indigo-400"></iconify-icon>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <h1 class="text-2xl text-zinc-100 font-medium tracking-tight">Aether Protocol</h1>
+                            <span class="text-sm font-medium text-zinc-500 bg-zinc-900 border border-white/5 px-2 py-0.5 rounded">AET</span>
+                            <div class="flex items-center gap-1 text-[10px] text-emerald-400 bg-emerald-400/10 px-1.5 py-0.5 rounded ml-2">
+                                <iconify-icon icon="lucide:shield-check" width="12"></iconify-icon>
+                                <span>Audited</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 text-sm">
+                            <a href="#" class="flex items-center gap-1.5 text-zinc-400 hover:text-indigo-400 transition-colors">
+                                <iconify-icon icon="lucide:globe" width="14"></iconify-icon>
+                                <span>Website</span>
+                            </a>
+                            <a href="#" class="flex items-center gap-1.5 text-zinc-400 hover:text-indigo-400 transition-colors">
+                                <iconify-icon icon="lucide:file-text" width="14"></iconify-icon>
+                                <span>Whitepaper</span>
+                            </a>
+                            <div class="flex gap-2 border-l border-white/10 pl-4 ml-1">
+                                <a href="#" class="text-zinc-500 hover:text-zinc-300"><iconify-icon icon="lucide:twitter" width="14"></iconify-icon></a>
+                                <a href="#" class="text-zinc-500 hover:text-zinc-300"><iconify-icon icon="lucide:message-circle" width="14"></iconify-icon></a>
+                                <a href="#" class="text-zinc-500 hover:text-zinc-300"><iconify-icon icon="lucide:github" width="14"></iconify-icon></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Price & High Level Stats -->
+                <div class="flex gap-8 items-end">
+                    <div class="text-right">
+                        <div class="text-sm text-zinc-500 mb-1 font-medium">Current Price</div>
+                        <div class="flex items-center justify-end gap-3">
+                            <span class="text-3xl text-zinc-100 font-medium tracking-tight">$4.28</span>
+                            <span class="flex items-center text-emerald-400 text-sm font-medium bg-emerald-400/5 border border-emerald-400/10 px-2 py-0.5 rounded">
+                                <iconify-icon icon="lucide:trending-up" width="14" class="mr-1"></iconify-icon>
+                                +12.4%
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Metrics Bar -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+                <div class="p-4 rounded-lg bg-zinc-900/30 border border-white/5 hover:border-white/10 transition-colors group">
+                    <div class="flex items-center gap-2 text-xs text-zinc-500 mb-2 group-hover:text-zinc-400">
+                        <iconify-icon icon="lucide:bar-chart-2" width="14"></iconify-icon>
+                        Market Cap
+                    </div>
+                    <div class="text-lg text-zinc-200 font-medium tracking-tight">$428.5M</div>
+                    <div class="text-xs text-zinc-600 mt-1">Rank #142</div>
+                </div>
+                <div class="p-4 rounded-lg bg-zinc-900/30 border border-white/5 hover:border-white/10 transition-colors group">
+                    <div class="flex items-center gap-2 text-xs text-zinc-500 mb-2 group-hover:text-zinc-400">
+                        <iconify-icon icon="lucide:activity" width="14"></iconify-icon>
+                        Volume (24h)
+                    </div>
+                    <div class="text-lg text-zinc-200 font-medium tracking-tight">$82.1M</div>
+                    <div class="text-xs text-emerald-500 mt-1">+5.2%</div>
+                </div>
+                <div class="p-4 rounded-lg bg-zinc-900/30 border border-white/5 hover:border-white/10 transition-colors group">
+                    <div class="flex items-center gap-2 text-xs text-zinc-500 mb-2 group-hover:text-zinc-400">
+                        <iconify-icon icon="lucide:pie-chart" width="14"></iconify-icon>
+                        FDV
+                    </div>
+                    <div class="text-lg text-zinc-200 font-medium tracking-tight">$1.2B</div>
+                    <div class="text-xs text-zinc-600 mt-1">Ratio 0.35</div>
+                </div>
+                <div class="p-4 rounded-lg bg-zinc-900/30 border border-white/5 hover:border-white/10 transition-colors group">
+                    <div class="flex items-center gap-2 text-xs text-zinc-500 mb-2 group-hover:text-zinc-400">
+                        <iconify-icon icon="lucide:droplet" width="14"></iconify-icon>
+                        Liquidity Grade
+                    </div>
+                    <div class="text-lg text-zinc-200 font-medium tracking-tight">A-</div>
+                    <div class="text-xs text-zinc-600 mt-1">High Depth</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- Column 1: Tokenomics & Supply -->
+            <div class="space-y-6">
+                <!-- Supply Mechanics -->
+                <section class="border border-white/10 bg-zinc-900/20 rounded-xl p-5 backdrop-blur-sm">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-zinc-100 font-medium text-sm flex items-center gap-2">
+                            <iconify-icon icon="lucide:coins" class="text-indigo-400"></iconify-icon>
+                            Tokenomics & Supply
+                        </h3>
+                        <button class="text-xs text-zinc-500 hover:text-zinc-300 transition-colors">View Schedule</button>
+                    </div>
+
+                    <!-- Distribution Chart Visual -->
+                    <div class="relative h-4 w-full bg-zinc-800 rounded-full overflow-hidden flex mb-2">
+                        <div class="h-full bg-indigo-500 w-[45%]"></div>
+                        <div class="h-full bg-indigo-500/50 w-[20%]"></div>
+                        <div class="h-full bg-zinc-600 w-[15%]"></div>
+                        <div class="h-full bg-zinc-700 w-[20%]"></div>
+                    </div>
+                    <div class="flex justify-between text-[10px] text-zinc-500 mb-6 font-mono">
+                        <span class="flex items-center gap-1"><div class="w-1.5 h-1.5 rounded-full bg-indigo-500"></div> Circulating (45%)</span>
+                        <span class="flex items-center gap-1"><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div> Locked (20%)</span>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center text-sm border-b border-white/5 pb-3">
+                            <span class="text-zinc-400">Inflation Rate</span>
+                            <span class="text-zinc-200 font-mono">4.2% / yr</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm border-b border-white/5 pb-3">
+                            <span class="text-zinc-400">Next Unlock</span>
+                            <div class="text-right">
+                                <span class="block text-zinc-200 font-mono">12.5M AET</span>
+                                <span class="text-xs text-orange-400/80">In 14 days</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-zinc-400">Burn Mechanism</span>
+                            <span class="flex items-center gap-1 text-zinc-200">
+                                <iconify-icon icon="lucide:flame" width="12" class="text-orange-500"></iconify-icon>
+                                Fee Burn
+                            </span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Holder Concentration -->
+                <section class="border border-white/10 bg-zinc-900/20 rounded-xl p-5 backdrop-blur-sm">
+                    <h3 class="text-zinc-100 font-medium text-sm flex items-center gap-2 mb-4">
+                        <iconify-icon icon="lucide:users" class="text-indigo-400"></iconify-icon>
+                        Distribution
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-zinc-400">Top 10 Holders</span>
+                                <span class="text-zinc-300">62% of Supply</span>
+                            </div>
+                            <div class="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-red-500/50 to-orange-500/50 w-[62%]"></div>
+                            </div>
+                            <p class="text-[10px] text-zinc-500 mt-1">High concentration risk detected.</p>
+                        </div>
+                        
+                        <div class="pt-2">
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-zinc-400">Smart Money Flow (7d)</span>
+                                <span class="text-emerald-400">+$2.1M</span>
+                            </div>
+                             <!-- Simple bar representation -->
+                             <div class="flex gap-0.5 h-4 items-end">
+                                <div class="w-full bg-zinc-800 h-[40%] rounded-sm"></div>
+                                <div class="w-full bg-emerald-500/20 h-[60%] rounded-sm"></div>
+                                <div class="w-full bg-emerald-500/40 h-[80%] rounded-sm"></div>
+                                <div class="w-full bg-emerald-500/60 h-[100%] rounded-sm"></div>
+                                <div class="w-full bg-zinc-800 h-[50%] rounded-sm"></div>
+                             </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Column 2: Usage & Execution -->
+            <div class="space-y-6">
+                <!-- On-chain Usage -->
+                <section class="border border-white/10 bg-zinc-900/20 rounded-xl p-5 backdrop-blur-sm min-h-[300px]">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-zinc-100 font-medium text-sm flex items-center gap-2">
+                            <iconify-icon icon="lucide:bar-chart" class="text-blue-400"></iconify-icon>
+                            Adoption & Usage
+                        </h3>
+                        <div class="flex gap-1 text-[10px]">
+                            <button class="bg-zinc-800 text-zinc-200 px-2 py-0.5 rounded border border-white/5">7D</button>
+                            <button class="text-zinc-500 hover:text-zinc-300 px-2 py-0.5">30D</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-zinc-950/50 border border-white/5 p-3 rounded-lg">
+                            <div class="text-xs text-zinc-500 mb-1">Daily Active Users</div>
+                            <div class="text-lg text-zinc-200 font-medium tracking-tight">14,203</div>
+                            <div class="text-[10px] text-emerald-400 font-medium flex items-center gap-0.5 mt-0.5">
+                                <iconify-icon icon="lucide:arrow-up-right" width="10"></iconify-icon> 5.2%
+                            </div>
+                        </div>
+                        <div class="bg-zinc-950/50 border border-white/5 p-3 rounded-lg">
+                            <div class="text-xs text-zinc-500 mb-1">Protocol Revenue (7d)</div>
+                            <div class="text-lg text-zinc-200 font-medium tracking-tight">$842k</div>
+                            <div class="text-[10px] text-zinc-500 font-medium mt-0.5">
+                                Steady
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mock Chart area for TVL -->
+                    <div class="relative h-32 w-full mt-4">
+                        <div class="absolute top-0 left-0 text-[10px] text-zinc-600">TVL</div>
+                        <div class="absolute bottom-0 right-0 text-[10px] text-zinc-600">Now</div>
+                        <!-- CSS Chart Mock -->
+                        <svg viewBox="0 0 100 40" class="w-full h-full overflow-visible preserve-3d">
+                            <defs>
+                                <linearGradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+                                    <stop offset="0%" stop-color="#6366f1" stop-opacity="0.2"/>
+                                    <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+                                </linearGradient>
+                            </defs>
+                            <path d="M0 35 L10 32 L20 34 L30 25 L40 28 L50 20 L60 22 L70 15 L80 12 L90 18 L100 10" fill="none" stroke="#6366f1" stroke-width="1.5" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path>
+                            <path d="M0 35 L10 32 L20 34 L30 25 L40 28 L50 20 L60 22 L70 15 L80 12 L90 18 L100 10 L100 40 L0 40 Z" fill="url(#chartGradient)" stroke="none"></path>
+                        </svg>
+                    </div>
+                </section>
+
+                <!-- Roadmap -->
+                <section class="border border-white/10 bg-zinc-900/20 rounded-xl p-5 backdrop-blur-sm">
+                    <h3 class="text-zinc-100 font-medium text-sm flex items-center gap-2 mb-6">
+                        <iconify-icon icon="lucide:map" class="text-purple-400"></iconify-icon>
+                        Execution Roadmap
+                    </h3>
+                    
+                    <div class="relative pl-4 border-l border-dashed border-zinc-800 space-y-6">
+                        <!-- Item 1: Completed -->
+                        <div class="relative">
+                            <div class="absolute -left-[21px] top-1 h-2.5 w-2.5 rounded-full bg-zinc-900 border-2 border-emerald-500 z-10"></div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <h4 class="text-sm font-medium text-zinc-200">Mainnet Launch V2</h4>
+                                <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-1.5 rounded border border-emerald-500/20">Shipped</span>
+                            </div>
+                            <p class="text-xs text-zinc-500 leading-relaxed">Seamless migration of liquidity pools. Zero downtime reported.</p>
+                        </div>
+
+                        <!-- Item 2: Upcoming -->
+                        <div class="relative">
+                            <div class="absolute -left-[21px] top-1 h-2.5 w-2.5 rounded-full bg-zinc-900 border-2 border-indigo-500 z-10 shadow-[0_0_10px_rgba(99,102,241,0.5)]"></div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <h4 class="text-sm font-medium text-indigo-300">Cross-chain Bridge</h4>
+                                <span class="text-[10px] bg-indigo-500/10 text-indigo-400 px-1.5 rounded border border-indigo-500/20">Q4 Catalyst</span>
+                            </div>
+                            <p class="text-xs text-zinc-500 leading-relaxed">Integration with L2s. Audit currently in progress by Trail of Bits.</p>
+                        </div>
+
+                        <!-- Item 3: Future -->
+                        <div class="relative">
+                            <div class="absolute -left-[21px] top-1 h-2.5 w-2.5 rounded-full bg-zinc-900 border-2 border-zinc-700 z-10"></div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <h4 class="text-sm font-medium text-zinc-400">Governance DAO</h4>
+                                <span class="text-[10px] text-zinc-600 px-1.5">Planned 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Column 3: Risk & Sentiment -->
+            <div class="space-y-6">
+                
+                <!-- Risk Profile -->
+                <section class="border border-white/10 bg-zinc-900/20 rounded-xl p-5 backdrop-blur-sm relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-3 opacity-10">
+                        <iconify-icon icon="lucide:shield-alert" width="80" class="text-white"></iconify-icon>
+                    </div>
+                    
+                    <h3 class="text-zinc-100 font-medium text-sm flex items-center gap-2 mb-4">
+                        <iconify-icon icon="lucide:siren" class="text-red-400"></iconify-icon>
+                        Risk Analysis
+                    </h3>
+
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-16 h-16 rounded-full border-4 border-emerald-500/20 border-r-emerald-500 border-t-emerald-500 flex items-center justify-center rotate-45">
+                            <span class="text-lg font-bold text-zinc-100 -rotate-45">82</span>
+                        </div>
+                        <div>
+                            <div class="text-xs text-zinc-400 uppercase tracking-wider font-semibold">Security Score</div>
+                            <div class="text-sm text-emerald-400">Low Risk</div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-3 p-2 rounded bg-zinc-950/40 border border-white/5">
+                            <iconify-icon icon="lucide:check-circle" class="text-emerald-500" width="14"></iconify-icon>
+                            <span class="text-xs text-zinc-300">Audited by Certik & OtterSec</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-2 rounded bg-zinc-950/40 border border-white/5">
+                            <iconify-icon icon="lucide:alert-triangle" class="text-orange-500" width="14"></iconify-icon>
+                            <span class="text-xs text-zinc-300">Centralized Admin Keys</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-2 rounded bg-zinc-950/40 border border-white/5">
+                            <iconify-icon icon="lucide:info" class="text-blue-500" width="14"></iconify-icon>
+                            <span class="text-xs text-zinc-300">Regulatory: US exposure high</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Social & Sentiment -->
+                <section class="border border-white/10 bg-zinc-900/20 rounded-xl p-5 backdrop-blur-sm">
+                    <h3 class="text-zinc-100 font-medium text-sm flex items-center gap-2 mb-4">
+                        <iconify-icon icon="lucide:heart-pulse" class="text-pink-400"></iconify-icon>
+                        Sentiment & Narrative
+                    </h3>
+
+                    <!-- Narrative Tags -->
+                    <div class="flex flex-wrap gap-2 mb-5">
+                        <span class="text-[10px] font-medium px-2 py-1 rounded bg-zinc-800 border border-white/5 text-zinc-400">#DeFi</span>
+                        <span class="text-[10px] font-medium px-2 py-1 rounded bg-indigo-500/10 border border-indigo-500/20 text-indigo-300">#L2Scaling</span>
+                        <span class="text-[10px] font-medium px-2 py-1 rounded bg-zinc-800 border border-white/5 text-zinc-400">#Yield</span>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-zinc-400">Social Volume</span>
+                                <span class="text-zinc-200">High</span>
+                            </div>
+                            <div class="w-full bg-zinc-800 h-1 rounded-full">
+                                <div class="bg-zinc-200 h-1 rounded-full w-[80%]"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-zinc-400">Sentiment (24h)</span>
+                                <span class="text-emerald-400">Bullish</span>
+                            </div>
+                            <!-- Sentiment Bar -->
+                            <div class="flex w-full h-1 rounded-full overflow-hidden gap-0.5">
+                                <div class="bg-emerald-500 w-[60%]"></div>
+                                <div class="bg-zinc-700 w-[20%]"></div>
+                                <div class="bg-red-500 w-[20%]"></div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Signal -->
+                        <div class="mt-4 pt-4 border-t border-white/5">
+                            <div class="flex gap-3">
+                                <div class="mt-0.5 min-w-[16px]">
+                                    <iconify-icon icon="lucide:twitter" class="text-zinc-500" width="14"></iconify-icon>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-zinc-300 leading-snug">
+                                        <span class="text-indigo-400">@DefiWhale</span> mentioned Aether in "Top 5 Altcoins for Q4". Engagement spike detected.
+                                    </p>
+                                    <span class="text-[10px] text-zinc-600 block mt-1">2 hours ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Action Button -->
+                <button class="w-full py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium transition-all shadow-[0_0_15px_rgba(79,70,229,0.3)] hover:shadow-[0_0_20px_rgba(79,70,229,0.5)] flex items-center justify-center gap-2">
+                    <iconify-icon icon="lucide:arrow-right-left" width="16"></iconify-icon>
+                    Trade on Exchange
+                </button>
+            </div>
+
+        </div>
+    </main>
+    
+    <!-- Simple Footer -->
+    <footer class="border-t border-white/5 py-8 mt-6">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="text-xs text-zinc-600">
+                &copy; 2023 QChannel Intelligence. Data provided for informational purposes only.
+            </div>
+            <div class="flex gap-4 text-xs text-zinc-500">
+                <a href="#" class="hover:text-zinc-300">Privacy</a>
+                <a href="#" class="hover:text-zinc-300">Terms</a>
+                <a href="#" class="hover:text-zinc-300">API</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
