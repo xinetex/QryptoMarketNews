@@ -5,6 +5,7 @@ import { animate, stagger } from "animejs";
 import { Tv, TrendingUp } from "lucide-react";
 import ZoneGrid from "./ZoneGrid";
 import VideoBackground from "./VideoBackground";
+import NewsSlider from "./NewsSlider";
 import { useCryptoPrices } from "@/lib/hooks/useCrypto";
 import { formatPrice, formatChange } from "@/lib/coingecko";
 
@@ -73,6 +74,11 @@ export default function TVOverlay() {
                         MARKETS
                     </div>
                 </div>
+            </div>
+
+            {/* News Slider - Top Right */}
+            <div className="absolute top-28 right-8 w-80 z-20 tv-element opacity-0">
+                <NewsSlider autoPlay={true} interval={6000} />
             </div>
 
             {/* Main Content Area (Zone Grid) */}
