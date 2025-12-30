@@ -75,7 +75,7 @@
                 font="font:SmallBoldSystemFont"
                 color="#ffffff70" />
             
-            <!-- Large 5x5 Coin Grid -->
+            <!-- Large 5x5 Coin Grid with horizontal scroll -->
             <MarkupGrid id="coinsGrid"
                 translation="[60,45]"
                 itemComponentName="CoinItem"
@@ -85,7 +85,8 @@
                 itemSpacing="[15,10]"
                 focusable="true"
                 drawFocusFeedback="true"
-                vertFocusAnimationStyle="floatingFocus" />
+                vertFocusAnimationStyle="floatingFocus"
+                horizFocusAnimationStyle="floatingFocus" />
         </Group>
 
         <!-- Bottom News Ticker (60px) -->

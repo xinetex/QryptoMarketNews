@@ -107,7 +107,7 @@
                 font="font:SmallBoldSystemFont"
                 color="#ffffff70" />
             
-            <!-- Zone Grid (2 rows x 4 cols) -->
+            <!-- Zone Grid (2 rows x 4 cols) with scroll behavior -->
             <MarkupGrid id="zoneGrid"
                 translation="[0,40]"
                 itemComponentName="ZoneCard"
@@ -117,7 +117,8 @@
                 itemSpacing="[20,20]"
                 focusable="true"
                 drawFocusFeedback="true"
-                wrapDividerWidth="0" />
+                vertFocusAnimationStyle="floatingFocus"
+                horizFocusAnimationStyle="floatingFocus" />
         </Group>
 
         <!-- BOTTOM NEWS TICKER (80px) -->
