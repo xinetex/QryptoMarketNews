@@ -75,14 +75,14 @@
                 font="font:SmallBoldSystemFont"
                 color="#ffffff70" />
             
-            <!-- Large 5x4 Coin Grid -->
+            <!-- Large 5x5 Coin Grid -->
             <MarkupGrid id="coinsGrid"
-                translation="[60,50]"
+                translation="[60,45]"
                 itemComponentName="CoinItem"
                 numColumns="5"
-                numRows="4"
-                itemSize="[340,110]"
-                itemSpacing="[20,15]"
+                numRows="5"
+                itemSize="[320,85]"
+                itemSpacing="[15,10]"
                 focusable="true"
                 drawFocusFeedback="true"
                 vertFocusAnimationStyle="floatingFocus" />

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- QChannel CoinItem - Grid item for displaying a coin -->
+<!-- QChannel CoinItem - Compact grid item for displaying a coin -->
 <component name="CoinItem" extends="Group">
     <interface>
         <field id="itemContent" type="node" onChange="onContentSet" />
@@ -13,54 +13,54 @@
             <!-- Background -->
             <Rectangle id="itemBg"
                 width="320"
-                height="100"
+                height="80"
                 color="#0f0f0f" />
             
             <!-- Focus Border -->
             <Rectangle id="focusBorder"
                 width="328"
-                height="108"
+                height="88"
                 translation="[-4,-4]"
                 color="#00f3ff"
                 opacity="0" />
 
-            <!-- Coin Image -->
+            <!-- Coin Image (smaller) -->
             <Poster id="coinImage"
-                translation="[15,15]"
-                width="70"
-                height="70"
+                translation="[8,8]"
+                width="50"
+                height="50"
                 loadDisplayMode="scaleToFit" />
 
-            <!-- Coin Info -->
-            <Group id="coinInfo" translation="[100,12]">
+            <!-- Coin Info (tighter) -->
+            <Group id="coinInfo" translation="[65,8]">
                 <Label id="coinName"
                     text="Bitcoin"
-                    font="font:MediumBoldSystemFont"
+                    font="font:SmallBoldSystemFont"
                     color="#ffffff"
-                    width="180"
+                    width="120"
                     maxLines="1" />
                 <Label id="coinSymbol"
-                    translation="[0,30]"
+                    translation="[0,22]"
                     text="BTC"
-                    font="font:SmallSystemFont"
+                    font="font:SmallestSystemFont"
                     color="#ffffff60" />
             </Group>
 
-            <!-- Price & Change -->
-            <Group id="priceInfo" translation="[280,12]">
+            <!-- Price & Change (compact) -->
+            <Group id="priceInfo" translation="[190,8]">
                 <Label id="coinPrice"
                     text="$94,500"
-                    font="font:MediumBoldSystemFont"
+                    font="font:SmallBoldSystemFont"
                     color="#ffffff"
                     horizAlign="right"
-                    width="90" />
+                    width="120" />
                 <Label id="coinChange"
-                    translation="[0,30]"
+                    translation="[0,22]"
                     text="+2.1%"
-                    font="font:SmallBoldSystemFont"
+                    font="font:SmallestBoldSystemFont"
                     color="#10b981"
                     horizAlign="right"
-                    width="90" />
+                    width="120" />
             </Group>
         </Group>
     </children>
