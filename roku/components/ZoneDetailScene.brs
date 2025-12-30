@@ -63,10 +63,10 @@ sub onZoneSet()
         m.cryptoService.observeField("zoneCoins", "onZoneCoinsReceived")
         m.cryptoService.observeField("newsData", "onNewsReceived")
         
-        ' Determine zone ID
+        ' Determine zone ID - use zone.id which matches API keys like "solana", "defi", etc.
         zoneId = ""
-        if zone.coingeckoId <> invalid then zoneId = zone.coingeckoId
-        if zoneId = "" and zone.id <> invalid then zoneId = zone.id
+        if zone.id <> invalid then zoneId = zone.id
+        if zoneId = "" and zone.coingeckoId <> invalid then zoneId = zone.coingeckoId
         
         ' Request coins
         if zoneId <> ""
