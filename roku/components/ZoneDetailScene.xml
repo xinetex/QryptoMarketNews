@@ -84,8 +84,7 @@
                 itemSize="[420,85]"
                 itemSpacing="[20,10]"
                 focusable="true"
-                drawFocusFeedback="true"
-                wrap="true" />
+                drawFocusFeedback="true" />
         </Group>
 
         <!-- Bottom News Ticker (60px) -->

@@ -13,7 +13,6 @@
         <!-- Zone detail requests - Task polls these -->
         <field id="zoneCoinsRequest" type="string" />
         <field id="zoneCoins" type="array" />
-        <field id="newsData" type="array" />
     </interface>
     
     <script type="text/brightscript" uri="CryptoService.brs" />

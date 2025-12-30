@@ -153,7 +153,7 @@ function makeApiRequest(url as string) as object
 end function
 
 ' Log analytics event to AgentCache
-sub logAnalyticsEvent(eventType as string, zoneId as string)
+sub logAnalyticsEvent(zoneId as string)
     url = m.top.apiBaseUrl + "/api/qchannel/analytics/view"
     
     request = CreateObject("roUrlTransfer")
