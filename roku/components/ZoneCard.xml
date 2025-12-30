@@ -30,8 +30,7 @@
                 <Rectangle id="iconBg"
                     width="50"
                     height="50"
-                    color="#ffffff10"
-                    radius="8" />
+                    color="#ffffff10" />
                 <Poster id="iconImage"
                     translation="[8,8]"
                     width="34"

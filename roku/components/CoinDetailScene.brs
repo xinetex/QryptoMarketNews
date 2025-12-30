@@ -86,11 +86,11 @@ sub onCoinSet()
     
     ' For NFTs, could load collection images here
     if isNFT
-        loadNFTGallery(coin)
+        loadNFTGallery()
     end if
 end sub
 
-sub loadNFTGallery(coin as object)
+sub loadNFTGallery()
     ' Placeholder - would fetch NFT collection images from API
     ' For now, just show empty gallery
     content = CreateObject("roSGNode", "ContentNode")

@@ -51,9 +51,6 @@ sub onDataChanged()
     stepSize = 1
     if pointCount > 100 then stepSize = 2
     
-    lastX = 0
-    lastY = height - ((data[0] - minVal) / range) * height
-    
     color = m.top.lineColor
     if data[pointCount-1] < data[0] then color = "#ef4444" ' Red if down
     
