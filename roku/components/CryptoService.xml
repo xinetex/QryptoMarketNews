@@ -4,7 +4,7 @@
     <interface>
         <field id="tickerData" type="array" />
         <field id="zoneData" type="array" />
-        <field id="apiBaseUrl" type="string" value="https://your-vercel-app.vercel.app" />
+        <field id="apiBaseUrl" type="string" value="https://qryptomarket-news.vercel.app" />
     </interface>
     
     <script type="text/brightscript" uri="CryptoService.brs" />
