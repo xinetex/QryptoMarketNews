@@ -37,7 +37,7 @@
                 color="#ffffff60" />
         </Group>
 
-        <!-- Left Panel: Coin Info (600px) -->
+        <!-- Left Panel: Coin Info (500px) -->
         <Group id="infoPanel" translation="[60,100]">
             <!-- Coin Image -->
             <Poster id="coinImage"
@@ -71,68 +71,25 @@
                     font="font:MediumBoldSystemFont"
                     color="#10b981" />
             </Group>
-
-            <!-- Stats Grid - Glass Cards -->
-            <Group id="statsSection" translation="[0,220]">
-                <!-- Market Cap Card -->
-                <Group id="marketCapRow" translation="[0,0]">
-                    <Rectangle width="500" height="40" color="#ffffff05" translation="[0,-5]" />
-                    <Label id="marketCapLabel"
-                        translation="[15,5]"
-                        text="Market Cap"
-                        font="font:SmallSystemFont"
-                        color="#ffffff70" />
-                    <Label id="marketCapValue"
-                        translation="[250,5]"
-                        text=""
-                        font="font:SmallBoldSystemFont"
-                        color="#ffffff" />
-                </Group>
-
-                <!-- Volume Card -->
-                <Group id="volumeRow" translation="[0,50]">
-                    <Rectangle width="500" height="40" color="#ffffff05" translation="[0,-5]" />
-                    <Label id="volumeLabel"
-                        translation="[15,5]"
-                        text="24h Volume"
-                        font="font:SmallSystemFont"
-                        color="#ffffff70" />
-                    <Label id="volumeValue"
-                        translation="[250,5]"
-                        text=""
-                        font="font:SmallBoldSystemFont"
-                        color="#ffffff" />
-                </Group>
-
-                <!-- Supply Card -->
-                <Group id="supplyRow" translation="[0,100]">
-                    <Rectangle width="500" height="40" color="#ffffff05" translation="[0,-5]" />
-                    <Label id="supplyLabel"
-                        translation="[15,5]"
-                        text="Circulating Supply"
-                        font="font:SmallSystemFont"
-                        color="#ffffff70" />
-                    <Label id="supplyValue"
-                        translation="[250,5]"
-                        text=""
-                        font="font:SmallBoldSystemFont"
-                        color="#ffffff" />
-                </Group>
-
-                <!-- ATH Card -->
-                <Group id="athRow" translation="[0,150]">
-                    <Rectangle width="500" height="40" color="#ffffff05" translation="[0,-5]" />
-                    <Label id="athLabel"
-                        translation="[15,5]"
-                        text="All-Time High"
-                        font="font:SmallSystemFont"
-                        color="#ffffff70" />
-                    <Label id="athValue"
-                        translation="[250,5]"
-                        text=""
-                        font="font:SmallBoldSystemFont"
-                        color="#ffffff" />
-                </Group>
+            
+            <!-- Quick Analysis -->
+            <Group id="analysisSection" translation="[0,240]">
+                <Label id="analysisTitle"
+                    text="Analysis"
+                    font="font:SmallBoldSystemFont"
+                    color="#ffffff70" />
+                
+                <Label id="rankLabel"
+                    translation="[0,40]"
+                    text=""
+                    font="font:SmallSystemFont"
+                    color="#ffffff" />
+                    
+                <Label id="trendLabel"
+                    translation="[0,70]"
+                    text=""
+                    font="font:SmallSystemFont"
+                    color="#ffffff" />
             </Group>
 
             <!-- Description -->
@@ -141,14 +98,14 @@
                 text=""
                 font="font:SmallSystemFont"
                 color="#ffffff80"
-                width="500"
-                maxLines="6"
+                width="450"
+                maxLines="8"
                 wrap="true" />
         </Group>
 
-        <!-- Right Panel: Chart/NFT Gallery (1200px) -->
-        <Group id="rightPanel" translation="[620,100]">
-            <!-- For Coins: Price Chart -->
+        <!-- Right Panel: Chart & Deep Stats (1200px) -->
+        <Group id="rightPanel" translation="[600,100]">
+            <!-- Price Chart -->
             <Group id="chartSection" visible="true">
                 <Label id="chartTitle"
                     text="Price Chart (7D)"
@@ -159,8 +116,78 @@
                 <SimpleChart id="simpleChart"
                     translation="[0,40]" />
             </Group>
+            
+            <!-- Extended Stats Grid (Below Chart) -->
+            <Group id="statsGrid" translation="[0,380]">
+                <!-- Row 1: Valuations -->
+                <Group id="row1" translation="[0,0]">
+                    <!-- Market Cap -->
+                    <Group translation="[0,0]">
+                         <Rectangle width="280" height="80" color="#ffffff05" />
+                         <Label text="Market Cap" font="font:SmallSystemFont" color="#ffffff70" translation="[15,15]" />
+                         <Label id="marketCapValue" text="--" font="font:MediumBoldSystemFont" color="#ffffff" translation="[15,40]" />
+                    </Group>
+                    <!-- Volume -->
+                    <Group translation="[300,0]">
+                         <Rectangle width="280" height="80" color="#ffffff05" />
+                         <Label text="Volume (24h)" font="font:SmallSystemFont" color="#ffffff70" translation="[15,15]" />
+                         <Label id="volumeValue" text="--" font="font:MediumBoldSystemFont" color="#ffffff" translation="[15,40]" />
+                    </Group>
+                    <!-- FDV -->
+                    <Group translation="[600,0]">
+                         <Rectangle width="280" height="80" color="#ffffff05" />
+                         <Label text="FDV" font="font:SmallSystemFont" color="#ffffff70" translation="[15,15]" />
+                         <Label id="fdvValue" text="--" font="font:MediumBoldSystemFont" color="#ffffff" translation="[15,40]" />
+                    </Group>
+                    <!-- Vol / Cap -->
+                    <Group translation="[900,0]">
+                         <Rectangle width="280" height="80" color="#ffffff05" />
+                         <Label text="Vol / M.Cap" font="font:SmallSystemFont" color="#ffffff70" translation="[15,15]" />
+                         <Label id="volCapRatio" text="--" font="font:MediumBoldSystemFont" color="#ffffff" translation="[15,40]" />
+                    </Group>
+                </Group>
+                
+                <!-- Row 2: Price Stats -->
+                <Group id="row2" translation="[0,100]">
+                    <!-- High 24h -->
+                    <Group translation="[0,0]">
+                         <Rectangle width="280" height="80" color="#ffffff05" />
+                         <Label text="High (24h)" font="font:SmallSystemFont" color="#ffffff70" translation="[15,15]" />
+                         <Label id="high24hValue" text="--" font="font:MediumBoldSystemFont" color="#ffffff" translation="[15,40]" />
+                    </Group>
+                    <!-- Low 24h -->
+                    <Group translation="[300,0]">
+                         <Rectangle width="280" height="80" color="#ffffff05" />
+                         <Label text="Low (24h)" font="font:SmallSystemFont" color="#ffffff70" translation="[15,15]" />
+                         <Label id="low24hValue" text="--" font="font:MediumBoldSystemFont" color="#ffffff" translation="[15,40]" />
+                    </Group>
+                    <!-- ATH -->
+                    <Group translation="[600,0]">
+                         <Rectangle width="280" height="80" color="#ffffff05" />
+                         <Label text="All-Time High" font="font:SmallSystemFont" color="#ffffff70" translation="[15,15]" />
+                         <Label id="athValue" text="--" font="font:MediumBoldSystemFont" color="#ffffff" translation="[15,40]" />
+                    </Group>
+                    <!-- ATL -->
+                    <Group translation="[900,0]">
+                         <Rectangle width="280" height="80" color="#ffffff05" />
+                         <Label text="All-Time Low" font="font:SmallSystemFont" color="#ffffff70" translation="[15,15]" />
+                         <Label id="atlValue" text="--" font="font:MediumBoldSystemFont" color="#ffffff" translation="[15,40]" />
+                    </Group>
+                </Group>
+            </Group>
+            
+            <!-- Supply Section -->
+            <Group id="supplySection" translation="[0,600]">
+                <Label text="Supply & Tokenomics" font="font:SmallBoldSystemFont" color="#ffffff70" />
+                
+                <!-- Progress Bar Container -->
+                <Rectangle translation="[0,40]" width="900" height="10" color="#333333" />
+                <Rectangle id="supplyProgress" translation="[0,40]" width="0" height="10" color="#6366f1" />
+                
+                <Label id="supplyLabels" translation="[0,60]" text="Circulating: -- / Total: --" font="font:SmallSystemFont" color="#ffffff" />
+            </Group>
 
-            <!-- For NFTs: Art Gallery -->
+            <!-- For NFTs: Art Gallery (Alternative to Chart) -->
             <Group id="nftGallery" visible="false">
                 <Label id="galleryTitle"
                     text="Collection Gallery"
@@ -178,7 +205,7 @@
             </Group>
 
             <!-- Social Links -->
-            <Group id="socialSection" translation="[0,500]">
+            <Group id="socialSection" translation="[0,700]">
                 <Label id="socialTitle"
                     text="Links"
                     font="font:SmallBoldSystemFont"
@@ -201,5 +228,7 @@
                 </Group>
             </Group>
         </Group>
+    </children>
+</component>
     </children>
 </component>

@@ -12,8 +12,20 @@ sub init()
     m.priceChange = m.top.findNode("priceChange")
     m.marketCapValue = m.top.findNode("marketCapValue")
     m.volumeValue = m.top.findNode("volumeValue")
-    m.supplyValue = m.top.findNode("supplyValue")
+    m.fdvValue = m.top.findNode("fdvValue")
+    m.volCapRatio = m.top.findNode("volCapRatio")
+    
+    m.high24hValue = m.top.findNode("high24hValue")
+    m.low24hValue = m.top.findNode("low24hValue")
     m.athValue = m.top.findNode("athValue")
+    m.atlValue = m.top.findNode("atlValue")
+    
+    m.supplyProgress = m.top.findNode("supplyProgress")
+    m.supplyLabels = m.top.findNode("supplyLabels")
+    
+    m.rankLabel = m.top.findNode("rankLabel")
+    m.trendLabel = m.top.findNode("trendLabel")
+    
     m.coinDescription = m.top.findNode("coinDescription")
     m.chartSection = m.top.findNode("chartSection")
     m.simpleChart = m.top.findNode("simpleChart")
@@ -37,8 +49,6 @@ sub onCoinSet()
     if m.cryptoService <> invalid
         m.cryptoService.observeField("coinData", "onCoinDataReceived")
         
-        ' If data is minimal (missing description/sparkline), request full details
-        ' Or just always request to get latest live price
         if coin.id <> invalid
             m.cryptoService.coinRequest = coin.id
         end if
@@ -54,7 +64,6 @@ sub onCoinDataReceived()
     ' Ensure data matches current coin
     currentCoin = m.top.coin
     if currentCoin <> invalid and data.id = currentCoin.id
-        ' Merge data ? checking updateUI handles full data object
         updateUI(data)
     end if
 end sub
@@ -90,32 +99,88 @@ sub updateUI(coin as object)
         m.priceChange.color = "#ef4444"
     end if
     
-    ' Set market cap
+    ' Quick Analysis
+    if coin.market_cap_rank <> invalid
+        m.rankLabel.text = "🏆 Rank #" + str(coin.market_cap_rank).trim()
+    end if
+    if change >= 0
+        m.trendLabel.text = "📈 Bullish Trend (24h)"
+        m.trendLabel.color = "#10b981"
+    else
+        m.trendLabel.text = "📉 Bearish Trend (24h)"
+        m.trendLabel.color = "#ef4444"
+    end if
+    
+    ' Extended Stats
+    ' Market Cap & Volume
     if coin.market_cap <> invalid
         m.marketCapValue.text = formatLargeNumber(coin.market_cap)
     else
         m.marketCapValue.text = "---"
     end if
-    
-    ' Set volume
     if coin.total_volume <> invalid
         m.volumeValue.text = formatLargeNumber(coin.total_volume)
     else
         m.volumeValue.text = "---"
     end if
     
-    ' Set circulating supply
-    if coin.circulating_supply <> invalid and coin.symbol <> invalid
-        m.supplyValue.text = formatLargeNumber(coin.circulating_supply) + " " + ucase(coin.symbol)
+    ' FDV & Ratio
+    if coin.fully_diluted_valuation <> invalid
+        m.fdvValue.text = formatLargeNumber(coin.fully_diluted_valuation)
     else
-        m.supplyValue.text = "---"
+        m.fdvValue.text = "---"
     end if
     
-    ' Set ATH
+    if coin.total_volume <> invalid and coin.market_cap <> invalid and coin.market_cap > 0
+        ratio = (coin.total_volume / coin.market_cap) * 100
+        m.volCapRatio.text = str(int(ratio * 100) / 100).trim() + "%"
+    else
+        m.volCapRatio.text = "---"
+    end if
+    
+    ' Price Extremes
+    if coin.high_24h <> invalid
+        m.high24hValue.text = formatPrice(coin.high_24h)
+    else
+        m.high24hValue.text = "---"
+    end if
+    if coin.low_24h <> invalid
+        m.low24hValue.text = formatPrice(coin.low_24h)
+    else
+        m.low24hValue.text = "---"
+    end if
     if coin.ath <> invalid
         m.athValue.text = formatPrice(coin.ath)
     else
         m.athValue.text = "---"
+    end if
+    if coin.atl <> invalid
+        m.atlValue.text = formatPrice(coin.atl)
+    else
+        m.atlValue.text = "---"
+    end if
+    
+    ' Supply & Tokenomics (Progress Bar)
+    circ = 0
+    total = 0
+    if coin.circulating_supply <> invalid then circ = coin.circulating_supply
+    if coin.total_supply <> invalid then total = coin.total_supply
+    
+    if circ > 0
+        label = formatLargeNumber(circ)
+        if total > 0
+             pct = circ / total
+             if pct > 1 then pct = 1
+             width = 900 * pct
+             m.supplyProgress.width = width
+             label = label + " / " + formatLargeNumber(total)
+        else
+             m.supplyProgress.width = 900 ' Cap unknown?
+        end if
+        if coin.symbol <> invalid
+             label = label + " " + ucase(coin.symbol)
+        end if
+        m.supplyLabels.text = label
     end if
     
     ' Set Description
@@ -131,14 +196,12 @@ sub updateUI(coin as object)
     isNFT = m.top.isNFT
     m.chartSection.visible = not isNFT
     m.nftGallery.visible = isNFT
+    m.simpleChart.visible = not isNFT
     
     ' Update chart data
     if not isNFT
         if coin.sparkline_in_7d <> invalid and coin.sparkline_in_7d.price <> invalid
             m.simpleChart.data = coin.sparkline_in_7d.price
-        else
-            ' Clear chart or show loading?
-            ' m.simpleChart.data = []
         end if
     end if
     

@@ -54,7 +54,12 @@ sub onDataChanged()
     color = m.top.lineColor
     if data[pointCount-1] < data[0] then color = "#ef4444" ' Red if down
     
-    ' Clear previous points
+    ' Scanner Animation simulation
+    ' Since we can't easily animate 100+ rects individually efficienty without frame drops,
+    ' we will color the LAST few points brighter to show "Live" action?
+    ' Or maybe create a "Scanner" overlay?
+    
+    ' For now, standard clear and draw
     m.lineContainer.removeChildren(m.lineContainer.getChildren(m.lineContainer.getChildCount(), 0))
     
     for i = 0 to pointCount - 1 step stepSize
@@ -69,8 +74,14 @@ sub onDataChanged()
         rect.color = color
         rect.translation = [x, y]
         
-        ' Add subtle opacity variation for "sparkle" effect?
-        ' rect.opacity = 0.8
+        ' Highlights for recent data
+        if i > pointCount - 10
+             rect.width = 6
+             rect.height = 6
+             rect.opacity = 1.0
+        else
+             rect.opacity = 0.6
+        end if
     end for
     
     ' Determine trend color
