@@ -170,17 +170,17 @@
                     <Label id="websiteLink"
                         text="🌐 Website"
                         font="font:SmallSystemFont"
-                        color="#00f3ff" />
+                        color="#cccccc" />
                     <Label id="twitterLink"
                         translation="[150,0]"
                         text="🐦 Twitter"
                         font="font:SmallSystemFont"
-                        color="#00f3ff" />
+                        color="#cccccc" />
                     <Label id="discordLink"
                         translation="[300,0]"
                         text="💬 Discord"
                         font="font:SmallSystemFont"
-                        color="#00f3ff" />
+                        color="#cccccc" />
                 </Group>
             </Group>
         </Group>
