@@ -137,21 +137,32 @@ sub loadZoneData()
     ' Store zones for reference
     m.zones = zones
     
-    ' Populate grid
+    ' Populate RowList dynamically (supports any number of zones)
     content = CreateObject("roSGNode", "ContentNode")
+    itemsPerRow = 4
+    numRows = int((zones.count() + itemsPerRow - 1) / itemsPerRow) ' Ceiling division
     
-    for each zone in zones
-        item = content.createChild("ContentNode")
-        item.addFields({
-            id: zone.id,
-            title: zone.name,
-            description: zone.description,
-            icon: zone.icon,
-            zoneColor: zone.color,
-            tvl: zone.tvl,
-            change: zone.change,
-            coingeckoId: zone.coingeckoId
-        })
+    for rowIndex = 0 to numRows - 1
+        row = content.createChild("ContentNode")
+        startIndex = rowIndex * itemsPerRow
+        endIndex = startIndex + itemsPerRow - 1
+        
+        for i = startIndex to endIndex
+            if i < zones.count()
+                zone = zones[i]
+                item = row.createChild("ContentNode")
+                item.addFields({
+                    id: zone.id,
+                    title: zone.name,
+                    description: zone.description,
+                    icon: zone.icon,
+                    zoneColor: zone.color,
+                    tvl: zone.tvl,
+                    change: zone.change,
+                    coingeckoId: zone.coingeckoId
+                })
+            end if
+        end for
     end for
     
     m.zoneGrid.content = content
