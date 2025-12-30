@@ -107,14 +107,15 @@
                 font="font:SmallBoldSystemFont"
                 color="#ffffff70" />
             
-            <!-- Zone RowList - standard scrolling behavior -->
+            <!-- Zone RowList - focus locks at 2nd slot (offset 320) -->
             <RowList id="zoneGrid"
                 translation="[0,40]"
                 itemComponentName="ZoneCard"
                 numRows="2"
-                itemSize="[1250,220]"
+                itemSize="[1600,220]"
                 rowItemSize="[[300,200]]"
                 rowItemSpacing="[[20,0]]"
+                focusXOffset="[320]"
                 focusable="true"
                 drawFocusFeedback="true"
                 showRowLabel="false"
