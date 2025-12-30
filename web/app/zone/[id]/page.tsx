@@ -76,7 +76,7 @@ export default function ZoneDetailPage() {
     }
 
     return (
-        <div className="min-h-screen bg-deep-space text-white">
+        <div className="min-h-screen bg-deep-space text-white overflow-y-auto">
             {/* Background Gradient */}
             <div className="fixed inset-0 gradient-animate opacity-50 pointer-events-none" />
 
@@ -104,7 +104,7 @@ export default function ZoneDetailPage() {
             </header>
 
             {/* Content */}
-            <main className="relative z-10 p-8">
+            <main className="relative z-10 p-8 pb-20">
                 <div className="max-w-6xl mx-auto">
                     {loading ? (
                         <div className="flex flex-col gap-4">
