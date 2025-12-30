@@ -16,6 +16,8 @@ sub init()
     m.athValue = m.top.findNode("athValue")
     m.coinDescription = m.top.findNode("coinDescription")
     m.chartSection = m.top.findNode("chartSection")
+    m.simpleChart = m.top.findNode("simpleChart")
+    m.nftGallery = m.top.findNode("nftGallery")
     m.nftGrid = m.top.findNode("nftGrid")
     m.heroBackdrop = m.top.findNode("heroBackdrop")
     

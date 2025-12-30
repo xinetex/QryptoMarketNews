@@ -2,6 +2,8 @@
 <!-- QChannel Crypto Service -->
 <component name="CryptoService" extends="Task">
     <interface>
+        <field id="tickerData" type="array" />
+        <field id="zoneData" type="array" />
         <field id="newsRequest" type="boolean" value="false" />
         <field id="newsData" type="array" />
         
