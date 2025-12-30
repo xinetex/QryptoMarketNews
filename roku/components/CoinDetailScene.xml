@@ -137,16 +137,10 @@
                     text="Price Chart (7D)"
                     font="font:MediumBoldSystemFont"
                     color="#ffffff" />
-                <Rectangle id="chartBg"
-                    translation="[0,40]"
-                    width="1200"
-                    height="400"
-                    color="#0a0a0f" />
-                <Label id="chartPlaceholder"
-                    translation="[500,220]"
-                    text="📊 Chart Coming Soon"
-                    font="font:MediumSystemFont"
-                    color="#ffffff50" />
+                
+                <!-- Custom Chart Component -->
+                <SimpleChart id="simpleChart"
+                    translation="[0,40]" />
             </Group>
 
             <!-- For NFTs: Art Gallery -->

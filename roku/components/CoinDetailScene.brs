@@ -16,6 +16,7 @@ sub init()
     m.athValue = m.top.findNode("athValue")
     m.coinDescription = m.top.findNode("coinDescription")
     m.chartSection = m.top.findNode("chartSection")
+    m.simpleChart = m.top.findNode("simpleChart")
     m.nftGallery = m.top.findNode("nftGallery")
     m.nftGrid = m.top.findNode("nftGrid")
 end sub
@@ -77,6 +78,11 @@ sub onCoinSet()
     isNFT = m.top.isNFT
     m.chartSection.visible = not isNFT
     m.nftGallery.visible = isNFT
+    
+    ' Update chart data
+    if not isNFT and coin.sparkline_in_7d <> invalid and coin.sparkline_in_7d.price <> invalid
+        m.simpleChart.data = coin.sparkline_in_7d.price
+    end if
     
     ' For NFTs, could load collection images here
     if isNFT

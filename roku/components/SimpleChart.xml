@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- QChannel SimpleChart - Primitive-based Line Chart -->
+<component name="SimpleChart" extends="Group">
+    <interface>
+        <field id="data" type="array" onChange="onDataChanged" />
+        <field id="lineColor" type="color" value="#10b981" />
+    </interface>
+
+    <script type="text/brightscript" uri="SimpleChart.brs" />
+
+    <children>
+        <!-- Chart Area -->
+        <Group id="chartArea"
+            translation="[50,50]">
+            <!-- Grid Lines -->
+            <Rectangle id="gridTop" width="1100" height="2" color="#ffffff20" translation="[0,0]" />
+            <Rectangle id="gridMid" width="1100" height="2" color="#ffffff10" translation="[0,150]" />
+            <Rectangle id="gridBot" width="1100" height="2" color="#ffffff20" translation="[0,300]" />
+            
+            <!-- Axis Labels -->
+            <Label id="maxLabel"
+                translation="[-50,-10]"
+                text="$0"
+                font="font:SmallSystemFont"
+                color="#ffffff60" 
+                horizAlign="right" />
+            
+            <Label id="minLabel"
+                translation="[-50,290]"
+                text="$0"
+                font="font:SmallSystemFont"
+                color="#ffffff60" 
+                horizAlign="right" />
+
+            <!-- Chart Line Container -->
+            <Group id="lineContainer" />
+        </Group>
+    </children>
+</component>
