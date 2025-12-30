@@ -12,7 +12,7 @@ sub init()
     m.protocolsLabel = m.top.findNode("protocolsLabel")
     m.accentLine = m.top.findNode("accentLine")
     m.coinsGrid = m.top.findNode("coinsGrid")
-    m.newsRow = m.top.findNode("newsRow")
+    m.newsContent = m.top.findNode("newsContent")
     m.adIndicator = m.top.findNode("adIndicator")
     
     m.coinsGrid.observeField("itemSelected", "onCoinSelected")
@@ -141,35 +141,15 @@ sub onNewsReceived()
     news = m.cryptoService.newsData
     if news = invalid or news.count() = 0 then return
     
-    ' Populate news row
-    content = CreateObject("roSGNode", "ContentNode")
-    row = content.createChild("ContentNode")
-    
-    newsCount = 0
-    for each article in news
-        if newsCount >= 6 then exit for ' Limit to 6 news items
-        
-        item = row.createChild("ContentNode")
-        
-        articleTitle = ""
-        if article.title <> invalid then articleTitle = article.title
-        
-        articleSource = ""
-        if article.source <> invalid then articleSource = article.source
-        
-        articleTime = ""
-        if article.published <> invalid then articleTime = article.published
-        
-        item.addFields({
-            title: articleTitle,
-            source: articleSource,
-            published: articleTime
-        })
-        
-        newsCount = newsCount + 1
-    end for
-    
-    m.newsRow.content = content
+    ' Just show first headline in the news ticker
+    firstArticle = news[0]
+    if firstArticle <> invalid and firstArticle.title <> invalid
+        newsText = firstArticle.title
+        if firstArticle.source <> invalid
+            newsText = newsText + " • " + firstArticle.source
+        end if
+        m.newsContent.text = newsText
+    end if
 end sub
 
 sub onCoinSelected(event as object)
