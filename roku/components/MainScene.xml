@@ -116,7 +116,7 @@
                 translation="[0,40]"
                 itemComponentName="ZoneCard"
                 numRows="2"
-                itemSize="[1280,220]"
+                itemSize="[1100,220]"
                 rowItemSize="[[300,200]]"
                 rowItemSpacing="[[20,0]]"
                 focusXOffset="[0]"
