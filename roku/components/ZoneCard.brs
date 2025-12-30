@@ -35,20 +35,29 @@ sub onContentSet()
         m.tvlLabel.text = content.tvl
     end if
     
-    ' Set change indicator
-    if content.change <> invalid
-        changeStr = ""
-        ' Handle both string and other types
-        if type(content.change) = "roString" or type(content.change) = "String"
-            changeStr = content.change
-        else
-            changeStr = str(content.change).trim()
+    ' Set change indicator safely
+    changeStr = ""
+    changeField = content.getField("change")
+    if changeField <> invalid
+        changeType = type(changeField)
+        if changeType = "roString" or changeType = "String"
+            changeStr = changeField
+        else if changeType = "roFloat" or changeType = "roDouble" or changeType = "Float" or changeType = "Double"
+            changeStr = str(changeField).trim()
+            if changeField >= 0 then changeStr = "+" + changeStr
+            changeStr = changeStr + "%"
+        else if changeType = "roInteger" or changeType = "roInt" or changeType = "Integer"
+            changeStr = str(changeField).trim()
+            if changeField >= 0 then changeStr = "+" + changeStr
+            changeStr = changeStr + "%"
         end if
-        
+    end if
+    
+    if len(changeStr) > 0
         m.changeLabel.text = changeStr
         
         ' Color based on positive/negative
-        if len(changeStr) > 0 and left(changeStr, 1) = "-"
+        if left(changeStr, 1) = "-"
             m.changeLabel.color = "#ef4444"
             m.changeArrow.text = "▼"
             m.changeArrow.color = "#ef4444"
