@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- QChannel MainScene - Zoneify-Inspired Design -->
+<!-- QChannel MainScene - TV News Style Layout -->
 <component name="MainScene" extends="Scene">
     <interface>
         <field id="selectedZone" type="node" />
@@ -12,125 +12,126 @@
         <Rectangle id="backgroundRect"
             width="1920"
             height="1080"
-            color="#060606" />
+            color="#0a0a0f" />
 
-        <!-- Hero Spotlight Area (Top 40%) -->
-        <Group id="heroSection" translation="[0,0]">
-            <!-- Gradient Overlay -->
-            <Poster id="heroGradient"
-                width="1920"
-                height="500"
-                uri="pkg:/images/hero-gradient.png" />
+        <!-- TOP HEADER BAR (60px) -->
+        <Group id="headerBar" translation="[0,40]">
+            <!-- Logo/Brand -->
+            <Label id="heroTitle"
+                translation="[60,0]"
+                text="QCHANNEL"
+                font="font:MediumBoldSystemFont"
+                color="#00f3ff" />
+            <Label id="heroSubtitle"
+                translation="[250,2]"
+                text="Crypto Market Intelligence"
+                font="font:SmallSystemFont"
+                color="#ffffff70" />
             
-            <!-- Hero Logo/Branding -->
-            <Group id="heroBranding" translation="[100,80]">
-                <Label id="heroTitle"
-                    text="QCHANNEL"
-                    font="font:LargeBoldSystemFont"
-                    color="#00f3ff" />
-                <Label id="heroSubtitle"
-                    translation="[0,60]"
-                    text="Crypto Market Intelligence"
-                    font="font:MediumSystemFont"
-                    color="#ffffff99" />
-            </Group>
-
             <!-- Live Indicator -->
-            <Group id="liveIndicator" translation="[1700,100]">
+            <Group id="liveIndicator" translation="[1760,0]">
                 <Rectangle id="liveDot"
-                    width="12"
-                    height="12"
+                    width="10"
+                    height="10"
                     color="#ff0000"
-                    translation="[0,5]" />
+                    translation="[0,8]" />
                 <Label id="liveText"
-                    translation="[20,0]"
+                    translation="[18,0]"
                     text="LIVE"
                     font="font:SmallBoldSystemFont"
                     color="#ffffff" />
             </Group>
-
-            <!-- Featured Zone Spotlight -->
-            <Group id="spotlightContent" translation="[100,180]">
-                <Label id="spotlightZoneName"
-                    text="Solana Ecosystem"
-                    font="font:LargeBoldSystemFont"
-                    color="#ffffff" />
-                <Label id="spotlightStats"
-                    translation="[0,60]"
-                    text="TVL $8.2B • 24h +5.2%"
-                    font="font:MediumSystemFont"
-                    color="#10b981" />
-                <Label id="spotlightDesc"
-                    translation="[0,100]"
-                    text="High-performance blockchain ecosystem with DeFi, NFTs, and meme coins"
-                    font="font:SmallSystemFont"
-                    color="#ffffff80"
-                    maxLines="2"
-                    width="800" />
-            </Group>
-
-            <!-- Hero Zone Image -->
-            <Poster id="heroImage"
-                translation="[1000,60]"
-                width="800"
-                height="400"
-                loadDisplayMode="scaleToFit"
-                uri="pkg:/images/zones/solana-hero.png" />
         </Group>
 
-        <!-- Market Ticker (Below Hero) -->
-        <Group id="tickerSection" translation="[0,480]">
+        <!-- MARKET TICKER (50px) -->
+        <Group id="tickerSection" translation="[0,100]">
             <Rectangle id="tickerBg"
                 width="1920"
-                height="60"
-                color="#0a0a0a" />
+                height="50"
+                color="#00000080" />
             <Label id="tickerLabel"
-                translation="[30,18]"
+                translation="[60,12]"
                 text="▲ MARKET"
                 font="font:SmallBoldSystemFont"
                 color="#00f3ff" />
             <Label id="tickerContent"
-                translation="[180,18]"
+                translation="[200,12]"
                 text="BTC $94,500 +2.1% • ETH $3,420 +1.8% • SOL $198 +5.2%"
                 font="font:SmallBoldSystemFont"
                 color="#ffffff" />
         </Group>
 
-        <!-- Zones Row Section -->
-        <Group id="zonesSection" translation="[0,570]">
-            <!-- Section Header -->
-            <Label id="zonesHeader"
-                translation="[100,0]"
-                text="What's Your Zone?"
-                font="font:MediumBoldSystemFont"
-                color="#ffffff" />
+        <!-- MAIN CONTENT AREA -->
+        <!-- Left Panel: Featured Zone (400px wide) -->
+        <Group id="heroSection" translation="[60,170]">
+            <Rectangle id="heroBg"
+                width="400"
+                height="500"
+                color="#12121a" />
             
-            <!-- Horizontal Zone List -->
-            <RowList id="zoneRowList"
-                translation="[100,50]"
-                itemComponentName="ZoneCard"
-                numRows="1"
-                itemSize="[1720,360]"
-                rowItemSize="[[300,360]]"
-                itemSpacing="[30,0]"
-                rowItemSpacing="[[30,0]]"
-                showRowLabel="false"
-                drawFocusFeedback="false" />
+            <!-- Zone Image (smaller) -->
+            <Poster id="heroImage"
+                translation="[0,0]"
+                width="400"
+                height="200"
+                loadDisplayMode="scaleToFill"
+                uri="pkg:/images/zones/solana-hero.png" />
+
+            <!-- Zone Info -->
+            <Group id="spotlightContent" translation="[20,220]">
+                <Label id="spotlightZoneName"
+                    text="Solana Ecosystem"
+                    font="font:MediumBoldSystemFont"
+                    color="#ffffff"
+                    width="360" />
+                <Label id="spotlightStats"
+                    translation="[0,40]"
+                    text="TVL $8.2B • 24h +5.2%"
+                    font="font:SmallBoldSystemFont"
+                    color="#10b981" />
+                <Label id="spotlightDesc"
+                    translation="[0,75]"
+                    text="High-performance blockchain with DeFi, NFTs, and meme coins"
+                    font="font:SmallSystemFont"
+                    color="#ffffff80"
+                    maxLines="3"
+                    width="360"
+                    wrap="true" />
+            </Group>
         </Group>
 
-        <!-- News Ticker (Bottom) -->
-        <Group id="newsSection" translation="[0,980]">
+        <!-- Right Panel: Zone Grid (1400px) -->
+        <Group id="zonesSection" translation="[500,170]">
+            <Label id="zonesHeader"
+                text="SELECT YOUR ZONE"
+                font="font:SmallBoldSystemFont"
+                color="#ffffff70" />
+            
+            <!-- Zone Grid (2 rows x 4 cols) -->
+            <MarkupGrid id="zoneGrid"
+                translation="[0,40]"
+                itemComponentName="ZoneCard"
+                numColumns="4"
+                numRows="2"
+                itemSize="[320,220]"
+                itemSpacing="[20,20]"
+                focusable="true"
+                drawFocusFeedback="true" />
+        </Group>
+
+        <!-- BOTTOM NEWS TICKER (80px) -->
+        <Group id="newsSection" translation="[0,720]">
             <Rectangle id="newsBg"
                 width="1920"
-                height="100"
-                color="#0f0f0f" />
+                height="80"
+                color="#0f0f15" />
             <Label id="newsIcon"
-                translation="[30,35]"
+                translation="[60,25]"
                 text="📰 NEWS"
                 font="font:SmallBoldSystemFont"
                 color="#bc13fe" />
             <Label id="newsContent"
-                translation="[180,35]"
+                translation="[200,15]"
                 text="Bitcoin Approaches New All-Time High Amid Institutional Demand"
                 font="font:SmallSystemFont"
                 color="#ffffff"

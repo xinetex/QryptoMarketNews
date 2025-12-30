@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- QChannel ZoneCard - Premium Card Design -->
+<!-- QChannel ZoneCard - Compact TV Card Design -->
 <component name="ZoneCard" extends="Group">
     <interface>
         <field id="itemContent" type="node" onChange="onContentSet" />
@@ -13,98 +13,86 @@
         <Group id="cardContainer">
             <!-- Background with Zone Color -->
             <Rectangle id="cardBg"
-                width="280"
-                height="340"
-                color="#0a0a0a" />
-            
-            <!-- Gradient Overlay -->
-            <Poster id="cardGradient"
-                width="280"
-                height="340"
-                uri="pkg:/images/card-gradient.png" />
+                width="300"
+                height="200"
+                color="#12121a" />
             
             <!-- Focus Border (hidden by default) -->
             <Rectangle id="focusBorder"
-                width="288"
-                height="348"
+                width="308"
+                height="208"
                 translation="[-4,-4]"
                 color="#00000000"
                 opacity="0" />
 
-            <!-- Zone Icon (Emoji or Image) -->
-            <Group id="iconContainer" translation="[20,20]">
+            <!-- Zone Icon (Emoji) -->
+            <Group id="iconContainer" translation="[15,15]">
                 <Rectangle id="iconBg"
-                    width="60"
-                    height="60"
-                    color="#ffffff15" />
+                    width="50"
+                    height="50"
+                    color="#ffffff10" />
                 <Label id="iconEmoji"
-                    translation="[15,10]"
+                    translation="[12,8]"
                     text="⚡"
-                    font="font:LargeBoldSystemFont" />
+                    font="font:MediumBoldSystemFont" />
             </Group>
 
             <!-- TVL Badge -->
-            <Group id="tvlBadge" translation="[180,20]">
+            <Group id="tvlBadge" translation="[200,15]">
                 <Rectangle id="tvlBg"
-                    width="80"
-                    height="28"
-                    color="#00000080" />
+                    width="85"
+                    height="26"
+                    color="#00000060" />
                 <Label id="tvlLabel"
-                    translation="[10,4]"
+                    translation="[8,3]"
                     text="$8.2B"
                     font="font:SmallBoldSystemFont"
-                    color="#ffffff" />
+                    color="#10b981" />
             </Group>
 
             <!-- Zone Title -->
             <Label id="titleLabel"
-                translation="[20,100]"
+                translation="[15,75]"
                 text="Zone Name"
-                font="font:MediumBoldSystemFont"
+                font="font:SmallBoldSystemFont"
                 color="#ffffff"
-                width="240"
+                width="270"
                 maxLines="2"
                 wrap="true" />
 
-            <!-- Zone Description -->
-            <Label id="descLabel"
-                translation="[20,165]"
-                text="Description text here"
-                font="font:SmallSystemFont"
-                color="#ffffff80"
-                width="240"
-                maxLines="3"
-                wrap="true" />
-
             <!-- Change Indicator -->
-            <Group id="changeIndicator" translation="[20,260]">
-                <Rectangle id="changeBg"
-                    width="100"
-                    height="32"
-                    color="#10b98120" />
+            <Group id="changeIndicator" translation="[15,130]">
                 <Label id="changeArrow"
-                    translation="[10,6]"
                     text="▲"
                     font="font:SmallBoldSystemFont"
                     color="#10b981" />
                 <Label id="changeLabel"
-                    translation="[28,6]"
+                    translation="[20,0]"
                     text="+5.2%"
                     font="font:SmallBoldSystemFont"
                     color="#10b981" />
             </Group>
 
+            <!-- Description (1 line) -->
+            <Label id="descLabel"
+                translation="[15,160]"
+                text="Description"
+                font="font:SmallSystemFont"
+                color="#ffffff50"
+                width="270"
+                maxLines="1" />
+
             <!-- Color Accent Bar -->
             <Rectangle id="accentBar"
-                translation="[0,310]"
-                width="280"
+                translation="[0,196]"
+                width="300"
                 height="4"
                 color="#9945FF" />
 
-            <!-- Selection Highlight (for focused state) -->
+            <!-- Selection Glow -->
             <Rectangle id="selectionGlow"
-                width="280"
-                height="340"
+                width="300"
+                height="200"
                 color="#00000000"
                 opacity="0" />
         </Group>

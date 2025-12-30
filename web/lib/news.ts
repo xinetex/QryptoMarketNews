@@ -22,7 +22,7 @@ function parseRSS(xml: string, source: string): NewsItem[] {
     // Simple regex-based XML parsing (works server-side)
     const itemRegex = /<item>([\s\S]*?)<\/item>/g;
     const titleRegex = /<title><!\[CDATA\[(.*?)\]\]><\/title>|<title>(.*?)<\/title>/;
-    const linkRegex = /<link>(.*?)<\/link>|<link><!\[CDATA\[(.*?)\]\]><\/link>/;
+    const linkRegex = /<link>(.*?)<\/link>/;
     const pubDateRegex = /<pubDate>(.*?)<\/pubDate>/;
 
     let match;
@@ -36,8 +36,13 @@ function parseRSS(xml: string, source: string): NewsItem[] {
         const pubDateMatch = itemXml.match(pubDateRegex);
 
         const title = titleMatch?.[1] || titleMatch?.[2] || "";
-        const url = linkMatch?.[1] || linkMatch?.[2] || "";
+        let url = linkMatch?.[1] || "";
         const published = pubDateMatch?.[1] || "";
+
+        // Strip CDATA wrapper from URL if present
+        if (url.includes("<![CDATA[")) {
+            url = url.replace(/<!\[CDATA\[/g, "").replace(/\]\]>/g, "");
+        }
 
         if (title && url) {
             items.push({

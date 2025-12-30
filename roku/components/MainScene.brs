@@ -1,5 +1,5 @@
-' QChannel MainScene - Zoneify-Inspired Design
-' BrightScript logic for main scene with vertical navigation
+' QChannel MainScene - TV News Style Layout
+' BrightScript logic for main scene with grid navigation
 
 sub init()
     m.top.setFocus(true)
@@ -12,14 +12,8 @@ sub init()
     m.heroImage = m.top.findNode("heroImage")
     m.tickerContent = m.top.findNode("tickerContent")
     m.newsContent = m.top.findNode("newsContent")
-    m.zoneRowList = m.top.findNode("zoneRowList")
+    m.zoneGrid = m.top.findNode("zoneGrid")
     m.liveDot = m.top.findNode("liveDot")
-    m.heroSection = m.top.findNode("heroSection")
-    m.zonesSection = m.top.findNode("zonesSection")
-    m.newsSection = m.top.findNode("newsSection")
-    
-    ' Navigation state: "zones" (default), "hero", "news"
-    m.currentSection = "zones"
     
     ' Zone detail scene reference
     m.zoneDetailScene = invalid
@@ -30,9 +24,9 @@ sub init()
     m.cryptoService.observeField("zoneData", "onZoneDataChanged")
     m.cryptoService.control = "run"
     
-    ' Zone row focus handling
-    m.zoneRowList.observeField("itemFocused", "onZoneFocused")
-    m.zoneRowList.observeField("itemSelected", "onZoneSelected")
+    ' Zone grid focus handling
+    m.zoneGrid.observeField("itemFocused", "onZoneFocused")
+    m.zoneGrid.observeField("itemSelected", "onZoneSelected")
     
     ' Start live indicator animation
     startLiveAnimation()
@@ -61,7 +55,7 @@ sub loadZoneData()
         {
             id: "solana",
             name: "Solana Ecosystem",
-            description: "High-performance blockchain with DeFi, NFTs, and meme coins",
+            description: "DeFi, NFTs, meme coins",
             icon: "⚡",
             color: "#9945FF",
             tvl: "$8.2B",
@@ -71,7 +65,7 @@ sub loadZoneData()
         {
             id: "ai",
             name: "AI Agents",
-            description: "Artificial intelligence and machine learning tokens",
+            description: "Machine learning tokens",
             icon: "🧠",
             color: "#00D9FF",
             tvl: "$4.1B",
@@ -81,7 +75,7 @@ sub loadZoneData()
         {
             id: "memes",
             name: "Meme Trenches",
-            description: "Community-driven meme coins and viral tokens",
+            description: "Viral meme coins",
             icon: "🐸",
             color: "#FF6B35",
             tvl: "$2.8B",
@@ -91,7 +85,7 @@ sub loadZoneData()
         {
             id: "rwa",
             name: "Real World Assets",
-            description: "Tokenized treasuries, bonds, and real estate",
+            description: "Tokenized treasuries",
             icon: "🏛️",
             color: "#10B981",
             tvl: "$30B+",
@@ -101,7 +95,7 @@ sub loadZoneData()
         {
             id: "nft",
             name: "NFT Market",
-            description: "Digital collectibles and gaming assets",
+            description: "Digital collectibles",
             icon: "🎨",
             color: "#EC4899",
             tvl: "$1.2B",
@@ -111,7 +105,7 @@ sub loadZoneData()
         {
             id: "gaming",
             name: "GameFi",
-            description: "Play-and-own gaming with on-chain assets",
+            description: "Play-and-own gaming",
             icon: "🎮",
             color: "#F59E0B",
             tvl: "$6.2B",
@@ -121,7 +115,7 @@ sub loadZoneData()
         {
             id: "defi",
             name: "DeFi 2.0",
-            description: "Next-gen decentralized finance protocols",
+            description: "Next-gen DeFi protocols",
             icon: "📈",
             color: "#8B5CF6",
             tvl: "$180B",
@@ -131,7 +125,7 @@ sub loadZoneData()
         {
             id: "layer2",
             name: "L2 Scaling",
-            description: "Layer 2 solutions for faster, cheaper transactions",
+            description: "Layer 2 solutions",
             icon: "⚙️",
             color: "#06B6D4",
             tvl: "$45B",
@@ -143,12 +137,11 @@ sub loadZoneData()
     ' Store zones for reference
     m.zones = zones
     
-    ' Populate row list
+    ' Populate grid
     content = CreateObject("roSGNode", "ContentNode")
-    row = content.createChild("ContentNode")
     
     for each zone in zones
-        item = row.createChild("ContentNode")
+        item = content.createChild("ContentNode")
         item.addFields({
             id: zone.id,
             title: zone.name,
@@ -161,8 +154,8 @@ sub loadZoneData()
         })
     end for
     
-    m.zoneRowList.content = content
-    m.zoneRowList.setFocus(true)
+    m.zoneGrid.content = content
+    m.zoneGrid.setFocus(true)
     
     ' Set initial spotlight to first zone
     if zones.count() > 0
@@ -220,7 +213,7 @@ end sub
 sub onZoneDetailVisibleChanged()
     if m.zoneDetailScene <> invalid and not m.zoneDetailScene.visible
         ' Returned from zone detail, restore focus
-        m.zoneRowList.setFocus(true)
+        m.zoneGrid.setFocus(true)
     end if
 end sub
 
@@ -280,51 +273,9 @@ function onKeyEvent(key as string, press as boolean) as boolean
         return false ' Let detail scene handle it
     end if
     
-    if key = "up"
-        ' Move focus up from zones to hero area
-        if m.currentSection = "zones"
-            m.currentSection = "hero"
-            highlightSection("hero")
-            return true
-        end if
-    else if key = "down"
-        ' Move focus down from hero to zones
-        if m.currentSection = "hero"
-            m.currentSection = "zones"
-            m.zoneRowList.setFocus(true)
-            highlightSection("zones")
-            return true
-        end if
-    else if key = "OK" or key = "play"
-        ' Select current zone from hero spotlight
-        if m.currentSection = "hero"
-            focusedIndex = m.zoneRowList.itemFocused
-            if m.zones <> invalid and focusedIndex < m.zones.count()
-                showZoneDetail(m.zones[focusedIndex], focusedIndex)
-                return true
-            end if
-        end if
-    else if key = "back"
-        if m.currentSection = "hero"
-            m.currentSection = "zones"
-            m.zoneRowList.setFocus(true)
-            highlightSection("zones")
-            return true
-        end if
-        return false
+    if key = "back"
+        return false ' Exit channel
     end if
     
     return false
 end function
-
-sub highlightSection(sectionName as string)
-    ' Visual feedback for section focus
-    if sectionName = "hero"
-        m.heroSection.opacity = 1.0
-        m.zonesSection.opacity = 0.7
-    else if sectionName = "zones"
-        m.heroSection.opacity = 0.9
-        m.zonesSection.opacity = 1.0
-        m.zoneRowList.setFocus(true)
-    end if
-end sub

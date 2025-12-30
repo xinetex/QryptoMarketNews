@@ -1,4 +1,4 @@
-' QChannel ZoneCard - Premium Card Design
+' QChannel ZoneCard - Compact Card Design
 ' BrightScript logic for zone card component
 
 sub init()
@@ -12,7 +12,6 @@ sub init()
     m.descLabel = m.top.findNode("descLabel")
     m.changeLabel = m.top.findNode("changeLabel")
     m.changeArrow = m.top.findNode("changeArrow")
-    m.changeBg = m.top.findNode("changeBg")
     m.accentBar = m.top.findNode("accentBar")
     m.selectionGlow = m.top.findNode("selectionGlow")
 end sub
@@ -22,8 +21,8 @@ sub onContentSet()
     if content = invalid then return
     
     ' Set zone data
-    m.titleLabel.text = content.title
-    m.descLabel.text = content.description
+    if content.title <> invalid then m.titleLabel.text = content.title
+    if content.description <> invalid then m.descLabel.text = content.description
     
     ' Set icon
     if content.icon <> invalid
@@ -61,12 +60,10 @@ sub onContentSet()
             m.changeLabel.color = "#ef4444"
             m.changeArrow.text = "▼"
             m.changeArrow.color = "#ef4444"
-            m.changeBg.color = "#ef444420"
         else
             m.changeLabel.color = "#10b981"
             m.changeArrow.text = "▲"
             m.changeArrow.color = "#10b981"
-            m.changeBg.color = "#10b98120"
         end if
     end if
     
@@ -82,23 +79,23 @@ sub onFocusChanged()
     
     if focusPct > 0
         ' Scale up slightly when focused
-        scale = 1.0 + (0.05 * focusPct)
+        scale = 1.0 + (0.03 * focusPct)
         m.cardContainer.scale = [scale, scale]
         
         ' Show focus border
         m.focusBorder.opacity = focusPct
         
-        ' Add glow effect
-        m.selectionGlow.opacity = 0.1 * focusPct
+        ' Brighten background
+        m.cardBg.color = "#1a1a25"
         
         ' Shift position to scale from center
-        shift = -10 * focusPct
+        shift = -5 * focusPct
         m.cardContainer.translation = [shift, shift]
     else
         ' Reset to normal
         m.cardContainer.scale = [1.0, 1.0]
         m.focusBorder.opacity = 0
-        m.selectionGlow.opacity = 0
+        m.cardBg.color = "#12121a"
         m.cardContainer.translation = [0, 0]
     end if
 end sub
