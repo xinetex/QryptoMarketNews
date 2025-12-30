@@ -30,11 +30,11 @@
                 color="#ffffff60" />
             
             <!-- Zone Icon + Title -->
-            <Label id="zoneIcon"
+            <Poster id="zoneIcon"
                 translation="[180,20]"
-                text="⚡"
-                font="font:MediumBoldSystemFont"
-                color="#ffffff" />
+                width="32"
+                height="32"
+                loadDisplayMode="scaleToFit" />
             <Label id="zoneTitle"
                 translation="[230,22]"
                 text="Solana Ecosystem"

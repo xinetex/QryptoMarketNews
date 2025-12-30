@@ -26,7 +26,7 @@ sub onZoneSet()
     if zone = invalid then return
     
     ' Update UI with zone data
-    if zone.icon <> invalid then m.zoneIcon.text = zone.icon
+    if zone.icon <> invalid then m.zoneIcon.uri = zone.icon
     if zone.name <> invalid then m.zoneTitle.text = zone.name
     if zone.tvl <> invalid then m.tvlLabel.text = "TVL: " + zone.tvl
     
