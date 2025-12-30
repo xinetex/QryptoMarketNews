@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- QChannel CoinDetailScene - Full coin/token/NFT detail view -->
+<component name="CoinDetailScene" extends="Group">
+    <interface>
+        <field id="coin" type="assocarray" onChange="onCoinSet" />
+        <field id="isNFT" type="boolean" value="false" />
+    </interface>
+
+    <script type="text/brightscript" uri="CoinDetailScene.brs" />
+
+    <children>
+        <!-- Dark Background -->
+        <Rectangle id="backgroundRect"
+            width="1920"
+            height="1080"
+            color="#060606" />
+
+        <!-- Back Button Hint -->
+        <Group id="backHint" translation="[60,40]">
+            <Label id="backLabel"
+                text="◀ BACK"
+                font="font:SmallBoldSystemFont"
+                color="#ffffff60" />
+        </Group>
+
+        <!-- Left Panel: Coin Info (600px) -->
+        <Group id="infoPanel" translation="[60,100]">
+            <!-- Coin Image -->
+            <Poster id="coinImage"
+                translation="[0,0]"
+                width="120"
+                height="120"
+                loadDisplayMode="scaleToFit" />
+
+            <!-- Coin Name & Symbol -->
+            <Group id="coinHeader" translation="[140,10]">
+                <Label id="coinName"
+                    text="Bitcoin"
+                    font="font:LargeBoldSystemFont"
+                    color="#ffffff" />
+                <Label id="coinSymbol"
+                    translation="[0,45]"
+                    text="BTC"
+                    font="font:MediumSystemFont"
+                    color="#ffffff70" />
+            </Group>
+
+            <!-- Price -->
+            <Group id="priceSection" translation="[0,150]">
+                <Label id="priceLabel"
+                    text="$94,500.00"
+                    font="font:LargeBoldSystemFont"
+                    color="#ffffff" />
+                <Label id="priceChange"
+                    translation="[300,10]"
+                    text="+2.5%"
+                    font="font:MediumBoldSystemFont"
+                    color="#10b981" />
+            </Group>
+
+            <!-- Stats Grid -->
+            <Group id="statsSection" translation="[0,220]">
+                <Rectangle id="statsBg"
+                    width="500"
+                    height="200"
+                    color="#0a0a0f" />
+                
+                <!-- Market Cap -->
+                <Group id="marketCapRow" translation="[20,20]">
+                    <Label id="marketCapLabel"
+                        text="Market Cap"
+                        font="font:SmallSystemFont"
+                        color="#ffffff70" />
+                    <Label id="marketCapValue"
+                        translation="[250,0]"
+                        text="$1.8T"
+                        font="font:SmallBoldSystemFont"
+                        color="#ffffff" />
+                </Group>
+
+                <!-- Volume -->
+                <Group id="volumeRow" translation="[20,60]">
+                    <Label id="volumeLabel"
+                        text="24h Volume"
+                        font="font:SmallSystemFont"
+                        color="#ffffff70" />
+                    <Label id="volumeValue"
+                        translation="[250,0]"
+                        text="$42B"
+                        font="font:SmallBoldSystemFont"
+                        color="#ffffff" />
+                </Group>
+
+                <!-- Circulating Supply -->
+                <Group id="supplyRow" translation="[20,100]">
+                    <Label id="supplyLabel"
+                        text="Circulating Supply"
+                        font="font:SmallSystemFont"
+                        color="#ffffff70" />
+                    <Label id="supplyValue"
+                        translation="[250,0]"
+                        text="19.5M BTC"
+                        font="font:SmallBoldSystemFont"
+                        color="#ffffff" />
+                </Group>
+
+                <!-- ATH -->
+                <Group id="athRow" translation="[20,140]">
+                    <Label id="athLabel"
+                        text="All-Time High"
+                        font="font:SmallSystemFont"
+                        color="#ffffff70" />
+                    <Label id="athValue"
+                        translation="[250,0]"
+                        text="$108,000"
+                        font="font:SmallBoldSystemFont"
+                        color="#ffffff" />
+                </Group>
+            </Group>
+
+            <!-- Description -->
+            <Label id="coinDescription"
+                translation="[0,440]"
+                text="Bitcoin is a decentralized digital currency..."
+                font="font:SmallSystemFont"
+                color="#ffffff80"
+                width="500"
+                maxLines="4"
+                wrap="true" />
+        </Group>
+
+        <!-- Right Panel: Chart/NFT Gallery (1200px) -->
+        <Group id="rightPanel" translation="[620,100]">
+            <!-- For Coins: Price Chart -->
+            <Group id="chartSection" visible="true">
+                <Label id="chartTitle"
+                    text="Price Chart (7D)"
+                    font="font:MediumBoldSystemFont"
+                    color="#ffffff" />
+                <Rectangle id="chartBg"
+                    translation="[0,40]"
+                    width="1200"
+                    height="400"
+                    color="#0a0a0f" />
+                <Label id="chartPlaceholder"
+                    translation="[500,220]"
+                    text="📊 Chart Coming Soon"
+                    font="font:MediumSystemFont"
+                    color="#ffffff50" />
+            </Group>
+
+            <!-- For NFTs: Art Gallery -->
+            <Group id="nftGallery" visible="false">
+                <Label id="galleryTitle"
+                    text="Collection Gallery"
+                    font="font:MediumBoldSystemFont"
+                    color="#ffffff" />
+                <MarkupGrid id="nftGrid"
+                    translation="[0,40]"
+                    itemComponentName="NFTItem"
+                    numColumns="4"
+                    numRows="2"
+                    itemSize="[280,280]"
+                    itemSpacing="[20,20]"
+                    focusable="true"
+                    drawFocusFeedback="true" />
+            </Group>
+
+            <!-- Social Links -->
+            <Group id="socialSection" translation="[0,500]">
+                <Label id="socialTitle"
+                    text="Links"
+                    font="font:SmallBoldSystemFont"
+                    color="#ffffff70" />
+                <Group id="socialLinks" translation="[0,30]">
+                    <Label id="websiteLink"
+                        text="🌐 Website"
+                        font="font:SmallSystemFont"
+                        color="#00f3ff" />
+                    <Label id="twitterLink"
+                        translation="[150,0]"
+                        text="🐦 Twitter"
+                        font="font:SmallSystemFont"
+                        color="#00f3ff" />
+                    <Label id="discordLink"
+                        translation="[300,0]"
+                        text="💬 Discord"
+                        font="font:SmallSystemFont"
+                        color="#00f3ff" />
+                </Group>
+            </Group>
+        </Group>
+    </children>
+</component>

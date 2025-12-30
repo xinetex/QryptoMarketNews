@@ -176,8 +176,46 @@ sub onCoinSelected(event as object)
     index = event.getData()
     content = m.coinsGrid.content
     if content <> invalid and index < content.getChildCount()
-        coin = content.getChild(index)
-        print "Selected coin: " + coin.title
+        coinNode = content.getChild(index)
+        print "Selected coin: " + coinNode.title
+        
+        ' Build coin data object from ContentNode fields
+        coin = {
+            name: coinNode.title,
+            symbol: coinNode.symbol,
+            image: coinNode.image,
+            current_price: coinNode.price,
+            price_change_percentage_24h: coinNode.change24h
+        }
+        
+        showCoinDetail(coin)
+    end if
+end sub
+
+' Navigate to coin detail screen
+sub showCoinDetail(coin as object)
+    ' Create coin detail scene if not exists
+    if m.coinDetailScene = invalid
+        m.coinDetailScene = m.top.getParent().createChild("CoinDetailScene")
+        m.coinDetailScene.observeField("visible", "onCoinDetailVisibleChanged")
+    end if
+    
+    ' Check if this is NFT zone
+    zone = m.top.zone
+    isNFT = false
+    if zone <> invalid and zone.id <> invalid
+        if zone.id = "nft" then isNFT = true
+    end if
+    
+    m.coinDetailScene.isNFT = isNFT
+    m.coinDetailScene.coin = coin
+    m.coinDetailScene.visible = true
+    m.coinDetailScene.setFocus(true)
+end sub
+
+sub onCoinDetailVisibleChanged()
+    if m.coinDetailScene <> invalid and not m.coinDetailScene.visible
+        m.coinsGrid.setFocus(true)
     end if
 end sub
 

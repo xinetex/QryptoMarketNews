@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- QChannel NFTItem - NFT art display in gallery -->
+<component name="NFTItem" extends="Group">
+    <interface>
+        <field id="itemContent" type="node" onChange="onContentSet" />
+        <field id="focusPercent" type="float" onChange="onFocusChanged" />
+    </interface>
+
+    <script type="text/brightscript" uri="NFTItem.brs" />
+
+    <children>
+        <Group id="cardContainer">
+            <!-- NFT Art Image -->
+            <Poster id="nftImage"
+                width="260"
+                height="220"
+                loadDisplayMode="scaleToFit"
+                loadingBitmapUri=""
+                failedBitmapUri="" />
+
+            <!-- Overlay with title -->
+            <Rectangle id="titleOverlay"
+                translation="[0,200]"
+                width="260"
+                height="60"
+                color="#000000CC" />
+
+            <Label id="nftTitle"
+                translation="[10,210]"
+                text="NFT #1234"
+                font="font:SmallBoldSystemFont"
+                color="#ffffff"
+                width="240"
+                maxLines="1" />
+
+            <Label id="nftPrice"
+                translation="[10,235]"
+                text="Floor: 0.5 ETH"
+                font="font:SmallSystemFont"
+                color="#10b981" />
+
+            <!-- Focus border -->
+            <Rectangle id="focusBorder"
+                width="268"
+                height="268"
+                translation="[-4,-4]"
+                color="#00000000"
+                opacity="0" />
+        </Group>
+    </children>
+</component>
