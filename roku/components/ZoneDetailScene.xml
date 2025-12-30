@@ -83,11 +83,12 @@
                 translation="[100,70]"
                 itemComponentName="CoinItem"
                 numColumns="4"
-                numRows="2"
-                itemSize="[400,120]"
-                itemSpacing="[20,20]"
+                numRows="3"
+                itemSize="[400,100]"
+                itemSpacing="[20,15]"
                 focusable="true"
-                drawFocusFeedback="true" />
+                drawFocusFeedback="true"
+                vertFocusAnimationStyle="floatingFocus" />
         </Group>
 
         <!-- News Section -->

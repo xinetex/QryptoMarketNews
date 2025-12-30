@@ -116,7 +116,10 @@
                 itemSize="[320,220]"
                 itemSpacing="[20,20]"
                 focusable="true"
-                drawFocusFeedback="true" />
+                drawFocusFeedback="true"
+                fixedLayout="true"
+                horizFocusAnimationStyle="fixedFocusWrap"
+                vertFocusAnimationStyle="fixedFocus" />
         </Group>
 
         <!-- BOTTOM NEWS TICKER (80px) -->

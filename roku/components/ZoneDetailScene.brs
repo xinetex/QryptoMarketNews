@@ -93,7 +93,7 @@ sub populateCoins(coins as object)
     
     coinCount = 0
     for each coin in coins
-        if coinCount >= 8 then exit for ' Limit to 8 coins for grid
+        if coinCount >= 12 then exit for ' Limit to 12 coins for 3x4 grid
         
         item = content.createChild("ContentNode")
         
