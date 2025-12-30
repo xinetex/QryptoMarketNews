@@ -192,12 +192,12 @@ sub onZoneSelected(event as object)
     if m.zones <> invalid and selectedIndex < m.zones.count()
         zone = m.zones[selectedIndex]
         print "Selected zone: " + zone.name
-        showZoneDetail(zone, selectedIndex)
+        showZoneDetail(zone)
     end if
 end sub
 
 ' Navigate to zone detail screen
-sub showZoneDetail(zone as object, index as integer)
+sub showZoneDetail(zone as object)
     ' Create zone detail scene if not exists
     if m.zoneDetailScene = invalid
         m.zoneDetailScene = m.top.createChild("ZoneDetailScene")

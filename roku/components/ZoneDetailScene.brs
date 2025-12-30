@@ -145,11 +145,6 @@ end sub
 
 ' Fetch zone-related news
 sub fetchZoneNews(zone as object)
-    zoneId = ""
-    zoneName = ""
-    if zone.id <> invalid then zoneId = zone.id
-    if zone.name <> invalid then zoneName = zone.name
-    
     ' Fetch news from API
     url = m.apiBaseUrl + "/api/news"
     
@@ -165,12 +160,12 @@ sub fetchZoneNews(zone as object)
     if response <> invalid and response <> ""
         json = ParseJson(response)
         if json <> invalid and json.data <> invalid
-            populateNews(json.data, zoneName)
+            populateNews(json.data)
         end if
     end if
 end sub
 
-sub populateNews(news as object, zoneName as string)
+sub populateNews(news as object)
     if news = invalid or news.count() = 0 then return
     
     ' Populate news row
