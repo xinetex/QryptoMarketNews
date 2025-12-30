@@ -1,48 +1,88 @@
-' QChannel Zone Card Logic
-' BrightScript
+' QChannel ZoneCard - Premium Card Design
+' BrightScript logic for zone card component
 
 sub init()
-    m.cardBackground = m.top.findNode("cardBackground")
-    m.glowBorder = m.top.findNode("glowBorder")
-    m.zoneNameLabel = m.top.findNode("zoneName")
-    m.changeBadge = m.top.findNode("changeBadge")
+    ' Get node references
+    m.cardContainer = m.top.findNode("cardContainer")
+    m.cardBg = m.top.findNode("cardBg")
+    m.focusBorder = m.top.findNode("focusBorder")
+    m.iconEmoji = m.top.findNode("iconEmoji")
+    m.tvlLabel = m.top.findNode("tvlLabel")
+    m.titleLabel = m.top.findNode("titleLabel")
+    m.descLabel = m.top.findNode("descLabel")
     m.changeLabel = m.top.findNode("changeLabel")
+    m.changeArrow = m.top.findNode("changeArrow")
+    m.changeBg = m.top.findNode("changeBg")
+    m.accentBar = m.top.findNode("accentBar")
+    m.selectionGlow = m.top.findNode("selectionGlow")
 end sub
 
-sub updateContent()
-    ' Update zone name
-    m.zoneNameLabel.text = m.top.zoneName
+sub onContentSet()
+    content = m.top.itemContent
+    if content = invalid then return
     
-    ' Update change label
-    m.changeLabel.text = "24h: " + m.top.zoneChange
+    ' Set zone data
+    m.titleLabel.text = content.title
+    m.descLabel.text = content.description
     
-    ' Update colors based on positive/negative
-    if m.top.isPositive
-        m.changeBadge.color = "#00ff0020"
-        m.changeLabel.color = "#00ff00"
-    else
-        m.changeBadge.color = "#ff000020"
-        m.changeLabel.color = "#ff0000"
+    ' Set icon
+    if content.icon <> invalid
+        m.iconEmoji.text = content.icon
+    end if
+    
+    ' Set TVL
+    if content.tvl <> invalid
+        m.tvlLabel.text = content.tvl
+    end if
+    
+    ' Set change indicator
+    if content.change <> invalid
+        changeStr = content.change
+        m.changeLabel.text = changeStr
+        
+        ' Color based on positive/negative
+        if left(changeStr, 1) = "-"
+            m.changeLabel.color = "#ef4444"
+            m.changeArrow.text = "▼"
+            m.changeArrow.color = "#ef4444"
+            m.changeBg.color = "#ef444420"
+        else
+            m.changeLabel.color = "#10b981"
+            m.changeArrow.text = "▲"
+            m.changeArrow.color = "#10b981"
+            m.changeBg.color = "#10b98120"
+        end if
+    end if
+    
+    ' Set accent bar color
+    if content.zoneColor <> invalid
+        m.accentBar.color = content.zoneColor
+        m.focusBorder.color = content.zoneColor
     end if
 end sub
 
 sub onFocusChanged()
-    if m.top.hasFocus()
-        ' Show glow border on focus
-        m.glowBorder.color = "#00f3ff40"
+    focusPct = m.top.focusPercent
+    
+    if focusPct > 0
+        ' Scale up slightly when focused
+        scale = 1.0 + (0.05 * focusPct)
+        m.cardContainer.scale = [scale, scale]
         
-        ' Scale up animation
-        scaleUp = CreateObject("roSGNode", "Animation")
-        scaleUp.duration = 0.2
-        interpolator = CreateObject("roSGNode", "FloatFieldInterpolator")
-        interpolator.key = [0.0, 1.0]
-        interpolator.keyValue = [1.0, 1.05]
-        interpolator.fieldToInterp = "scale.x"
-        scaleUp.appendChild(interpolator)
-        m.top.appendChild(scaleUp)
-        scaleUp.control = "start"
+        ' Show focus border
+        m.focusBorder.opacity = focusPct
+        
+        ' Add glow effect
+        m.selectionGlow.opacity = 0.1 * focusPct
+        
+        ' Shift position to scale from center
+        shift = -10 * focusPct
+        m.cardContainer.translation = [shift, shift]
     else
-        ' Hide glow border
-        m.glowBorder.color = "#00000000"
+        ' Reset to normal
+        m.cardContainer.scale = [1.0, 1.0]
+        m.focusBorder.opacity = 0
+        m.selectionGlow.opacity = 0
+        m.cardContainer.translation = [0, 0]
     end if
 end sub

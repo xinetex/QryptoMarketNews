@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- QChannel ZoneDetail - Detail page for selected zone -->
+<component name="ZoneDetailScene" extends="Group">
+    <interface>
+        <field id="zone" type="assocarray" onChange="onZoneSet" />
+        <field id="coins" type="array" onChange="onCoinsSet" />
+    </interface>
+
+    <script type="text/brightscript" uri="ZoneDetailScene.brs" />
+
+    <children>
+        <!-- Dark Background -->
+        <Rectangle id="backgroundRect"
+            width="1920"
+            height="1080"
+            color="#060606" />
+
+        <!-- Back Button Hint -->
+        <Group id="backHint" translation="[60,40]">
+            <Label id="backLabel"
+                text="◀ BACK"
+                font="font:SmallBoldSystemFont"
+                color="#ffffff60" />
+        </Group>
+
+        <!-- Zone Header -->
+        <Group id="headerSection" translation="[0,0]">
+            <!-- Header Background with Zone Color -->
+            <Rectangle id="headerBg"
+                width="1920"
+                height="200"
+                color="#0a0a0a" />
+            
+            <!-- Zone Icon -->
+            <Label id="zoneIcon"
+                translation="[100,60]"
+                text="⚡"
+                font="font:LargeBoldSystemFont"
+                color="#ffffff" />
+            
+            <!-- Zone Title -->
+            <Label id="zoneTitle"
+                translation="[180,50]"
+                text="Solana Ecosystem"
+                font="font:LargeBoldSystemFont"
+                color="#ffffff" />
+            
+            <!-- Zone Stats -->
+            <Group id="zoneStats" translation="[180,110]">
+                <Label id="tvlLabel"
+                    text="TVL: $8.2B"
+                    font="font:MediumSystemFont"
+                    color="#10b981" />
+                <Label id="changeLabel"
+                    translation="[200,0]"
+                    text="24h: +5.2%"
+                    font="font:MediumSystemFont"
+                    color="#10b981" />
+                <Label id="protocolsLabel"
+                    translation="[400,0]"
+                    text="Protocols: 245"
+                    font="font:MediumSystemFont"
+                    color="#ffffff80" />
+            </Group>
+
+            <!-- Accent Line -->
+            <Rectangle id="accentLine"
+                translation="[0,195]"
+                width="1920"
+                height="5"
+                color="#9945FF" />
+        </Group>
+
+        <!-- Coins Grid -->
+        <Group id="coinsSection" translation="[0,220]">
+            <Label id="coinsHeader"
+                translation="[100,20]"
+                text="Top Coins"
+                font="font:MediumBoldSystemFont"
+                color="#ffffff" />
+            
+            <MarkupGrid id="coinsGrid"
+                translation="[100,70]"
+                itemComponentName="CoinItem"
+                numColumns="4"
+                numRows="2"
+                itemSize="[400,120]"
+                itemSpacing="[20,20]"
+                drawFocusFeedback="false" />
+        </Group>
+
+        <!-- News Section -->
+        <Group id="newsSection" translation="[0,580]">
+            <Label id="newsHeader"
+                translation="[100,0]"
+                text="Latest News"
+                font="font:MediumBoldSystemFont"
+                color="#ffffff" />
+            
+            <RowList id="newsRow"
+                translation="[100,50]"
+                itemComponentName="NewsItem"
+                numRows="1"
+                itemSize="[1720,150]"
+                rowItemSize="[[400,150]]"
+                rowItemSpacing="[[20,0]]"
+                showRowLabel="false" />
+        </Group>
+
+        <!-- Ad Preroll Indicator -->
+        <Group id="adIndicator" translation="[1700,40]" visible="false">
+            <Rectangle id="adBg"
+                width="160"
+                height="40"
+                color="#00000080" />
+            <Label id="adLabel"
+                translation="[15,8]"
+                text="🎬 Ad Loading..."
+                font="font:SmallSystemFont"
+                color="#ffffff" />
+        </Group>
+    </children>
+</component>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- QChannel NewsItem - Row item for news articles -->
+<component name="NewsItem" extends="Group">
+    <interface>
+        <field id="itemContent" type="node" onChange="onContentSet" />
+        <field id="focusPercent" type="float" onChange="onFocusChanged" />
+    </interface>
+
+    <script type="text/brightscript" uri="NewsItem.brs" />
+
+    <children>
+        <Group id="itemContainer">
+            <!-- Background -->
+            <Rectangle id="itemBg"
+                width="380"
+                height="130"
+                color="#0f0f0f" />
+            
+            <!-- Focus Border -->
+            <Rectangle id="focusBorder"
+                width="388"
+                height="138"
+                translation="[-4,-4]"
+                color="#bc13fe"
+                opacity="0" />
+
+            <!-- News Content -->
+            <Group id="newsContent" translation="[15,15]">
+                <!-- Source Badge -->
+                <Rectangle id="sourceBg"
+                    width="100"
+                    height="24"
+                    color="#bc13fe20" />
+                <Label id="sourceLabel"
+                    translation="[8,2]"
+                    text="Cointelegraph"
+                    font="font:SmallSystemFont"
+                    color="#bc13fe" />
+                
+                <!-- Title -->
+                <Label id="titleLabel"
+                    translation="[0,35]"
+                    text="Bitcoin Approaches New All-Time High"
+                    font="font:MediumSystemFont"
+                    color="#ffffff"
+                    width="350"
+                    maxLines="2"
+                    wrap="true" />
+                
+                <!-- Time -->
+                <Label id="timeLabel"
+                    translation="[0,100]"
+                    text="2h ago"
+                    font="font:SmallSystemFont"
+                    color="#ffffff40" />
+            </Group>
+        </Group>
+    </children>
+</component>

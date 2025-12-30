@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- QChannel CoinItem - Grid item for displaying a coin -->
+<component name="CoinItem" extends="Group">
+    <interface>
+        <field id="itemContent" type="node" onChange="onContentSet" />
+        <field id="focusPercent" type="float" onChange="onFocusChanged" />
+    </interface>
+
+    <script type="text/brightscript" uri="CoinItem.brs" />
+
+    <children>
+        <Group id="itemContainer">
+            <!-- Background -->
+            <Rectangle id="itemBg"
+                width="380"
+                height="100"
+                color="#0f0f0f" />
+            
+            <!-- Focus Border -->
+            <Rectangle id="focusBorder"
+                width="388"
+                height="108"
+                translation="[-4,-4]"
+                color="#00f3ff"
+                opacity="0" />
+
+            <!-- Coin Image -->
+            <Poster id="coinImage"
+                translation="[15,15]"
+                width="70"
+                height="70"
+                loadDisplayMode="scaleToFit" />
+
+            <!-- Coin Info -->
+            <Group id="coinInfo" translation="[100,12]">
+                <Label id="coinName"
+                    text="Bitcoin"
+                    font="font:MediumBoldSystemFont"
+                    color="#ffffff"
+                    width="180"
+                    maxLines="1" />
+                <Label id="coinSymbol"
+                    translation="[0,30]"
+                    text="BTC"
+                    font="font:SmallSystemFont"
+                    color="#ffffff60" />
+            </Group>
+
+            <!-- Price & Change -->
+            <Group id="priceInfo" translation="[280,12]">
+                <Label id="coinPrice"
+                    text="$94,500"
+                    font="font:MediumBoldSystemFont"
+                    color="#ffffff"
+                    horizAlign="right"
+                    width="90" />
+                <Label id="coinChange"
+                    translation="[0,30]"
+                    text="+2.1%"
+                    font="font:SmallBoldSystemFont"
+                    color="#10b981"
+                    horizAlign="right"
+                    width="90" />
+            </Group>
+        </Group>
+    </children>
+</component>

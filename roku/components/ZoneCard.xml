@@ -1,58 +1,112 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<!-- QChannel Zone Card Component -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- QChannel ZoneCard - Premium Card Design -->
 <component name="ZoneCard" extends="Group">
     <interface>
-        <field id="zoneName" type="string" onChange="updateContent" />
-        <field id="zoneChange" type="string" onChange="updateContent" />
-        <field id="zoneColor" type="string" value="#00f3ff" onChange="updateContent" />
-        <field id="isPositive" type="boolean" value="true" onChange="updateContent" />
+        <field id="itemContent" type="node" onChange="onContentSet" />
+        <field id="focusPercent" type="float" onChange="onFocusChanged" />
     </interface>
-    
+
     <script type="text/brightscript" uri="ZoneCard.brs" />
-    
+
     <children>
-        <!-- Card Background -->
-        <Rectangle
-            id="cardBackground"
-            width="350"
-            height="250"
-            color="#ffffff08"
-        />
-        
-        <!-- Glow Border (on focus) -->
-        <Rectangle
-            id="glowBorder"
-            width="354"
-            height="254"
-            translation="[-2, -2]"
-            color="#00000000"
-            blendingMode="lighten"
-        />
-        
-        <!-- Zone Name -->
-        <Label
-            id="zoneName"
-            translation="[20, 150]"
-            width="310"
-            font="font:MediumBoldSystemFont"
-            color="#ffffff"
-            horizAlign="center"
-        />
-        
-        <!-- Change Badge -->
-        <Rectangle
-            id="changeBadge"
-            translation="[100, 195]"
-            width="150"
-            height="35"
-            color="#00ff0020"
-        >
-            <Label
-                id="changeLabel"
-                translation="[10, 8]"
-                font="font:SmallBoldSystemFont"
-                color="#00ff00"
-            />
-        </Rectangle>
+        <!-- Card Container -->
+        <Group id="cardContainer">
+            <!-- Background with Zone Color -->
+            <Rectangle id="cardBg"
+                width="280"
+                height="340"
+                color="#0a0a0a" />
+            
+            <!-- Gradient Overlay -->
+            <Poster id="cardGradient"
+                width="280"
+                height="340"
+                uri="pkg:/images/card-gradient.png" />
+            
+            <!-- Focus Border (hidden by default) -->
+            <Rectangle id="focusBorder"
+                width="288"
+                height="348"
+                translation="[-4,-4]"
+                color="#00000000"
+                opacity="0" />
+
+            <!-- Zone Icon (Emoji or Image) -->
+            <Group id="iconContainer" translation="[20,20]">
+                <Rectangle id="iconBg"
+                    width="60"
+                    height="60"
+                    color="#ffffff15" />
+                <Label id="iconEmoji"
+                    translation="[15,10]"
+                    text="⚡"
+                    font="font:LargeBoldSystemFont" />
+            </Group>
+
+            <!-- TVL Badge -->
+            <Group id="tvlBadge" translation="[180,20]">
+                <Rectangle id="tvlBg"
+                    width="80"
+                    height="28"
+                    color="#00000080" />
+                <Label id="tvlLabel"
+                    translation="[10,4]"
+                    text="$8.2B"
+                    font="font:SmallBoldSystemFont"
+                    color="#ffffff" />
+            </Group>
+
+            <!-- Zone Title -->
+            <Label id="titleLabel"
+                translation="[20,100]"
+                text="Zone Name"
+                font="font:MediumBoldSystemFont"
+                color="#ffffff"
+                width="240"
+                maxLines="2"
+                wrap="true" />
+
+            <!-- Zone Description -->
+            <Label id="descLabel"
+                translation="[20,165]"
+                text="Description text here"
+                font="font:SmallSystemFont"
+                color="#ffffff80"
+                width="240"
+                maxLines="3"
+                wrap="true" />
+
+            <!-- Change Indicator -->
+            <Group id="changeIndicator" translation="[20,260]">
+                <Rectangle id="changeBg"
+                    width="100"
+                    height="32"
+                    color="#10b98120" />
+                <Label id="changeArrow"
+                    translation="[10,6]"
+                    text="▲"
+                    font="font:SmallBoldSystemFont"
+                    color="#10b981" />
+                <Label id="changeLabel"
+                    translation="[28,6]"
+                    text="+5.2%"
+                    font="font:SmallBoldSystemFont"
+                    color="#10b981" />
+            </Group>
+
+            <!-- Color Accent Bar -->
+            <Rectangle id="accentBar"
+                translation="[0,310]"
+                width="280"
+                height="4"
+                color="#9945FF" />
+
+            <!-- Selection Highlight (for focused state) -->
+            <Rectangle id="selectionGlow"
+                width="280"
+                height="340"
+                color="#00000000"
+                opacity="0" />
+        </Group>
     </children>
 </component>

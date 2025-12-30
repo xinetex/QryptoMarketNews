@@ -1,77 +1,146 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<!-- QChannel Main Scene -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- QChannel MainScene - Zoneify-Inspired Design -->
 <component name="MainScene" extends="Scene">
     <interface>
-        <field id="deepLink" type="assocarray" />
+        <field id="selectedZone" type="node" />
     </interface>
-    
+
     <script type="text/brightscript" uri="MainScene.brs" />
-    
+
     <children>
-        <!-- Background -->
-        <Rectangle
-            id="background"
+        <!-- Dark Background -->
+        <Rectangle id="backgroundRect"
             width="1920"
             height="1080"
-            color="#0b0d17"
-        />
-        
-        <!-- Header -->
-        <Group id="header" translation="[60, 40]">
-            <Label
-                id="channelTitle"
-                text="QCHANNEL"
-                font="font:LargeBoldSystemFont"
-                color="#00f3ff"
-            />
-            <Label
-                id="channelSubtitle"
-                text="Crypto Market Intelligence"
-                font="font:SmallSystemFont"
-                color="#00f3ff80"
-                translation="[0, 50]"
-            />
-            <Label
-                id="liveIndicator"
-                text="● LIVE"
-                font="font:SmallBoldSystemFont"
-                color="#ff0000"
-                translation="[1700, 0]"
-            />
+            color="#060606" />
+
+        <!-- Hero Spotlight Area (Top 40%) -->
+        <Group id="heroSection" translation="[0,0]">
+            <!-- Gradient Overlay -->
+            <Poster id="heroGradient"
+                width="1920"
+                height="500"
+                uri="pkg:/images/hero-gradient.png" />
+            
+            <!-- Hero Logo/Branding -->
+            <Group id="heroBranding" translation="[100,80]">
+                <Label id="heroTitle"
+                    text="QCHANNEL"
+                    font="font:LargeBoldSystemFont"
+                    color="#00f3ff" />
+                <Label id="heroSubtitle"
+                    translation="[0,60]"
+                    text="Crypto Market Intelligence"
+                    font="font:MediumSystemFont"
+                    color="#ffffff99" />
+            </Group>
+
+            <!-- Live Indicator -->
+            <Group id="liveIndicator" translation="[1700,100]">
+                <Rectangle id="liveDot"
+                    width="12"
+                    height="12"
+                    color="#ff0000"
+                    translation="[0,5]" />
+                <Label id="liveText"
+                    translation="[20,0]"
+                    text="LIVE"
+                    font="font:SmallBoldSystemFont"
+                    color="#ffffff" />
+            </Group>
+
+            <!-- Featured Zone Spotlight -->
+            <Group id="spotlightContent" translation="[100,180]">
+                <Label id="spotlightZoneName"
+                    text="Solana Ecosystem"
+                    font="font:LargeBoldSystemFont"
+                    color="#ffffff" />
+                <Label id="spotlightStats"
+                    translation="[0,60]"
+                    text="TVL $8.2B • 24h +5.2%"
+                    font="font:MediumSystemFont"
+                    color="#10b981" />
+                <Label id="spotlightDesc"
+                    translation="[0,100]"
+                    text="High-performance blockchain ecosystem with DeFi, NFTs, and meme coins"
+                    font="font:SmallSystemFont"
+                    color="#ffffff80"
+                    maxLines="2"
+                    width="800" />
+            </Group>
+
+            <!-- Hero Zone Image -->
+            <Poster id="heroImage"
+                translation="[1000,60]"
+                width="800"
+                height="400"
+                loadDisplayMode="scaleToFit"
+                uri="pkg:/images/zones/solana-hero.png" />
         </Group>
-        
-        <!-- Zone Grid Container -->
-        <RowList
-            id="zoneGrid"
-            translation="[60, 150]"
-            itemSize="[1800, 280]"
-            numRows="3"
-            itemSpacing="[0, 20]"
-            focusBitmapUri=""
-        />
-        
-        <!-- Bottom Ticker -->
-        <Rectangle
-            id="tickerBar"
-            translation="[0, 1000]"
-            width="1920"
-            height="60"
-            color="#ffffff10"
-        >
-            <Label
-                id="tickerLabel"
-                text="MARKET"
+
+        <!-- Market Ticker (Below Hero) -->
+        <Group id="tickerSection" translation="[0,480]">
+            <Rectangle id="tickerBg"
+                width="1920"
+                height="60"
+                color="#0a0a0a" />
+            <Label id="tickerLabel"
+                translation="[30,18]"
+                text="▲ MARKET"
                 font="font:SmallBoldSystemFont"
-                color="#00f3ff"
-                translation="[20, 18]"
-            />
-            <Label
-                id="tickerContent"
-                text="Loading market data..."
-                font="font:MediumSystemFont"
+                color="#00f3ff" />
+            <ScrollingLabel id="tickerContent"
+                translation="[180,18]"
+                text="BTC $94,500 +2.1% • ETH $3,420 +1.8% • SOL $198 +5.2%"
+                font="font:SmallBoldSystemFont"
                 color="#ffffff"
-                translation="[120, 18]"
-            />
-        </Rectangle>
+                width="1700"
+                scrollSpeed="60" />
+        </Group>
+
+        <!-- Zones Row Section -->
+        <Group id="zonesSection" translation="[0,570]">
+            <!-- Section Header -->
+            <Label id="zonesHeader"
+                translation="[100,0]"
+                text="What's Your Zone?"
+                font="font:MediumBoldSystemFont"
+                color="#ffffff" />
+            
+            <!-- Horizontal Zone List -->
+            <RowList id="zoneRowList"
+                translation="[100,50]"
+                itemComponentName="ZoneCard"
+                numRows="1"
+                itemSize="[1720,360]"
+                rowItemSize="[[300,360]]"
+                itemSpacing="[30,0]"
+                rowItemSpacing="[[30,0]]"
+                showRowLabel="false"
+                drawFocusFeedback="false" />
+        </Group>
+
+        <!-- News Ticker (Bottom) -->
+        <Group id="newsSection" translation="[0,980]">
+            <Rectangle id="newsBg"
+                width="1920"
+                height="100"
+                color="#0f0f0f" />
+            <Label id="newsIcon"
+                translation="[30,35]"
+                text="📰 NEWS"
+                font="font:SmallBoldSystemFont"
+                color="#bc13fe" />
+            <Label id="newsContent"
+                translation="[180,35]"
+                text="Bitcoin Approaches New All-Time High Amid Institutional Demand"
+                font="font:SmallSystemFont"
+                color="#ffffff"
+                width="1600"
+                maxLines="2" />
+        </Group>
+
+        <!-- Crypto Data Service -->
+        <CryptoService id="cryptoService" />
     </children>
 </component>
