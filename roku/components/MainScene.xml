@@ -107,15 +107,14 @@
                 font="font:SmallBoldSystemFont"
                 color="#ffffff70" />
             
-            <!-- Zone RowList - fixed focus at 2nd slot (320px) which aligns with header due to offset -->
+            <!-- Zone RowList - standard scrolling behavior -->
             <RowList id="zoneGrid"
-                translation="[-320,40]"
+                translation="[0,40]"
                 itemComponentName="ZoneCard"
                 numRows="2"
-                itemSize="[1600,220]"
+                itemSize="[1250,220]"
                 rowItemSize="[[300,200]]"
                 rowItemSpacing="[[20,0]]"
-                focusXOffset="[320]"
                 focusable="true"
                 drawFocusFeedback="true"
                 showRowLabel="false"
