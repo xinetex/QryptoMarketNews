@@ -188,16 +188,31 @@ sub loadZoneData()
 end sub
 
 sub onZoneFocused(event as object)
-    gridIndices = event.getData()
-    if gridIndices <> invalid and gridIndices.count() = 2
-        rowIndex = gridIndices[0]
-        itemIndex = gridIndices[1]
-        itemsPerRow = 4
-        flatIndex = (rowIndex * itemsPerRow) + itemIndex
+    gridInfo = event.getData() ' Returns [rowIndex, itemIndex]
+    if gridInfo = invalid or gridInfo.count() < 2 then return
+    
+    itemIndex = gridInfo[1]
+    
+    ' Fix for "Gap" issue:
+    ' If Item 0: Snap focus to Left (0) using minimal offset (to avoid gap caused by 320px offset).
+    ' If Item 1+: Snap focus to 2nd Slot (320px) to lock scrolling there.
+    if itemIndex = 0
+        m.zoneGrid.focusXOffset = [0]
+    else
+        m.zoneGrid.focusXOffset = [320]
+    end if
+
+    ' Flatten index for m.zones lookup
+    ' We have 2 rows, 4 items per row (dynamic population logic uses 4)
+    itemsPerRow = 4 
+    rowIndex = gridInfo[0]
+    flatIndex = (rowIndex * itemsPerRow) + itemIndex
+    
+    if m.zones <> invalid and flatIndex < m.zones.count()
+        updateSpotlight(m.zones[flatIndex])
         
-        if m.zones <> invalid and flatIndex < m.zones.count()
-            updateSpotlight(m.zones[flatIndex])
-        end if
+        ' Update backdrop color based on zone color?
+        ' Optional visual flair
     end if
 end sub
 

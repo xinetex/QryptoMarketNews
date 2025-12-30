@@ -119,7 +119,7 @@
                 itemSize="[1600,220]"
                 rowItemSize="[[300,200]]"
                 rowItemSpacing="[[20,0]]"
-                focusXOffset="[320]"
+                focusXOffset="[0]"
                 focusable="true"
                 drawFocusFeedback="true"
                 showRowLabel="false"
