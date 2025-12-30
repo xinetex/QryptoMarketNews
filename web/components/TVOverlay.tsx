@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { animate, stagger } from "animejs";
 import { Tv, TrendingUp } from "lucide-react";
 import ZoneGrid from "./ZoneGrid";
@@ -13,6 +13,29 @@ export default function TVOverlay() {
     const overlayRef = useRef<HTMLDivElement>(null);
     const tickerRef = useRef<HTMLDivElement>(null);
     const { prices, loading } = useCryptoPrices(60000);
+    const [time, setTime] = useState(new Date());
+
+    useEffect(() => {
+        const timer = setInterval(() => setTime(new Date()), 1000);
+        return () => clearInterval(timer);
+    }, []);
+
+    const formatTime = (date: Date) => {
+        return date.toLocaleTimeString("en-US", {
+            hour12: false,
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+        });
+    };
+
+    const formatDate = (date: Date) => {
+        return date.toLocaleDateString("en-US", {
+            weekday: "short",
+            month: "short",
+            day: "numeric",
+        });
+    };
 
     useEffect(() => {
         animate(".tv-element", {
@@ -65,7 +88,17 @@ export default function TVOverlay() {
                     </div>
                 </div>
 
-                <div className="flex gap-4">
+                <div className="flex gap-4 items-center">
+                    <div className="text-right hidden md:block">
+                        <div className="text-2xl font-mono font-bold text-white tracking-widest drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">
+                            {formatTime(time)}
+                        </div>
+                        <div className="text-xs text-neon-blue font-bold tracking-widest uppercase">
+                            {formatDate(time)} • NYC
+                        </div>
+                    </div>
+                    <div className="h-10 w-px bg-white/20 mx-2 hidden md:block"></div>
+
                     <div className="px-6 py-2 bg-glass border border-white/10 rounded-full backdrop-blur-md text-sm font-bold tracking-wide hover:bg-white/10 transition-colors cursor-pointer flex items-center gap-2">
                         <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
                         LIVE

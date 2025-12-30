@@ -19,6 +19,12 @@ sub init()
     
     ' Get reference to CryptoService for API calls
     m.cryptoService = invalid
+    
+    ' News Cycle Timer
+    m.newsTimer = m.top.findNode("newsTimer")
+    m.newsTimer.observeField("fire", "onNewsTimerFired")
+    m.newsIndex = 0
+    m.newsItems = invalid
 end sub
 
 sub onZoneSet()
@@ -135,20 +141,46 @@ sub onZoneCoinsReceived()
     m.protocolsLabel.text = "Coins: " + str(coins.count()).trim()
 end sub
 
+
+
+sub onNewsTimerFired()
+    if m.newsItems = invalid or m.newsItems.count() <= 1 then return
+    
+    m.newsIndex = m.newsIndex + 1
+    if m.newsIndex >= m.newsItems.count() then m.newsIndex = 0
+    
+    updateNewsDisplay()
+end sub
+
+sub updateNewsDisplay()
+    if m.newsItems = invalid or m.newsItems.count() = 0
+        m.newsContent.text = "Loading QChannel News..."
+        return
+    end if
+    
+    article = m.newsItems[m.newsIndex]
+    if article <> invalid and article.title <> invalid
+        newsText = article.title
+        if article.source <> invalid
+            newsText = newsText + " • " + article.source
+        end if
+        m.newsContent.text = newsText
+    end if
+end sub
+
 sub onNewsReceived()
     if m.cryptoService = invalid then return
     
     news = m.cryptoService.newsData
     if news = invalid or news.count() = 0 then return
     
-    ' Just show first headline in the news ticker
-    firstArticle = news[0]
-    if firstArticle <> invalid and firstArticle.title <> invalid
-        newsText = firstArticle.title
-        if firstArticle.source <> invalid
-            newsText = newsText + " • " + firstArticle.source
-        end if
-        m.newsContent.text = newsText
+    m.newsItems = news
+    m.newsIndex = 0
+    updateNewsDisplay()
+    
+    ' Start cycle if we have multiple items
+    if news.count() > 1
+        m.newsTimer.control = "start"
     end if
 end sub
 

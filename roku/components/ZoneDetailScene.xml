@@ -114,5 +114,7 @@
                 font="font:SmallSystemFont"
                 color="#ffffff50" />
         </Group>
+
+        <Timer id="newsTimer" repeat="true" duration="10" />
     </children>
 </component>
