@@ -80,50 +80,50 @@ export default function ZoneGrid() {
                         <div
                             className="zone-card opacity-0 group relative h-52 glass-card neon-border hover-lift shimmer-effect cursor-pointer overflow-hidden"
                         >
-                            {/* Background Gradient */}
-                            <div className={`absolute inset-0 bg-gradient-to-br ${gradientClass} opacity-50 group-hover:opacity-80 transition-opacity duration-500`} />
+                            <Link
+                                key={zone.id}
+                                href={`/zone/${zone.id}`}
+                                className={`min-w-[300px] w-[300px] h-[200px] rounded-xl bg-[#12121A] border border-white/5 p-5 flex flex-col justify-between group relative overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:border-indigo-500/50 hover:shadow-xl hover:shadow-indigo-500/10 snap-start
+                            ${focusedIndex === index ? 'ring-2 ring-indigo-500 scale-[1.02] shadow-xl shadow-indigo-500/20 z-10' : ''}
+                        `}
+                            >
+                                {/* Gradient Overlay */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                            {/* Animated Corner Accent */}
-                            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-neon-blue/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                            {/* Content */}
-                            <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10">
-                                {/* Icon Container */}
-                                <div className={`relative p-5 rounded-2xl bg-white/5 backdrop-blur-sm mb-4 group-hover:scale-110 transition-all duration-300 ${zone.color}`}>
-                                    <IconComponent size={36} strokeWidth={1.5} />
-                                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                <div className="flex justify-between items-start z-10">
+                                    <div className="bg-zinc-900/80 p-2.5 rounded-lg border border-white/5 text-2xl group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                                        {/* Original icon rendering logic was different, adapting to new structure */}
+                                        <IconComponent size={24} strokeWidth={1.5} />
+                                    </div>
+                                    <div className="text-right">
+                                        <div className="text-xs text-zinc-500 font-medium mb-0.5">TVL</div>
+                                        {/* Assuming zone.tvl exists based on the new structure */}
+                                        <div className="text-zinc-200 font-bold tracking-tight">{zone.tvl || 'N/A'}</div>
+                                    </div>
                                 </div>
 
-                                {/* Zone Name */}
-                                <h3 className="text-lg font-bold tracking-wide text-white group-hover:text-neon-blue transition-colors duration-300">
-                                    {zone.name}
-                                </h3>
+                                <div className="z-10">
+                                    <h3 className="text-zinc-100 text-lg font-medium tracking-tight mb-1 group-hover:text-white transition-colors">
+                                        {zone.name}
+                                    </h3>
+                                    {/* Assuming zone.description exists based on the new structure */}
+                                    <p className="text-xs text-zinc-500 line-clamp-2 md:line-clamp-1 group-hover:text-zinc-400 transition-colors">
+                                        {zone.description || 'No description available.'}
+                                    </p>
 
-                                {/* Change Badge */}
-                                <div className={`mt-3 px-4 py-1.5 rounded-full flex items-center gap-2 ${zone.isPositive
-                                        ? "bg-green-500/20 border border-green-500/30"
-                                        : "bg-red-500/20 border border-red-500/30"
-                                    }`}>
-                                    {zone.isPositive ? (
-                                        <TrendingUp size={14} className="text-green-400" />
-                                    ) : (
-                                        <TrendingDown size={14} className="text-red-400" />
-                                    )}
-                                    <span className={`text-sm font-mono font-bold ${zone.isPositive ? 'text-green-400' : 'text-red-400'}`}>
-                                        {zone.change}
-                                    </span>
+                                    <div className={`text-xs mt-3 flex items-center gap-1 font-medium ${zone.change && zone.change.startsWith('+') ? 'text-emerald-400' : 'text-red-400'
+                                        }`}>
+                                        <span>{zone.change}</span>
+                                        <span className="opacity-60 text-[10px] text-zinc-500 font-normal">24h Change</span>
+                                    </div>
                                 </div>
-                            </div>
 
-                            {/* Bottom Glow Line */}
-                            <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-neon-blue/50 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
-
-                            {/* Hover Border Glow */}
-                            <div className="absolute inset-0 rounded-2xl border border-neon-blue/0 group-hover:border-neon-blue/50 transition-colors duration-300 pointer-events-none" />
-                        </div>
-                    </Link>
-                );
+                                {/* Selection Indicator */}
+                                <div className={`absolute bottom-0 left-0 h-1 bg-indigo-500 transition-all duration-300 ${focusedIndex === index ? 'w-full' : 'w-0 group-hover:w-1/3'
+                                    }`} />
+                            </Link>
+                            );
             })}
-        </div>
-    );
+                        </div>
+                        );
 }
