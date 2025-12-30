@@ -175,9 +175,16 @@ sub loadZoneData()
 end sub
 
 sub onZoneFocused(event as object)
-    focusedIndex = event.getData()
-    if m.zones <> invalid and focusedIndex < m.zones.count()
-        updateSpotlight(m.zones[focusedIndex])
+    gridIndices = event.getData()
+    if gridIndices <> invalid and gridIndices.count() = 2
+        rowIndex = gridIndices[0]
+        itemIndex = gridIndices[1]
+        itemsPerRow = 4
+        flatIndex = (rowIndex * itemsPerRow) + itemIndex
+        
+        if m.zones <> invalid and flatIndex < m.zones.count()
+            updateSpotlight(m.zones[flatIndex])
+        end if
     end if
 end sub
 
@@ -199,11 +206,18 @@ sub updateSpotlight(zone as object)
 end sub
 
 sub onZoneSelected(event as object)
-    selectedIndex = event.getData()
-    if m.zones <> invalid and selectedIndex < m.zones.count()
-        zone = m.zones[selectedIndex]
-        print "Selected zone: " + zone.name
-        showZoneDetail(zone)
+    gridIndices = event.getData()
+    if gridIndices <> invalid and gridIndices.count() = 2
+        rowIndex = gridIndices[0]
+        itemIndex = gridIndices[1]
+        itemsPerRow = 4
+        flatIndex = (rowIndex * itemsPerRow) + itemIndex
+        
+        if m.zones <> invalid and flatIndex < m.zones.count()
+            zone = m.zones[flatIndex]
+            print "Selected zone: " + zone.name
+            showZoneDetail(zone)
+        end if
     end if
 end sub
 
