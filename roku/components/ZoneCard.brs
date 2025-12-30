@@ -6,7 +6,7 @@ sub init()
     m.cardContainer = m.top.findNode("cardContainer")
     m.cardBg = m.top.findNode("cardBg")
     m.focusBorder = m.top.findNode("focusBorder")
-    m.iconEmoji = m.top.findNode("iconEmoji")
+    m.iconImage = m.top.findNode("iconImage")
     m.tvlLabel = m.top.findNode("tvlLabel")
     m.titleLabel = m.top.findNode("titleLabel")
     m.descLabel = m.top.findNode("descLabel")
@@ -26,7 +26,7 @@ sub onContentSet()
     
     ' Set icon
     if content.icon <> invalid
-        m.iconEmoji.text = content.icon
+        m.iconImage.uri = content.icon
     end if
     
     ' Set TVL

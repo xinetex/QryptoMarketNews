@@ -25,16 +25,18 @@
                 color="#00000000"
                 opacity="0" />
 
-            <!-- Zone Icon (Emoji) -->
+            <!-- Zone Icon (Image) -->
             <Group id="iconContainer" translation="[15,15]">
                 <Rectangle id="iconBg"
                     width="50"
                     height="50"
-                    color="#ffffff10" />
-                <Label id="iconEmoji"
-                    translation="[12,8]"
-                    text="⚡"
-                    font="font:MediumBoldSystemFont" />
+                    color="#ffffff10"
+                    radius="8" />
+                <Poster id="iconImage"
+                    translation="[8,8]"
+                    width="34"
+                    height="34"
+                    loadDisplayMode="scaleToFit" />
             </Group>
 
             <!-- TVL Badge -->
