@@ -75,7 +75,7 @@
                 font="font:SmallBoldSystemFont"
                 color="#ffffff70" />
             
-            <!-- 4x5 Coin Grid - fits 720p safe area (no scroll needed) -->
+            <!-- 4x5 Coin Grid - wrap prevents off-screen focus -->
             <MarkupGrid id="coinsGrid"
                 translation="[60,45]"
                 itemComponentName="CoinItem"
@@ -84,7 +84,8 @@
                 itemSize="[420,85]"
                 itemSpacing="[20,10]"
                 focusable="true"
-                drawFocusFeedback="true" />
+                drawFocusFeedback="true"
+                wrap="true" />
         </Group>
 
         <!-- Bottom News Ticker (60px) -->

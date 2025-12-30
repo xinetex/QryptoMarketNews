@@ -107,7 +107,7 @@
                 font="font:SmallBoldSystemFont"
                 color="#ffffff70" />
             
-            <!-- Zone Grid (2 rows x 4 cols) - fits on screen -->
+            <!-- Zone Grid (2 rows x 4 cols) - wrap prevents off-screen focus -->
             <MarkupGrid id="zoneGrid"
                 translation="[0,40]"
                 itemComponentName="ZoneCard"
@@ -116,7 +116,8 @@
                 itemSize="[300,200]"
                 itemSpacing="[20,20]"
                 focusable="true"
-                drawFocusFeedback="true" />
+                drawFocusFeedback="true"
+                wrap="true" />
         </Group>
 
         <!-- BOTTOM NEWS TICKER (80px) -->
