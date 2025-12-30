@@ -211,17 +211,8 @@ function onKeyEvent(key as string, press as boolean) as boolean
         ' Navigate back to main scene
         m.top.visible = false
         return true
-    else if key = "up"
-        if m.newsRow.hasFocus()
-            m.coinsGrid.setFocus(true)
-            return true
-        end if
-    else if key = "down"
-        if m.coinsGrid.hasFocus()
-            m.newsRow.setFocus(true)
-            return true
-        end if
     end if
     
+    ' Coins grid handles its own navigation
     return false
 end function
