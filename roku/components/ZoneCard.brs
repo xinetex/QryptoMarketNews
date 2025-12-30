@@ -37,11 +37,18 @@ sub onContentSet()
     
     ' Set change indicator
     if content.change <> invalid
-        changeStr = content.change
+        changeStr = ""
+        ' Handle both string and other types
+        if type(content.change) = "roString" or type(content.change) = "String"
+            changeStr = content.change
+        else
+            changeStr = str(content.change).trim()
+        end if
+        
         m.changeLabel.text = changeStr
         
         ' Color based on positive/negative
-        if left(changeStr, 1) = "-"
+        if len(changeStr) > 0 and left(changeStr, 1) = "-"
             m.changeLabel.color = "#ef4444"
             m.changeArrow.text = "▼"
             m.changeArrow.color = "#ef4444"
