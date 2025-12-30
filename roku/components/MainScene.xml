@@ -113,13 +113,11 @@
                 itemComponentName="ZoneCard"
                 numColumns="4"
                 numRows="2"
-                itemSize="[320,220]"
+                itemSize="[300,200]"
                 itemSpacing="[20,20]"
                 focusable="true"
                 drawFocusFeedback="true"
-                fixedLayout="true"
-                horizFocusAnimationStyle="fixedFocusWrap"
-                vertFocusAnimationStyle="fixedFocus" />
+                wrapDividerWidth="0" />
         </Group>
 
         <!-- BOTTOM NEWS TICKER (80px) -->
