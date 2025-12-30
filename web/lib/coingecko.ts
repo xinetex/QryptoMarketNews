@@ -56,6 +56,12 @@ const ZONE_CATEGORIES: Record<string, { name: string; icon: string; color: strin
         color: "text-indigo-400",
         categoryIds: ["layer-2"],
     },
+    metals: {
+        name: "Precious Metals",
+        icon: "Gem",
+        color: "text-amber-400",
+        categoryIds: ["tokenized-gold", "tokenized-commodities"],
+    },
 };
 
 // Export for use in detail pages

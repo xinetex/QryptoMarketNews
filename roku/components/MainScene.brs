@@ -123,14 +123,14 @@ sub loadZoneData()
             coingeckoId: "decentralized-finance-defi"
         },
         {
-            id: "layer2",
-            name: "L2 Scaling",
-            description: "Layer 2 solutions",
-            icon: "⚙️",
-            color: "#06B6D4",
-            tvl: "$45B",
-            change: "+4.2%",
-            coingeckoId: "layer-2"
+            id: "metals",
+            name: "Precious Metals",
+            description: "Tokenized gold & silver",
+            icon: "🪙",
+            color: "#D4AF37",
+            tvl: "$1.2B",
+            change: "+0.8%",
+            coingeckoId: "tokenized-gold"
         }
     ]
     
