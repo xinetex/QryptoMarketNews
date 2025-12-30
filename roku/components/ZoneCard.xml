@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- QChannel Zone Card Component -->
+<component name="ZoneCard" extends="Group">
+    <interface>
+        <field id="zoneName" type="string" onChange="updateContent" />
+        <field id="zoneChange" type="string" onChange="updateContent" />
+        <field id="zoneColor" type="string" value="#00f3ff" onChange="updateContent" />
+        <field id="isPositive" type="boolean" value="true" onChange="updateContent" />
+    </interface>
+    
+    <script type="text/brightscript" uri="ZoneCard.brs" />
+    
+    <children>
+        <!-- Card Background -->
+        <Rectangle
+            id="cardBackground"
+            width="350"
+            height="250"
+            color="#ffffff08"
+        />
+        
+        <!-- Glow Border (on focus) -->
+        <Rectangle
+            id="glowBorder"
+            width="354"
+            height="254"
+            translation="[-2, -2]"
+            color="#00000000"
+            blendingMode="lighten"
+        />
+        
+        <!-- Zone Name -->
+        <Label
+            id="zoneName"
+            translation="[20, 150]"
+            width="310"
+            font="font:MediumBoldSystemFont"
+            color="#ffffff"
+            horizAlign="center"
+        />
+        
+        <!-- Change Badge -->
+        <Rectangle
+            id="changeBadge"
+            translation="[100, 195]"
+            width="150"
+            height="35"
+            color="#00ff0020"
+        >
+            <Label
+                id="changeLabel"
+                translation="[10, 8]"
+                font="font:SmallBoldSystemFont"
+                color="#00ff00"
+            />
+        </Rectangle>
+    </children>
+</component>

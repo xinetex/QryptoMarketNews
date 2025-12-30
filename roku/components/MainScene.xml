@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- QChannel Main Scene -->
+<component name="MainScene" extends="Scene">
+    <interface>
+        <field id="deepLink" type="assocarray" />
+    </interface>
+    
+    <script type="text/brightscript" uri="MainScene.brs" />
+    
+    <children>
+        <!-- Background -->
+        <Rectangle
+            id="background"
+            width="1920"
+            height="1080"
+            color="#0b0d17"
+        />
+        
+        <!-- Header -->
+        <Group id="header" translation="[60, 40]">
+            <Label
+                id="channelTitle"
+                text="QCHANNEL"
+                font="font:LargeBoldSystemFont"
+                color="#00f3ff"
+            />
+            <Label
+                id="channelSubtitle"
+                text="Crypto Market Intelligence"
+                font="font:SmallSystemFont"
+                color="#00f3ff80"
+                translation="[0, 50]"
+            />
+            <Label
+                id="liveIndicator"
+                text="● LIVE"
+                font="font:SmallBoldSystemFont"
+                color="#ff0000"
+                translation="[1700, 0]"
+            />
+        </Group>
+        
+        <!-- Zone Grid Container -->
+        <RowList
+            id="zoneGrid"
+            translation="[60, 150]"
+            itemSize="[1800, 280]"
+            numRows="3"
+            itemSpacing="[0, 20]"
+            focusBitmapUri=""
+        />
+        
+        <!-- Bottom Ticker -->
+        <Rectangle
+            id="tickerBar"
+            translation="[0, 1000]"
+            width="1920"
+            height="60"
+            color="#ffffff10"
+        >
+            <Label
+                id="tickerLabel"
+                text="MARKET"
+                font="font:SmallBoldSystemFont"
+                color="#00f3ff"
+                translation="[20, 18]"
+            />
+            <Label
+                id="tickerContent"
+                text="Loading market data..."
+                font="font:MediumSystemFont"
+                color="#ffffff"
+                translation="[120, 18]"
+            />
+        </Rectangle>
+    </children>
+</component>

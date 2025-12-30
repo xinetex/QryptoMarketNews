@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- QChannel Crypto Service -->
+<component name="CryptoService" extends="Task">
+    <interface>
+        <field id="tickerData" type="array" />
+        <field id="zoneData" type="array" />
+        <field id="apiBaseUrl" type="string" value="https://your-vercel-app.vercel.app" />
+    </interface>
+    
+    <script type="text/brightscript" uri="CryptoService.brs" />
+</component>
