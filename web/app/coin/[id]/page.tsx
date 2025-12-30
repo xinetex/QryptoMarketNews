@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -26,35 +26,66 @@ import {
     HeartPulse,
     Map,
     CheckCircle,
-    ArrowRightLeft
+    ArrowRightLeft,
+    Radio
 } from "lucide-react";
 import type { CoinGeckoMarketResponse } from "@/lib/types/crypto";
 import Sparkline from "@/components/Sparkline";
 import { formatPrice, formatMarketCap, formatChange } from "@/lib/coingecko";
+
+const REFRESH_INTERVAL = 30000; // 30 seconds
 
 export default function CoinDetailPage() {
     const params = useParams();
     const coinId = params.id as string;
     const [coin, setCoin] = useState<CoinGeckoMarketResponse | null>(null);
     const [loading, setLoading] = useState(true);
+    const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
+    const [priceFlash, setPriceFlash] = useState<'up' | 'down' | null>(null);
+    const prevPriceRef = useRef<number | null>(null);
 
-    useEffect(() => {
-        async function fetchCoin() {
-            try {
-                const response = await fetch(`/api/crypto/coin/${coinId}`);
-                const { data } = await response.json();
-                setCoin(data);
-            } catch (error) {
-                console.error("Failed to fetch coin:", error);
-            } finally {
-                setLoading(false);
+    const fetchCoin = useCallback(async () => {
+        try {
+            const response = await fetch(`/api/crypto/coin/${coinId}`);
+            const { data } = await response.json();
+
+            // Detect price change for flash effect
+            if (prevPriceRef.current !== null && data?.current_price) {
+                if (data.current_price > prevPriceRef.current) {
+                    setPriceFlash('up');
+                } else if (data.current_price < prevPriceRef.current) {
+                    setPriceFlash('down');
+                }
+                setTimeout(() => setPriceFlash(null), 1000);
             }
-        }
 
+            if (data?.current_price) {
+                prevPriceRef.current = data.current_price;
+            }
+
+            setCoin(data);
+            setLastUpdate(new Date());
+        } catch (error) {
+            console.error("Failed to fetch coin:", error);
+        } finally {
+            setLoading(false);
+        }
+    }, [coinId]);
+
+    // Initial fetch
+    useEffect(() => {
         if (coinId) {
             fetchCoin();
         }
-    }, [coinId]);
+    }, [coinId, fetchCoin]);
+
+    // Polling for live updates
+    useEffect(() => {
+        if (!coinId) return;
+
+        const interval = setInterval(fetchCoin, REFRESH_INTERVAL);
+        return () => clearInterval(interval);
+    }, [coinId, fetchCoin]);
 
     if (loading) {
         return (
@@ -77,6 +108,11 @@ export default function CoinDetailPage() {
 
     const isPositive = (coin.price_change_percentage_24h || 0) >= 0;
     const sparklineData = coin.sparkline_in_7d?.price || [];
+    const flashClass = priceFlash === 'up'
+        ? 'animate-pulse text-emerald-400'
+        : priceFlash === 'down'
+            ? 'animate-pulse text-red-400'
+            : '';
 
     return (
         <div className="min-h-screen bg-[#09090b] text-zinc-400 font-sans antialiased">
@@ -136,6 +172,10 @@ export default function CoinDetailPage() {
                                         <ShieldCheck size={12} />
                                         <span>Verified</span>
                                     </div>
+                                    <div className="flex items-center gap-1 text-[10px] text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded ml-1 animate-pulse">
+                                        <Radio size={12} />
+                                        <span>LIVE</span>
+                                    </div>
                                 </div>
                                 <div className="flex items-center gap-4 text-sm flex-wrap">
                                     <a href="#" className="flex items-center gap-1.5 text-zinc-400 hover:text-indigo-400 transition-colors">
@@ -158,9 +198,16 @@ export default function CoinDetailPage() {
                         {/* Price */}
                         <div className="flex gap-8 items-end">
                             <div className="text-right">
-                                <div className="text-sm text-zinc-500 mb-1 font-medium">Current Price</div>
+                                <div className="flex items-center justify-end gap-2 text-sm text-zinc-500 mb-1 font-medium">
+                                    <span>Current Price</span>
+                                    {lastUpdate && (
+                                        <span className="text-[10px] text-zinc-600">
+                                            Updated {lastUpdate.toLocaleTimeString()}
+                                        </span>
+                                    )}
+                                </div>
                                 <div className="flex items-center justify-end gap-3">
-                                    <span className="text-3xl text-zinc-100 font-medium tracking-tight">
+                                    <span className={`text-3xl font-medium tracking-tight transition-all duration-300 ${flashClass || 'text-zinc-100'}`}>
                                         {formatPrice(coin.current_price)}
                                     </span>
                                     <span className={`flex items-center text-sm font-medium px-2 py-0.5 rounded ${isPositive
