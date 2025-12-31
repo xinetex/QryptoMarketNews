@@ -92,10 +92,10 @@ export default function TVOverlay() {
 
             {/* Top Bar */}
             {/* Top Bar */}
-            <div className="absolute top-0 left-0 w-full p-4 lg:p-8 flex flex-col lg:flex-row justify-between items-start lg:items-center z-20 tv-element opacity-0 pointer-events-none">
-                <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4 lg:gap-16 w-full lg:w-auto pointer-events-auto">
-                    <div className="flex items-center gap-3 lg:gap-4">
-                        <div className="p-2 lg:p-3 bg-neon-purple/20 border border-neon-purple rounded-lg backdrop-blur-md text-neon-purple shadow-[0_0_15px_rgba(188,19,254,0.3)] icon-pulse">
+            <div className="absolute top-0 left-0 w-full p-3 lg:p-8 flex flex-col lg:flex-row justify-between items-start lg:items-center z-20 tv-element opacity-0 pointer-events-none">
+                <div className="flex flex-col lg:flex-row items-start lg:items-center gap-2 lg:gap-16 w-full lg:w-auto pointer-events-auto">
+                    <div className="flex items-center gap-2 lg:gap-4">
+                        <div className="p-1.5 lg:p-3 bg-neon-purple/20 border border-neon-purple rounded-lg backdrop-blur-md text-neon-purple shadow-[0_0_15px_rgba(188,19,254,0.3)] icon-pulse">
                             <Tv size={24} className="lg:w-8 lg:h-8" />
                         </div>
                         <div>
@@ -142,8 +142,8 @@ export default function TVOverlay() {
                 </div>
 
                 {/* Tablet/Mobile Nav Row (Visible on screens smaller than lg) */}
-                <div className="flex lg:hidden w-full justify-between items-center mt-4 pointer-events-auto">
-                    <div className="text-xs font-mono text-zinc-400">
+                <div className="flex lg:hidden w-full justify-between items-center mt-1 pointer-events-auto">
+                    <div className="text-[10px] font-mono text-zinc-400">
                         {time ? formatTime(time as Date) : "..."}
                     </div>
                     <div className="flex gap-2">
