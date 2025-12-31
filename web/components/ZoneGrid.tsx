@@ -127,7 +127,7 @@ export default function ZoneGrid() {
             )}
 
             {/* QGotchi - Crypto Tamagotchi Card */}
-            <QGotchiCard mode="mild" />
+            <QGotchiCard />
 
             {zones.map((zone) => {
                 const IconComponent = ICON_MAP[zone.icon] || Zap;
