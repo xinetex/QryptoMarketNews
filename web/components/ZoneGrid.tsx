@@ -29,7 +29,7 @@ const ZONE_GRADIENTS: Record<string, string> = {
 // YouTube Card Component
 function YouTubeCard({ videoId, title }: { videoId: string; title: string }) {
     return (
-        <div className="zone-card opacity-0 group relative h-52 rounded-xl bg-[#12121A] border border-red-500/20 overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:border-red-500/50 hover:shadow-xl hover:shadow-red-500/10">
+        <div className="zone-card group relative h-52 rounded-xl bg-[#12121A] border border-red-500/20 overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:border-red-500/50 hover:shadow-xl hover:shadow-red-500/10">
             <iframe
                 className="w-full h-full pointer-events-auto"
                 src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&modestbranding=1&loop=1&playlist=${videoId}`}
@@ -123,7 +123,7 @@ export default function ZoneGrid() {
                     <Link
                         key={zone.id}
                         href={`/zone/${zone.id}`}
-                        className="zone-card opacity-0 group relative h-52 rounded-xl bg-[#12121A] border border-white/5 p-5 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:border-indigo-500/50 hover:shadow-xl hover:shadow-indigo-500/10"
+                        className="zone-card group relative h-52 rounded-xl bg-[#12121A] border border-white/5 p-5 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:border-indigo-500/50 hover:shadow-xl hover:shadow-indigo-500/10"
                     >
                         {/* Gradient Overlay */}
                         <div className={`absolute inset-0 bg-gradient-to-br ${gradientClass} opacity-50 group-hover:opacity-80 transition-opacity duration-500`} />
