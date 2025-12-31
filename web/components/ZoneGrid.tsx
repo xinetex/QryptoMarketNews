@@ -7,6 +7,7 @@ import { useCategoryData } from "@/lib/hooks/useCrypto";
 import type { ZoneData } from "@/lib/types/crypto";
 import Link from "next/link";
 import NewsSlider from "./NewsSlider";
+import QGotchiCard from "./QGotchiCard";
 
 import { useAdminSettings } from "@/hooks/useAdminSettings";
 
@@ -124,6 +125,9 @@ export default function ZoneGrid() {
                     </div>
                 </div>
             )}
+
+            {/* QGotchi - Crypto Tamagotchi Card */}
+            <QGotchiCard mode="mild" />
 
             {zones.map((zone) => {
                 const IconComponent = ICON_MAP[zone.icon] || Zap;
