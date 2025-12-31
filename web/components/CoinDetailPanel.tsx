@@ -73,14 +73,27 @@ export default function CoinDetailPanel({ coinId }: CoinDetailPanelProps) {
     }
 
     const md = coin.market_data;
-    const isPositive = md.price_change_percentage_24h >= 0;
 
-    const formatPrice = (n: number) => {
+    // Safety check for required market data
+    if (!md || !md.current_price) {
+        return (
+            <div className="flex flex-col items-center justify-center py-20">
+                <p className="text-amber-400 mb-2">Incomplete data</p>
+                <p className="text-zinc-500 text-sm">Some market data is unavailable</p>
+            </div>
+        );
+    }
+
+    const isPositive = (md.price_change_percentage_24h || 0) >= 0;
+
+    const formatPrice = (n: number | undefined | null) => {
+        if (n === undefined || n === null) return 'N/A';
         if (n >= 1) return `$${n.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
         return `$${n.toPrecision(4)}`;
     };
 
-    const formatLarge = (n: number) => {
+    const formatLarge = (n: number | undefined | null) => {
+        if (n === undefined || n === null) return 'N/A';
         if (n >= 1e12) return `$${(n / 1e12).toFixed(2)}T`;
         if (n >= 1e9) return `$${(n / 1e9).toFixed(2)}B`;
         if (n >= 1e6) return `$${(n / 1e6).toFixed(2)}M`;
@@ -111,7 +124,7 @@ export default function CoinDetailPanel({ coinId }: CoinDetailPanelProps) {
                         </span>
                         <span className={`flex items-center gap-1 text-lg font-semibold ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
                             {isPositive ? <TrendingUp size={20} /> : <TrendingDown size={20} />}
-                            {Math.abs(md.price_change_percentage_24h).toFixed(2)}%
+                            {Math.abs(md.price_change_percentage_24h || 0).toFixed(2)}%
                         </span>
                     </div>
                 </div>
@@ -120,10 +133,10 @@ export default function CoinDetailPanel({ coinId }: CoinDetailPanelProps) {
             {/* Stats Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                    { label: "Market Cap", value: formatLarge(md.market_cap.usd), icon: DollarSign },
-                    { label: "24h Volume", value: formatLarge(md.total_volume.usd), icon: BarChart3 },
-                    { label: "24h High", value: formatPrice(md.high_24h.usd), icon: TrendingUp },
-                    { label: "24h Low", value: formatPrice(md.low_24h.usd), icon: TrendingDown },
+                    { label: "Market Cap", value: formatLarge(md.market_cap?.usd), icon: DollarSign },
+                    { label: "24h Volume", value: formatLarge(md.total_volume?.usd), icon: BarChart3 },
+                    { label: "24h High", value: formatPrice(md.high_24h?.usd), icon: TrendingUp },
+                    { label: "24h Low", value: formatPrice(md.low_24h?.usd), icon: TrendingDown },
                 ].map((stat) => (
                     <div key={stat.label} className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
                         <div className="flex items-center gap-2 text-zinc-500 text-xs mb-1">
@@ -182,11 +195,11 @@ export default function CoinDetailPanel({ coinId }: CoinDetailPanelProps) {
             <div className="grid grid-cols-2 gap-4">
                 <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4">
                     <div className="text-emerald-400 text-xs mb-1">All-Time High</div>
-                    <div className="text-white font-bold text-lg">{formatPrice(md.ath.usd)}</div>
+                    <div className="text-white font-bold text-lg">{formatPrice(md.ath?.usd)}</div>
                 </div>
                 <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4">
                     <div className="text-red-400 text-xs mb-1">All-Time Low</div>
-                    <div className="text-white font-bold text-lg">{formatPrice(md.atl.usd)}</div>
+                    <div className="text-white font-bold text-lg">{formatPrice(md.atl?.usd)}</div>
                 </div>
             </div>
 
