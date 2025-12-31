@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { animate, stagger } from "animejs";
+import Link from "next/link";
 import { Tv, TrendingUp } from "lucide-react";
 import ZoneGrid from "./ZoneGrid";
 import VideoBackground from "./VideoBackground";

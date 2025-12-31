@@ -23,13 +23,18 @@ const DEFAULT_SETTINGS: AppSettings = {
         marketPulseEnabled: true,
     },
     theme: {
+        primaryColor: "#6366f1",
         accentColor: "#00f3ff",
-        backgroundColor: "#0b0d17",
     },
     stream: {
         hlsUrl: "",
         isLive: false,
         title: "QChannel Live",
+    },
+    youtube: {
+        enabled: true,
+        videoId: "9ASXINLKuNE",
+        title: "QCrypto Radio",
     },
 };
 

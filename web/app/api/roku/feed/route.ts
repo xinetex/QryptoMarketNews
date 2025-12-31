@@ -83,13 +83,16 @@ async function fetchMarketPulse() {
 }
 
 // Roku Feed API - Returns configuration and live data for Roku app
+import { getPredictions } from '@/lib/predictions';
+
 export async function GET() {
     try {
-        const [settings, zones, tickerData, marketPulse] = await Promise.all([
+        const [settings, zones, tickerData, marketPulse, predictions] = await Promise.all([
             getSettings(),
             getZones(),
             fetchTickerData(),
             fetchMarketPulse(),
+            getPredictions(),
         ]);
 
         // Filter and sort enabled zones
@@ -126,6 +129,16 @@ export async function GET() {
             // Live ticker data for CryptoTicker component
             ticker: tickerData.slice(0, 15),
 
+            // Prediction Markets (NEW)
+            predictions: predictions.slice(0, 5).map(m => ({
+                id: m.id,
+                question: m.question,
+                yesOdds: m.yesOdds,
+                noOdds: m.noOdds,
+                volume: m.totalVolume,
+                endDate: m.endDate
+            })),
+
             // Zone definitions for Roku
             zones: enabledZones.map(zone => ({
                 id: zone.id,
@@ -147,6 +160,7 @@ export async function GET() {
                 zones: "/api/admin/zones",
                 coinDetail: "/api/crypto/coin/{id}",
                 feed: "/api/roku/feed",
+                predictions: "/api/predictions",
             },
         };
 

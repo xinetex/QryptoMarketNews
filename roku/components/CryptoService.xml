@@ -16,6 +16,9 @@
         <!-- App config from feed -->
         <field id="appConfig" type="assocarray" />
         
+        <!-- Prediction markets from feed -->
+        <field id="predictions" type="array" />
+        
         <field id="prerollVastUrl" type="string" />
         <field id="apiBaseUrl" type="string" value="https://qryptomarket-news.vercel.app" />
         <!-- Zone detail requests - Task polls these -->

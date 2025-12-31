@@ -26,9 +26,31 @@ const ZONE_GRADIENTS: Record<string, string> = {
     layer2: "from-indigo-500/20 to-indigo-900/10",
 };
 
+// YouTube Card Component
+function YouTubeCard({ videoId, title }: { videoId: string; title: string }) {
+    return (
+        <div className="zone-card opacity-0 group relative h-52 rounded-xl bg-[#12121A] border border-red-500/20 overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:border-red-500/50 hover:shadow-xl hover:shadow-red-500/10">
+            <iframe
+                className="w-full h-full pointer-events-auto"
+                src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&modestbranding=1&loop=1&playlist=${videoId}`}
+                title={title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+            />
+            {/* Live Indicator Overlay */}
+            <div className="absolute top-0 left-0 p-4 bg-gradient-to-b from-black/80 via-black/40 to-transparent w-full pointer-events-none">
+                <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse box-shadow-glow-red"></div>
+                    <span className="text-white/90 text-xs font-bold tracking-wider uppercase font-mono">LIVE RADIO</span>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export default function ZoneGrid() {
     const gridRef = useRef<HTMLDivElement>(null);
-    const { zones: adminZones, loading: configLoading } = useAdminSettings();
+    const { settings, zones: adminZones, loading: configLoading } = useAdminSettings();
     const { categories, loading: marketLoading } = useCategoryData(300000);
     const loading = configLoading || marketLoading;
 
@@ -81,6 +103,14 @@ export default function ZoneGrid() {
             ref={gridRef}
             className="relative z-10 px-8 pt-4 pb-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pointer-events-auto"
         >
+            {/* YouTube Live Radio Card */}
+            {settings?.youtube?.enabled && (
+                <YouTubeCard
+                    videoId={settings.youtube.videoId || "9ASXINLKuNE"}
+                    title={settings.youtube.title || "QCrypto Radio"}
+                />
+            )}
+
             {zones.map((zone) => {
                 const IconComponent = ICON_MAP[zone.icon] || Zap;
                 const gradientClass = ZONE_GRADIENTS[zone.id] || "from-white/10 to-white/5";

@@ -91,6 +91,11 @@ sub updateUI(coin as object)
     if coin.price_change_percentage_24h <> invalid then change = coin.price_change_percentage_24h
     if coin.change24h <> invalid then change = coin.change24h
     
+    ' Ensure numeric for comparison
+    if type(change) = "roString" or type(change) = "String"
+        change = val(change)
+    end if
+    
     changeStr = formatPercent(change)
     m.priceChange.text = changeStr
     if change >= 0

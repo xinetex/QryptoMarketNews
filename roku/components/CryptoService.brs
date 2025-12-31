@@ -47,19 +47,15 @@ sub runLoop()
         end if
         
         ' Ticker refresh every 60 seconds (600 * 100ms)
+        ' Unified Feed Refresh every 60 seconds
         if tickerTimer >= 600
             ' Also refresh active coin detail if open
             if m.top.coinRequest <> ""
                 fetchCoinDetails(m.top.coinRequest)
             end if
             
-            fetchTickerData()
+            fetchRokuFeed()
             tickerTimer = 0
-        end if
-        
-        ' Zone refresh every 5 minutes (3000 * 100ms)
-        if zoneTimer >= 3000
-            fetchZoneData()
             zoneTimer = 0
         end if
     end while
@@ -109,6 +105,11 @@ sub fetchRokuFeed()
         ' Store config for reference
         if response.config <> invalid
             m.top.appConfig = response.config
+        end if
+        
+        ' Set predictions data from feed
+        if response.predictions <> invalid
+            m.top.predictions = response.predictions
         end if
     end if
 end sub

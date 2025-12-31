@@ -24,6 +24,11 @@ export interface AppSettings {
         primaryColor: string;
         accentColor: string;
     };
+    youtube: {
+        enabled: boolean;
+        videoId: string;
+        title: string;
+    };
 }
 
 export interface ZoneConfig {
@@ -61,6 +66,11 @@ const DEFAULT_SETTINGS: AppSettings = {
         primaryColor: "#6366f1",
         accentColor: "#00f3ff",
     },
+    youtube: {
+        enabled: true,
+        videoId: "9ASXINLKuNE", // Live Lo-Fi Radio
+        title: "QCrypto Radio",
+    },
 };
 
 // Default zones
@@ -73,10 +83,11 @@ const DEFAULT_ZONES: ZoneConfig[] = [
     { id: "ai", name: "AI Agents", enabled: true, order: 5, icon: "🤖", color: "#06b6d4", coinLimit: 10, coingeckoCategory: "artificial-intelligence" },
     { id: "rwa", name: "RWA", enabled: true, order: 6, icon: "🏠", color: "#84cc16", coinLimit: 10, coingeckoCategory: "real-world-assets-rwa" },
     { id: "solana", name: "Solana", enabled: true, order: 7, icon: "☀️", color: "#9333ea", coinLimit: 10, coingeckoCategory: "solana-ecosystem" },
+    { id: "predictions", name: "Predictions", enabled: true, order: 8, icon: "🎰", color: "#d946ef", coinLimit: 5, coingeckoCategory: "prediction-markets" }, // Added locally
 ];
 
 // Check if we should use database
-const useDatabase = () => sql !== null;
+const isDatabaseAvailable = () => sql !== null;
 
 // ========== File-based storage (fallback) ==========
 async function ensureConfigDir() {
@@ -200,14 +211,14 @@ async function saveZonesToDB(zones: ZoneConfig[]): Promise<void> {
 
 // ========== Public API (auto-selects storage backend) ==========
 export async function getSettings(): Promise<AppSettings> {
-    return useDatabase() ? getSettingsFromDB() : getSettingsFromFile();
+    return isDatabaseAvailable() ? getSettingsFromDB() : getSettingsFromFile();
 }
 
 export async function saveSettings(settings: Partial<AppSettings>): Promise<AppSettings> {
     const current = await getSettings();
     const updated = { ...current, ...settings };
 
-    if (useDatabase()) {
+    if (isDatabaseAvailable()) {
         await saveSettingsToDB(updated);
     } else {
         await saveSettingsToFile(updated);
@@ -217,11 +228,11 @@ export async function saveSettings(settings: Partial<AppSettings>): Promise<AppS
 }
 
 export async function getZones(): Promise<ZoneConfig[]> {
-    return useDatabase() ? getZonesFromDB() : getZonesFromFile();
+    return isDatabaseAvailable() ? getZonesFromDB() : getZonesFromFile();
 }
 
 export async function saveZones(zones: ZoneConfig[]): Promise<ZoneConfig[]> {
-    if (useDatabase()) {
+    if (isDatabaseAvailable()) {
         await saveZonesToDB(zones);
     } else {
         await saveZonesToFile(zones);
