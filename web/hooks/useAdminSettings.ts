@@ -38,13 +38,25 @@ const DEFAULT_SETTINGS: AppSettings = {
     },
 };
 
+const DEFAULT_ZONES: ZoneConfig[] = [
+    { id: "defi", name: "DeFi", enabled: true, order: 0, icon: "💰", color: "#10b981", coinLimit: 10, coingeckoCategory: "decentralized-finance-defi" },
+    { id: "nft", name: "NFTs", enabled: true, order: 1, icon: "🎨", color: "#8b5cf6", coinLimit: 10, coingeckoCategory: "non-fungible-tokens-nft" },
+    { id: "gaming", name: "Gaming", enabled: true, order: 2, icon: "🎮", color: "#f59e0b", coinLimit: 10, coingeckoCategory: "gaming" },
+    { id: "layer2", name: "Layer 2", enabled: true, order: 3, icon: "⚡", color: "#3b82f6", coinLimit: 10, coingeckoCategory: "layer-2" },
+    { id: "memes", name: "Memes", enabled: true, order: 4, icon: "🐕", color: "#ef4444", coinLimit: 10, coingeckoCategory: "meme-token" },
+    { id: "ai", name: "AI Agents", enabled: true, order: 5, icon: "🤖", color: "#06b6d4", coinLimit: 10, coingeckoCategory: "artificial-intelligence" },
+    { id: "rwa", name: "RWA", enabled: true, order: 6, icon: "🏠", color: "#84cc16", coinLimit: 10, coingeckoCategory: "real-world-assets-rwa" },
+    { id: "solana", name: "Solana", enabled: true, order: 7, icon: "☀️", color: "#9333ea", coinLimit: 10, coingeckoCategory: "solana-ecosystem" },
+    { id: "predictions", name: "Predictions", enabled: true, order: 8, icon: "🎰", color: "#d946ef", coinLimit: 5, coingeckoCategory: "prediction-markets" },
+];
+
 /**
  * Hook to fetch admin settings and zones from the API
  * Returns settings, zones, loading state, and refresh function
  */
 export function useAdminSettings(): UseAdminSettingsReturn {
-    const [settings, setSettings] = useState<AppSettings | null>(null);
-    const [zones, setZones] = useState<ZoneConfig[]>([]);
+    const [settings, setSettings] = useState<AppSettings | null>(DEFAULT_SETTINGS);
+    const [zones, setZones] = useState<ZoneConfig[]>(DEFAULT_ZONES);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -60,26 +72,33 @@ export function useAdminSettings(): UseAdminSettingsReturn {
             ]);
 
             if (settingsRes.ok) {
-                const settingsData = await settingsRes.json();
+                const settingsJson = await settingsRes.json();
+                const settingsData = settingsJson.data || settingsJson;
                 setSettings(settingsData);
             } else {
                 setSettings(DEFAULT_SETTINGS);
             }
 
             if (zonesRes.ok) {
-                const zonesData = await zonesRes.json();
+                const zonesJson = await zonesRes.json();
+                // API returns { success: true, data: [...] } or just [...]
+                const zonesData = zonesJson.data || zonesJson;
+
                 // Ensure it's an array before setting
                 if (Array.isArray(zonesData)) {
                     setZones(zonesData);
                 } else {
                     console.error("Invalid zones data format:", zonesData);
-                    setZones([]);
+                    setZones(DEFAULT_ZONES);
                 }
+            } else {
+                setZones(DEFAULT_ZONES);
             }
         } catch (err) {
             console.error("Failed to fetch admin settings:", err);
             setError(err instanceof Error ? err.message : "Unknown error");
             setSettings(DEFAULT_SETTINGS);
+            setZones(DEFAULT_ZONES);
         } finally {
             setLoading(false);
         }

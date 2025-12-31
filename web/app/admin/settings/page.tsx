@@ -18,6 +18,11 @@ interface AppSettings {
         primaryColor: string;
         accentColor: string;
     };
+    youtube: {
+        enabled: boolean;
+        videoId: string;
+        title: string;
+    };
 }
 
 export default function SettingsPage() {
@@ -128,6 +133,7 @@ export default function SettingsPage() {
                     </section>
 
                     {/* Features */}
+                    {/* Features */}
                     <section className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
                         <h2 className="font-semibold mb-4">Features</h2>
                         <div className="space-y-3">
@@ -150,6 +156,53 @@ export default function SettingsPage() {
                                     <span>{feature.label}</span>
                                 </label>
                             ))}
+                        </div>
+                    </section>
+
+                    {/* YouTube Radio */}
+                    <section className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+                        <h2 className="font-semibold mb-4">YouTube Live Radio</h2>
+                        <div className="space-y-4">
+                            <label className="flex items-center gap-3 cursor-pointer mb-2">
+                                <input
+                                    type="checkbox"
+                                    checked={settings?.youtube?.enabled || false}
+                                    onChange={e => setSettings(s => s ? {
+                                        ...s,
+                                        youtube: { ...s.youtube, enabled: e.target.checked }
+                                    } : s)}
+                                    className="w-5 h-5 rounded bg-zinc-800 border-zinc-700 text-indigo-500 focus:ring-indigo-500"
+                                />
+                                <span>Enable Card</span>
+                            </label>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm text-zinc-400 mb-2">Video ID</label>
+                                    <input
+                                        type="text"
+                                        value={settings?.youtube?.videoId || ''}
+                                        onChange={e => setSettings(s => s ? {
+                                            ...s,
+                                            youtube: { ...s.youtube, videoId: e.target.value }
+                                        } : s)}
+                                        placeholder="e.g. 9ASXINLKuNE"
+                                        className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 focus:outline-none focus:border-indigo-500 font-mono"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm text-zinc-400 mb-2">Card Title</label>
+                                    <input
+                                        type="text"
+                                        value={settings?.youtube?.title || ''}
+                                        onChange={e => setSettings(s => s ? {
+                                            ...s,
+                                            youtube: { ...s.youtube, title: e.target.value }
+                                        } : s)}
+                                        placeholder="Card Title"
+                                        className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 focus:outline-none focus:border-indigo-500"
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </section>
 
