@@ -183,6 +183,40 @@ sub updateUI(coin as object)
         m.supplyLabels.text = label
     end if
     
+    ' 7-Day Price Range Calculation
+    m.rangeLowLabel = m.top.findNode("rangeLowLabel")
+    m.rangeHighLabel = m.top.findNode("rangeHighLabel")
+    m.priceMarker = m.top.findNode("priceMarker")
+    m.currentPriceMarker = m.top.findNode("currentPriceMarker")
+    
+    if coin.low_24h <> invalid and coin.high_24h <> invalid
+        low7d = coin.low_24h
+        high7d = coin.high_24h
+        currentPrice = 0
+        if coin.current_price <> invalid then currentPrice = coin.current_price
+        
+        if m.rangeLowLabel <> invalid
+            m.rangeLowLabel.text = "Low: " + formatPrice(low7d)
+        end if
+        if m.rangeHighLabel <> invalid
+            m.rangeHighLabel.text = "High: " + formatPrice(high7d)
+        end if
+        
+        ' Calculate marker position (0-600px range)
+        if high7d > low7d and currentPrice >= low7d
+            pct = (currentPrice - low7d) / (high7d - low7d)
+            if pct > 1 then pct = 1
+            markerX = 600 * pct
+            if m.priceMarker <> invalid
+                m.priceMarker.translation = [markerX - 3, 32]
+            end if
+            if m.currentPriceMarker <> invalid
+                m.currentPriceMarker.text = formatPrice(currentPrice)
+                m.currentPriceMarker.translation = [markerX - 40, 80]
+            end if
+        end if
+    end if
+    
     ' Set Description
     if coin.description <> invalid and coin.description.en <> invalid
         m.coinDescription.text = coin.description.en

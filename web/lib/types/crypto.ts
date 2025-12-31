@@ -65,6 +65,10 @@ export interface CoinGeckoMarketResponse {
     sparkline_in_7d?: {
         price: number[];
     };
+    // Optional extended fields from CoinGecko detailed API
+    liquidity_score?: number;
+    sentiment_votes_up_percentage?: number;
+    sentiment_votes_down_percentage?: number;
 }
 
 export interface CoinGeckoCategoryResponse {

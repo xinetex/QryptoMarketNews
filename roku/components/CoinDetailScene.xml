@@ -176,8 +176,26 @@
                 </Group>
             </Group>
             
+            <!-- 7-Day Price Range -->
+            <Group id="priceRangeSection" translation="[0,500]">
+                <Label text="7-Day Price Range" font="font:SmallBoldSystemFont" color="#ffffff70" />
+                
+                <!-- Range Bar Background -->
+                <Rectangle translation="[0,35]" width="600" height="12" color="#333333" />
+                
+                <!-- Low Indicator -->
+                <Label id="rangeLowLabel" translation="[0,55]" text="Low: --" font="font:SmallSystemFont" color="#ef4444" />
+                
+                <!-- High Indicator -->
+                <Label id="rangeHighLabel" translation="[500,55]" text="High: --" font="font:SmallSystemFont" color="#10b981" />
+                
+                <!-- Current Price Marker -->
+                <Rectangle id="priceMarker" translation="[300,32]" width="6" height="18" color="#6366f1" />
+                <Label id="currentPriceMarker" translation="[280,80]" text="" font="font:SmallBoldSystemFont" color="#ffffff" />
+            </Group>
+            
             <!-- Supply Section -->
-            <Group id="supplySection" translation="[0,600]">
+            <Group id="supplySection" translation="[0,650]">
                 <Label text="Supply & Tokenomics" font="font:SmallBoldSystemFont" color="#ffffff70" />
                 
                 <!-- Progress Bar Container -->

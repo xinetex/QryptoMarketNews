@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 import type { CoinGeckoMarketResponse } from "@/lib/types/crypto";
 import Sparkline from "@/components/Sparkline";
+import PriceHeatmap from "@/components/PriceHeatmap";
 import { formatPrice, formatMarketCap, formatChange } from "@/lib/coingecko";
 
 const REFRESH_INTERVAL = 30000; // 30 seconds
@@ -401,6 +402,15 @@ export default function CoinDetailPage() {
                                     </div>
                                 </div>
                             </div>
+                        </section>
+
+                        {/* Price Heatmap */}
+                        <section className="border border-white/10 bg-zinc-900/20 rounded-xl p-5 backdrop-blur-sm">
+                            <h3 className="text-zinc-100 font-medium text-sm flex items-center gap-2 mb-4">
+                                <Activity size={14} className="text-orange-400" />
+                                Price Intensity (7D)
+                            </h3>
+                            <PriceHeatmap data={sparklineData} width={420} height={50} />
                         </section>
                     </div>
 
