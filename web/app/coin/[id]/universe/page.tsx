@@ -42,7 +42,8 @@ export default function CoinUniversePage() {
                 // 2. Fetch related coins (from same category/zone if possible)
                 // We'll guess the category or default to 'defi'/general
                 // For now, let's fetch 'defi' or 'solana' zone to get some neighbors
-                const zoneId = zones.find(z => z.name.toLowerCase().includes(coin.name.toLowerCase()))?.id || "defi";
+                const coinName = coin?.name || "";
+                const zoneId = zones.find(z => z?.name && coinName && z.name.toLowerCase().includes(coinName.toLowerCase()))?.id || "defi";
                 const neighborsRes = await fetch(`/api/crypto/zone/${zoneId}`);
                 const neighborsData = await neighborsRes.json();
 

@@ -12,8 +12,8 @@ interface VideoBackgroundProps {
 
 // Default ambient video URLs (royalty-free space/tech videos)
 const DEFAULT_VIDEOS = [
-    "https://cdn.pixabay.com/video/2020/05/25/40130-424930877_large.mp4", // Abstract tech
-    "https://cdn.pixabay.com/video/2021/06/22/78797-568629544_large.mp4", // Space nebula
+    "https://assets.mixkit.co/videos/preview/mixkit-stars-in-space-1610-large.mp4", // Space
+    "https://assets.mixkit.co/videos/preview/mixkit-abstract-technology-network-background-2868-large.mp4", // Tech
 ];
 
 export default function VideoBackground({

@@ -17,9 +17,10 @@ export default function TVOverlay() {
     const tickerRef = useRef<HTMLDivElement>(null);
     const { prices, loading } = useCryptoPrices(60000);
     const { settings } = useAdminSettings();
-    const [time, setTime] = useState(new Date());
+    const [time, setTime] = useState<Date | null>(null);
 
     useEffect(() => {
+        setTime(new Date()); // Set initial client time
         const timer = setInterval(() => setTime(new Date()), 1000);
         return () => clearInterval(timer);
     }, []);
@@ -91,17 +92,17 @@ export default function TVOverlay() {
 
             {/* Top Bar */}
             {/* Top Bar */}
-            <div className="absolute top-0 left-0 w-full p-4 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center z-20 tv-element opacity-0 pointer-events-none">
-                <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-16 w-full md:w-auto pointer-events-auto">
-                    <div className="flex items-center gap-3 md:gap-4">
-                        <div className="p-2 md:p-3 bg-neon-purple/20 border border-neon-purple rounded-lg backdrop-blur-md text-neon-purple shadow-[0_0_15px_rgba(188,19,254,0.3)] icon-pulse">
-                            <Tv size={24} className="md:w-8 md:h-8" />
+            <div className="absolute top-0 left-0 w-full p-4 lg:p-8 flex flex-col lg:flex-row justify-between items-start lg:items-center z-20 tv-element opacity-0 pointer-events-none">
+                <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4 lg:gap-16 w-full lg:w-auto pointer-events-auto">
+                    <div className="flex items-center gap-3 lg:gap-4">
+                        <div className="p-2 lg:p-3 bg-neon-purple/20 border border-neon-purple rounded-lg backdrop-blur-md text-neon-purple shadow-[0_0_15px_rgba(188,19,254,0.3)] icon-pulse">
+                            <Tv size={24} className="lg:w-8 lg:h-8" />
                         </div>
                         <div>
-                            <h1 className="text-2xl md:text-4xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple drop-shadow-[0_0_10px_rgba(0,243,255,0.5)]">
+                            <h1 className="text-2xl lg:text-4xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple drop-shadow-[0_0_10px_rgba(0,243,255,0.5)]">
                                 QCHANNEL
                             </h1>
-                            <p className="text-[10px] md:text-sm text-neon-blue/80 font-mono tracking-widest uppercase hidden sm:block">
+                            <p className="text-[10px] lg:text-sm text-neon-blue/80 font-mono tracking-widest uppercase hidden md:block">
                                 Crypto Market Intelligence
                             </p>
                         </div>
@@ -109,27 +110,27 @@ export default function TVOverlay() {
 
                     {/* Sponsor - Mobile: Small & below logo, Desktop: Beside logo */}
                     {sponsor.enabled && (
-                        <a href={sponsor.linkUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 md:gap-3 px-3 py-1 md:px-4 md:py-1.5 bg-glass border border-white/5 rounded-full hover:bg-white/5 transition-colors group">
-                            <span className="text-[8px] md:text-[10px] uppercase tracking-widest text-zinc-500 group-hover:text-zinc-400 transition-colors font-bold">Sponsored by</span>
+                        <a href={sponsor.linkUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 lg:gap-3 px-3 py-1 lg:px-4 lg:py-1.5 bg-glass border border-white/5 rounded-full hover:bg-white/5 transition-colors group">
+                            <span className="text-[8px] lg:text-[10px] uppercase tracking-widest text-zinc-500 group-hover:text-zinc-400 transition-colors font-bold">Sponsored by</span>
                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={sponsor.imageUrl} alt="Sponsor" className="h-6 md:h-8 w-auto object-contain" />
+                            <img src={sponsor.imageUrl} alt="Sponsor" className="h-6 lg:h-8 w-auto object-contain" />
                         </a>
                     )}
                 </div>
 
-                {/* Desktop Nav */}
-                <div className="hidden md:flex gap-4 items-center pointer-events-auto">
+                {/* Desktop Nav (lg and up) */}
+                <div className="hidden lg:flex gap-4 items-center pointer-events-auto">
                     <div className="text-right">
                         <div className="text-2xl font-mono font-bold text-white tracking-widest drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">
-                            {formatTime(time)}
+                            {time ? formatTime(time as Date) : "00:00:00"}
                         </div>
                         <div className="text-xs text-neon-blue font-bold tracking-widest uppercase">
-                            {formatDate(time)} • NYC
+                            {time ? formatDate(time as Date) : "..."} • NYC
                         </div>
                     </div>
                     <div className="h-10 w-px bg-white/20 mx-2"></div>
-                    <div className="hidden lg:block"><MarketPulse /></div>
-                    <div className="h-10 w-px bg-white/20 mx-2 hidden lg:block"></div>
+                    <div className="hidden xl:block"><MarketPulse /></div>
+                    <div className="h-10 w-px bg-white/20 mx-2 hidden xl:block"></div>
 
                     <Link href="/galaxy" className="px-6 py-2 bg-glass border border-white/10 rounded-full backdrop-blur-md text-sm font-bold tracking-wide hover:bg-white/10 transition-colors cursor-pointer flex items-center gap-2">
                         <span>🌌</span> GALAXY
@@ -140,10 +141,10 @@ export default function TVOverlay() {
                     </Link>
                 </div>
 
-                {/* Mobile Nav Row (Visible only on small screens) */}
-                <div className="flex md:hidden w-full justify-between items-center mt-4 pointer-events-auto">
+                {/* Tablet/Mobile Nav Row (Visible on screens smaller than lg) */}
+                <div className="flex lg:hidden w-full justify-between items-center mt-4 pointer-events-auto">
                     <div className="text-xs font-mono text-zinc-400">
-                        {formatTime(time)}
+                        {time ? formatTime(time as Date) : "..."}
                     </div>
                     <div className="flex gap-2">
                         <Link href="/galaxy" className="px-3 py-1.5 bg-glass border border-white/10 rounded-full text-xs font-bold hover:bg-white/10">
@@ -164,13 +165,13 @@ export default function TVOverlay() {
             </div>
 
             {/* Bottom Ticker */}
-            <div className="absolute bottom-4 md:bottom-8 left-0 w-full z-20 tv-element px-2 md:px-8 opacity-0 pointer-events-none">
-                <div className="relative w-full h-12 md:h-16 bg-glass border border-white/10 rounded-2xl backdrop-blur-xl overflow-hidden flex items-center pointer-events-auto">
-                    <div className="px-4 md:px-6 py-2 bg-neon-blue/20 h-full flex items-center border-r border-white/10 z-20 absolute left-0">
-                        <TrendingUp size={18} className="text-neon-blue mr-2 md:w-6 md:h-6" />
-                        <span className="font-bold text-neon-blue tracking-widest text-xs md:text-base">MARKET</span>
+            <div className="absolute bottom-4 lg:bottom-8 left-0 w-full z-20 tv-element px-2 lg:px-8 opacity-0 pointer-events-none">
+                <div className="relative w-full h-12 lg:h-16 bg-glass border border-white/10 rounded-2xl backdrop-blur-xl overflow-hidden flex items-center pointer-events-auto">
+                    <div className="px-4 lg:px-6 py-2 bg-neon-blue/20 h-full flex items-center border-r border-white/10 z-20 absolute left-0">
+                        <TrendingUp size={18} className="text-neon-blue mr-2 lg:w-6 lg:h-6" />
+                        <span className="font-bold text-neon-blue tracking-widest text-xs lg:text-base">MARKET</span>
                     </div>
-                    <div ref={tickerRef} className="absolute whitespace-nowrap flex gap-8 md:gap-12 text-sm md:text-lg font-mono font-bold items-center pl-28 md:pl-40">
+                    <div ref={tickerRef} className="absolute whitespace-nowrap flex gap-8 lg:gap-12 text-sm lg:text-lg font-mono font-bold items-center pl-28 lg:pl-40">
                         {loading ? (
                             <span className="text-white/50">Loading market data...</span>
                         ) : prices.length > 0 ? (

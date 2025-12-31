@@ -106,7 +106,7 @@ export default function ZoneGrid() {
     return (
         <div
             ref={gridRef}
-            className="relative z-10 px-4 md:px-8 pt-64 md:pt-4 pb-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 pointer-events-auto"
+            className="relative z-10 px-4 md:px-8 pt-64 md:pt-48 lg:pt-4 pb-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 pointer-events-auto"
         >
             {/* YouTube Live Radio Card */}
             {settings?.youtube?.enabled && (
