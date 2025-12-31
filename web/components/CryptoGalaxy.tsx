@@ -2,7 +2,7 @@
 
 import { useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Text, Stars } from "@react-three/drei";
+import { OrbitControls, Text, Stars, Billboard } from "@react-three/drei";
 import * as THREE from "three";
 
 interface CoinPlanetProps {
@@ -46,15 +46,22 @@ function CoinPlanet({ position, size, color, name, change }: CoinPlanetProps) {
             </mesh>
 
             {/* Name label */}
-            <Text
+            <Billboard
                 position={[0, -size - 0.3, 0]}
-                fontSize={0.15}
-                color="white"
-                anchorX="center"
-                anchorY="top"
+                follow={true}
+                lockX={false}
+                lockY={false}
+                lockZ={false}
             >
-                {name}
-            </Text>
+                <Text
+                    fontSize={0.15}
+                    color="white"
+                    anchorX="center"
+                    anchorY="top"
+                >
+                    {name}
+                </Text>
+            </Billboard>
         </group>
     );
 }
@@ -104,15 +111,21 @@ function ZoneSphere({ position, color, name, coins }: ZoneSphereProps) {
             </mesh>
 
             {/* Zone label */}
-            <Text
+            <Billboard
                 position={[0, 1.5, 0]}
-                fontSize={0.3}
-                color="white"
-                anchorX="center"
-                fontWeight="bold"
+                follow={true}
             >
-                {name}
-            </Text>
+                <Text
+                    fontSize={0.3}
+                    color="white"
+                    anchorX="center"
+                    fontWeight="bold"
+                    outlineWidth={0.02}
+                    outlineColor="black"
+                >
+                    {name}
+                </Text>
+            </Billboard>
 
             {/* Orbiting coins */}
             {coinPositions.map((coin, i) => (
@@ -197,8 +210,7 @@ export default function CryptoGalaxy({ zones }: CryptoGalaxyProps) {
                 <OrbitControls
                     enableZoom={true}
                     enablePan={false}
-                    autoRotate
-                    autoRotateSpeed={0.5}
+                    autoRotate={false}
                     minDistance={10}
                     maxDistance={50}
                 />
