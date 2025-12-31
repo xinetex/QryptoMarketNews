@@ -39,12 +39,14 @@ export default function Sparkline({
         });
 
         // Animate fill fade-in
-        animate(fillRef.current, {
-            opacity: [0, 1],
-            easing: 'linear',
-            duration: 1000,
-            delay: 1000,
-        });
+        if (fillRef.current) {
+            animate(fillRef.current, {
+                opacity: [0, 1],
+                easing: 'linear',
+                duration: 1000,
+                delay: 1000,
+            });
+        }
     }, [data]);
 
     if (!data || data.length === 0) return null;
