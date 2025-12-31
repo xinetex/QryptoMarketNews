@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- QChannel MarketPulse - Overall market health indicator -->
+<component name="MarketPulse" extends="Group">
+    <interface>
+        <field id="marketData" type="assocarray" onChange="onMarketDataChanged" />
+    </interface>
+    
+    <script type="text/brightscript" uri="MarketPulse.brs" />
+    
+    <children>
+        <!-- Container -->
+        <Rectangle id="pulseBg" 
+            width="300" 
+            height="80" 
+            color="0x00000080" />
+        
+        <!-- Pulse Indicator -->
+        <Group id="pulseIndicator" translation="[20, 25]">
+            <Rectangle id="pulseGlow" width="30" height="30" color="0x10b98180" />
+            <Rectangle id="pulseDot" translation="[5, 5]" width="20" height="20" color="0x10b981FF" />
+        </Group>
+        
+        <!-- Status Label -->
+        <Label id="statusLabel"
+            translation="[65, 15]"
+            text="MARKETS"
+            font="font:SmallBoldSystemFont"
+            color="0xffffffFF" />
+        
+        <Label id="statusValue"
+            translation="[65, 42]"
+            text="LOADING..."
+            font="font:SmallSystemFont"
+            color="0x10b981FF" />
+        
+        <!-- Mini Stats -->
+        <Group id="miniStats" translation="[170, 15]">
+            <Label id="upCount" text="↑ --" font="font:SmallSystemFont" color="0x10b981FF" />
+            <Label id="downCount" translation="[0, 25]" text="↓ --" font="font:SmallSystemFont" color="0xef4444FF" />
+        </Group>
+        
+        <!-- Pulse Animation -->
+        <Animation id="pulseAnim" repeat="true" duration="1.5" easeFunction="inOutSine">
+            <FloatFieldInterpolator
+                fieldToInterp="pulseGlow.opacity"
+                key="[0.0, 0.5, 1.0]"
+                keyValue="[0.3, 0.8, 0.3]" />
+        </Animation>
+    </children>
+</component>

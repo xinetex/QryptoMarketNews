@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- QChannel CryptoTicker - Scrolling price ticker like financial news channels -->
+<component name="CryptoTicker" extends="Group">
+    <interface>
+        <field id="tickerData" type="array" onChange="onTickerDataChanged" />
+        <field id="speed" type="float" value="2.0" />
+        <field id="running" type="boolean" value="true" onChange="onRunningChanged" />
+    </interface>
+    
+    <script type="text/brightscript" uri="CryptoTicker.brs" />
+    
+    <children>
+        <!-- Ticker Background -->
+        <Rectangle id="tickerBg" 
+            width="1920" 
+            height="60" 
+            color="0x000000E0" />
+        
+        <!-- Brand Label -->
+        <Label id="brandLabel"
+            text="📊 QCHANNEL"
+            translation="[20, 18]"
+            font="font:SmallBoldSystemFont"
+            color="0x6366f1FF" />
+        
+        <!-- Ticker Container (clipped) -->
+        <ClippingRectangle id="tickerClip"
+            translation="[180, 0]"
+            width="1740"
+            height="60">
+            
+            <!-- Scrolling Content -->
+            <LayoutGroup id="tickerContent"
+                translation="[0, 15]"
+                layoutDirection="horiz"
+                itemSpacings="[40]" />
+        </ClippingRectangle>
+        
+        <!-- Ticker Animation -->
+        <Animation id="scrollAnim" repeat="true" duration="30">
+            <FloatFieldInterpolator
+                fieldToInterp="tickerContent.translation"
+                key="[0.0, 1.0]"
+                keyValue="[[1740, 15], [-3000, 15]]" />
+        </Animation>
+        
+        <!-- Divider Line -->
+        <Rectangle 
+            translation="[0, 0]" 
+            width="1920" 
+            height="2" 
+            color="0x6366f150" />
+    </children>
+</component>

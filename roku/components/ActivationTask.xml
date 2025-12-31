@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="ActivationTask" extends="Task">
+    <interface>
+        <!-- INPUTS -->
+        <field id="command" type="string" />
+        <field id="rokuSerial" type="string" />
+        <field id="deviceCode" type="string" />
+        
+        <!-- OUTPUTS -->
+        <field id="codeResult" type="assocarray" />
+        <field id="pollResult" type="assocarray" />
+    </interface>
+    <script type="text/brightscript" uri="ActivationTask.brs" />
+</component>

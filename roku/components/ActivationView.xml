@@ -1,0 +1,98 @@
+<component name="ActivationView" extends="Group">
+    <interface>
+        <field id="activationComplete" type="bool" value="false" />
+    </interface>
+    <script type="text/brightscript" uri="ActivationView.brs" />
+
+    <children>
+        <!-- Background -->
+        <Rectangle 
+            width="1920" 
+            height="1080" 
+            color="0x060606FF" 
+        />
+        
+        <!-- Gradient Overlay -->
+        <Rectangle 
+            width="1920" 
+            height="400" 
+            color="0x6366f130"
+            translation="[0,340]"
+        />
+        
+        <!-- Logo -->
+        <Label 
+            text="QChannel" 
+            width="1920" 
+            translation="[0, 80]" 
+            horizAlign="center" 
+            font="font:LargeBoldSystemFont" 
+            color="0x6366f1FF"
+        />
+        
+        <!-- Header -->
+        <Label 
+            id="header" 
+            text="Activate Your Device" 
+            width="1920" 
+            translation="[0, 180]" 
+            horizAlign="center" 
+            font="font:LargeBoldSystemFont" 
+        />
+        
+        <Label 
+            id="subHeader" 
+            text="Scan the QR code or visit qchannel.app/activate" 
+            width="1920" 
+            translation="[0, 250]" 
+            horizAlign="center" 
+            font="font:MediumSystemFont" 
+            color="0xAAAAAAFF"
+        />
+
+        <!-- QR Code Placeholder (Center) -->
+        <Poster 
+            id="qrPoster" 
+            width="350" 
+            height="350" 
+            translation="[785, 330]" 
+            uri="pkg:/images/qr_placeholder.png"
+        />
+
+        <!-- Activation Code -->
+        <Label 
+            id="codeLabel" 
+            text="LOADING..." 
+            width="1920" 
+            translation="[0, 720]" 
+            horizAlign="center" 
+            font="font:LargeBoldSystemFont" 
+            color="0x6366f1FF"
+        />
+        
+        <Label 
+            text="Enter this code at qchannel.app/activate" 
+            width="1920" 
+            translation="[0, 800]" 
+            horizAlign="center" 
+            font="font:SmallSystemFont" 
+            color="0x666666FF"
+        />
+        
+        <!-- Features List -->
+        <Label 
+            text="📊 Live Crypto Prices  •  📈 Market Analysis  •  📰 Breaking News" 
+            width="1920" 
+            translation="[0, 900]" 
+            horizAlign="center" 
+            font="font:SmallSystemFont" 
+            color="0x888888FF"
+        />
+
+        <!-- Task for API Calls -->
+        <ActivationTask id="activationTask" />
+        
+        <!-- Polling Timer -->
+        <Timer id="pollTimer" repeat="true" duration="5" />
+    </children>
+</component>
