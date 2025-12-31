@@ -52,17 +52,19 @@ export async function initDatabase() {
                 email VARCHAR(255) UNIQUE NOT NULL,
                 password VARCHAR(255) NOT NULL,
                 name VARCHAR(255),
+                role VARCHAR(50) DEFAULT 'user',
                 is_premium BOOLEAN DEFAULT false,
                 free_scans_used INTEGER DEFAULT 0,
                 created_at TIMESTAMP DEFAULT NOW()
             )
         `;
 
-        // Attempt to add column if it doesn't exist (migration for existing DB)
+        // Attempt migrations
         try {
             await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS free_scans_used INTEGER DEFAULT 0`;
+            await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(50) DEFAULT 'user'`;
         } catch (e) {
-            // Ignore if column exists
+            // Ignore
         }
 
         // Saved Ideas table

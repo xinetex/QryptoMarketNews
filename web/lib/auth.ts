@@ -38,6 +38,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         id: user.id,
                         email: user.email,
                         name: user.name,
+                        image: user.role, // Hack: Storing role in 'image' field since we don't use avatars yet and extending types is annoying
                         isPremium: user.is_premium
                     };
 
@@ -57,6 +58,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 token.id = user.id;
                 // @ts-ignore
                 token.isPremium = user.isPremium;
+                token.role = user.image; // Storing role
             }
             return token;
         },
@@ -66,6 +68,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.id = token.id;
                 // @ts-ignore
                 session.user.isPremium = token.isPremium;
+                // @ts-ignore
+                session.user.role = token.role;
             }
             return session;
         },

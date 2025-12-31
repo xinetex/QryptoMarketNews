@@ -24,10 +24,15 @@ export async function POST(req: Request) {
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        // Super Admin Check
+        const isSuperAdmin = email === "richard@drgnflai.org";
+        const role = isSuperAdmin ? "admin" : "user";
+        const isPremium = isSuperAdmin; // Admins get free premium
+
         // Create user
         await sql`
-            INSERT INTO users (email, password, name, is_premium)
-            VALUES (${email}, ${hashedPassword}, ${name || 'Trader'}, false)
+            INSERT INTO users (email, password, name, role, is_premium)
+            VALUES (${email}, ${hashedPassword}, ${name || 'Trader'}, ${role}, ${isPremium})
         `;
 
         return NextResponse.json({ success: true });

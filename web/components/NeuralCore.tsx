@@ -97,8 +97,8 @@ export default function NeuralCore({ active }: { active: boolean }) {
     }, [active]);
 
     return (
-        <div className="relative flex items-center justify-center w-[400px] h-[400px]">
-            <canvas ref={canvasRef} className="absolute inset-0" />
+        <div className="relative flex items-center justify-center w-full max-w-[400px] aspect-square">
+            <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
             <div className={`absolute inset-0 bg-neon-purple/5 blur-3xl rounded-full transition-opacity duration-1000 ${active ? 'opacity-100' : 'opacity-20'}`} />
         </div>
     );
