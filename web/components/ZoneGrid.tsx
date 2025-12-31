@@ -6,6 +6,7 @@ import { Zap, Brain, Rocket, Globe, Palette, Gamepad, LucideIcon } from "lucide-
 import { useCategoryData } from "@/lib/hooks/useCrypto";
 import type { ZoneData } from "@/lib/types/crypto";
 import Link from "next/link";
+import NewsSlider from "./NewsSlider";
 
 import { useAdminSettings } from "@/hooks/useAdminSettings";
 
@@ -113,6 +114,15 @@ export default function ZoneGrid() {
                     videoId={settings.youtube.videoId || "9ASXINLKuNE"}
                     title={settings.youtube.title || "QCrypto Radio"}
                 />
+            )}
+
+            {/* Market News Card */}
+            {settings?.features?.newsEnabled && (
+                <div className="zone-card group relative h-52 rounded-xl bg-[#12121A] border border-white/5 overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:border-neon-blue/50 hover:shadow-xl hover:shadow-neon-blue/10">
+                    <div className="w-full h-full p-2">
+                        <NewsSlider autoPlay={true} interval={6000} />
+                    </div>
+                </div>
             )}
 
             {zones.map((zone) => {

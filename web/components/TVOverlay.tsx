@@ -6,7 +6,6 @@ import Link from "next/link";
 import { Tv, TrendingUp } from "lucide-react";
 import ZoneGrid from "./ZoneGrid";
 import VideoBackground from "./VideoBackground";
-import NewsSlider from "./NewsSlider";
 import MarketPulse from "./MarketPulse";
 import BreakingNews from "./BreakingNews";
 import { useCryptoPrices } from "@/lib/hooks/useCrypto";
@@ -128,10 +127,7 @@ export default function TVOverlay() {
                 </div>
             </div>
 
-            {/* News Slider - Top Right */}
-            <div className="absolute top-28 right-8 w-80 z-20 tv-element opacity-0">
-                <NewsSlider autoPlay={true} interval={6000} />
-            </div>
+
 
             {/* Main Content Area (Zone Grid) */}
             <div className="absolute inset-0 z-10 pointer-events-none flex flex-col justify-center">
