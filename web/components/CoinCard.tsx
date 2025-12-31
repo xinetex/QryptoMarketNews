@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useRef } from "react";
+import { animate } from "animejs";
 import { formatPrice, formatChange, formatMarketCap } from "@/lib/coingecko";
 import type { CoinGeckoMarketResponse } from "@/lib/types/crypto";
 import { TrendingUp, TrendingDown } from "lucide-react";
@@ -13,14 +15,31 @@ interface CoinCardProps {
 }
 
 export default function CoinCard({ coin, rank }: CoinCardProps) {
+    const cardRef = useRef<HTMLDivElement>(null);
     const isPositive = (coin.price_change_percentage_24h || 0) >= 0;
+
+    // Entrance animation
+    useEffect(() => {
+        if (cardRef.current) {
+            animate(cardRef.current, {
+                translateX: [-20, 0],
+                opacity: [0, 1],
+                easing: "easeOutExpo",
+                duration: 600,
+                delay: rank * 50, // Stagger based on rank
+            });
+        }
+    }, [rank]);
 
     // Get sparkline data (7-day prices)
     const sparklineData = coin.sparkline_in_7d?.price || [];
 
     return (
         <Link href={`/coin/${coin.id}`} className="block">
-            <div className="glass-card hover-lift group relative p-4 flex items-center gap-4 cursor-pointer overflow-hidden">
+            <div
+                ref={cardRef}
+                className="glass-card hover-lift group relative p-4 flex items-center gap-4 cursor-pointer overflow-hidden opacity-0"
+            >
                 {/* Rank Badge */}
                 <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-sm font-bold text-white/60">
                     {rank}
