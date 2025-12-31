@@ -55,48 +55,52 @@ export default function ZoneGrid() {
     const loading = configLoading || marketLoading;
 
     // Merge admin config with market data
-    const zones: ZoneData[] = adminZones
-        .filter(z => z.enabled)
-        .sort((a, b) => a.order - b.order)
-        .map(adminZone => {
-            // Find market data if available
-            const marketData = categories.find(c => c.id === adminZone.coingeckoCategory || c.id === adminZone.id);
+    const zones: ZoneData[] = Array.isArray(adminZones)
+        ? adminZones
+            .filter(z => z.enabled)
+            .sort((a, b) => a.order - b.order)
+            .map(adminZone => {
+                // Find market data if available
+                const marketData = categories.find(c => c.id === adminZone.coingeckoCategory || c.id === adminZone.id);
 
-            return {
-                id: adminZone.id, // Use admin ID for routing
-                name: adminZone.name,
-                icon: adminZone.icon,
-                color: adminZone.color,
-                // Use live data if available, else placeholders
-                change: marketData?.change || "...",
-                isPositive: marketData ? marketData.isPositive : true
-            };
-        });
-
-    // If no admin zones loaded yet (or strictly using fallback for dev), keep fallback for now or show skeletons
-    // For this implementation, we rely on adminZones. If empty, it might show nothing until loaded.
+                return {
+                    id: adminZone.id, // Use admin ID for routing
+                    name: adminZone.name,
+                    icon: adminZone.icon,
+                    color: adminZone.color,
+                    // Use live data if available, else placeholders
+                    change: marketData?.change || "...",
+                    isPositive: marketData ? marketData.isPositive : true
+                };
+            })
+        : [];
 
     useEffect(() => {
-        animate(".zone-card", {
-            scale: [0.8, 1],
-            opacity: [0, 1],
-            delay: stagger(100),
-            easing: "easeOutElastic(1, .6)",
-            duration: 800
-        });
-    }, []);
+        // Only animate if elements exist
+        if (document.querySelectorAll(".zone-card").length > 0) {
+            animate(".zone-card", {
+                scale: [0.8, 1],
+                opacity: [0, 1],
+                delay: stagger(100),
+                easing: "easeOutElastic(1, .6)",
+                duration: 800
+            });
+        }
+    }, [zones.length]); // Re-run when zones are populated
 
     useEffect(() => {
         if (!loading && zones.length > 0) {
-            animate(".zone-card", {
-                scale: [0.95, 1],
-                opacity: [0.8, 1],
-                delay: stagger(50),
-                easing: "easeOutExpo",
-                duration: 400
-            });
+            if (document.querySelectorAll(".zone-card").length > 0) {
+                animate(".zone-card", {
+                    scale: [0.95, 1],
+                    opacity: [0.8, 1],
+                    delay: stagger(50),
+                    easing: "easeOutExpo",
+                    duration: 400
+                });
+            }
         }
-    }, [loading, categories]);
+    }, [loading, categories, zones.length]);
 
     return (
         <div

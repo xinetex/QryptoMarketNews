@@ -68,7 +68,13 @@ export function useAdminSettings(): UseAdminSettingsReturn {
 
             if (zonesRes.ok) {
                 const zonesData = await zonesRes.json();
-                setZones(zonesData);
+                // Ensure it's an array before setting
+                if (Array.isArray(zonesData)) {
+                    setZones(zonesData);
+                } else {
+                    console.error("Invalid zones data format:", zonesData);
+                    setZones([]);
+                }
             }
         } catch (err) {
             console.error("Failed to fetch admin settings:", err);
