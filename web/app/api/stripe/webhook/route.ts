@@ -4,7 +4,7 @@ import { sql } from "@/lib/db";
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: "2024-12-18",
+    apiVersion: "2025-12-15.clover" as any,
 });
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
