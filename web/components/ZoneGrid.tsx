@@ -7,14 +7,11 @@ import { useCategoryData } from "@/lib/hooks/useCrypto";
 import type { ZoneData } from "@/lib/types/crypto";
 import Link from "next/link";
 
+import { useAdminSettings } from "@/hooks/useAdminSettings";
+
 // Icon mapping
 const ICON_MAP: Record<string, LucideIcon> = {
-    Zap,
-    Brain,
-    Rocket,
-    Globe,
-    Palette,
-    Gamepad,
+    Zap, Brain, Rocket, Globe, Palette, Gamepad,
 };
 
 // Color gradients for each zone
@@ -29,23 +26,33 @@ const ZONE_GRADIENTS: Record<string, string> = {
     layer2: "from-indigo-500/20 to-indigo-900/10",
 };
 
-// Fallback static zones
-const FALLBACK_ZONES: ZoneData[] = [
-    { id: "solana", name: "Solana Ecosystem", icon: "Zap", color: "text-purple-400", change: "...", isPositive: true },
-    { id: "ai", name: "AI Agents", icon: "Brain", color: "text-emerald-400", change: "...", isPositive: true },
-    { id: "memes", name: "Meme Trenches", icon: "Rocket", color: "text-orange-400", change: "...", isPositive: true },
-    { id: "rwa", name: "Real World Assets", icon: "Globe", color: "text-blue-400", change: "...", isPositive: true },
-    { id: "nft", name: "NFT Market", icon: "Palette", color: "text-pink-400", change: "...", isPositive: true },
-    { id: "gaming", name: "GameFi", icon: "Gamepad", color: "text-yellow-400", change: "...", isPositive: true },
-    { id: "defi", name: "DeFi 2.0", icon: "Zap", color: "text-cyan-400", change: "...", isPositive: true },
-    { id: "layer2", name: "L2 Scaling", icon: "Globe", color: "text-indigo-400", change: "...", isPositive: true }
-];
-
 export default function ZoneGrid() {
     const gridRef = useRef<HTMLDivElement>(null);
-    const { categories, loading } = useCategoryData(300000);
+    const { zones: adminZones, loading: configLoading } = useAdminSettings();
+    const { categories, loading: marketLoading } = useCategoryData(300000);
+    const loading = configLoading || marketLoading;
 
-    const zones: ZoneData[] = categories.length > 0 ? categories : FALLBACK_ZONES;
+    // Merge admin config with market data
+    const zones: ZoneData[] = adminZones
+        .filter(z => z.enabled)
+        .sort((a, b) => a.order - b.order)
+        .map(adminZone => {
+            // Find market data if available
+            const marketData = categories.find(c => c.id === adminZone.coingeckoCategory || c.id === adminZone.id);
+
+            return {
+                id: adminZone.id, // Use admin ID for routing
+                name: adminZone.name,
+                icon: adminZone.icon,
+                color: adminZone.color,
+                // Use live data if available, else placeholders
+                change: marketData?.change || "...",
+                isPositive: marketData ? marketData.isPositive : true
+            };
+        });
+
+    // If no admin zones loaded yet (or strictly using fallback for dev), keep fallback for now or show skeletons
+    // For this implementation, we rely on adminZones. If empty, it might show nothing until loaded.
 
     useEffect(() => {
         animate(".zone-card", {
@@ -58,7 +65,7 @@ export default function ZoneGrid() {
     }, []);
 
     useEffect(() => {
-        if (!loading && categories.length > 0) {
+        if (!loading && zones.length > 0) {
             animate(".zone-card", {
                 scale: [0.95, 1],
                 opacity: [0.8, 1],

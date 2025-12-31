@@ -118,6 +118,9 @@ export default function TVOverlay() {
                         <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
                         LIVE
                     </div>
+                    <Link href="/galaxy" className="px-6 py-2 bg-glass border border-white/10 rounded-full backdrop-blur-md text-sm font-bold tracking-wide hover:bg-white/10 transition-colors cursor-pointer flex items-center gap-2">
+                        <span>🌌</span> GALAXY
+                    </Link>
                     <div className="px-6 py-2 bg-glass border border-white/10 rounded-full backdrop-blur-md text-sm font-bold tracking-wide hover:bg-white/10 transition-colors cursor-pointer">
                         MARKETS
                     </div>
