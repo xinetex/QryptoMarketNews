@@ -61,11 +61,9 @@ export default function HotMarketsSlider({ autoPlay = true, interval = 6000 }: H
     useEffect(() => {
         async function fetchHotMarkets() {
             try {
-                const response = await fetch("https://qppbet.vercel.app/api/markets");
-                const data: Market[] = await response.json();
-                // Filter for hot markets only
-                const hotMarkets = data.filter(m => m.isHot);
-                setMarkets(hotMarkets.length > 0 ? hotMarkets : data.slice(0, 5));
+                const response = await fetch("/api/hot-markets");
+                const { markets: hotMarkets } = await response.json();
+                setMarkets(hotMarkets);
             } catch (error) {
                 console.error("Failed to fetch hot markets:", error);
             } finally {
