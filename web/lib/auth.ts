@@ -1,12 +1,12 @@
-
-import NextAuth from "next-auth";
-import Credentials from "next-auth/providers/credentials";
+import { NextAuthOptions, getServerSession } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { sql } from "@/lib/db";
 import bcrypt from "bcryptjs";
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+export const authOptions: NextAuthOptions = {
     providers: [
-        Credentials({
+        CredentialsProvider({
+            name: "Credentials",
             credentials: {
                 email: { label: "Email", type: "email" },
                 password: { label: "Password", type: "password" },
@@ -38,9 +38,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         id: user.id,
                         email: user.email,
                         name: user.name,
-                        image: user.role, // Hack: Storing role in 'image' field since we don't use avatars yet and extending types is annoying
+                        image: user.role, // Hack: Storing role in 'image' field
                         isPremium: user.is_premium
-                    };
+                    } as any;
 
                 } catch (error) {
                     console.error("Auth Error:", error);
@@ -50,15 +50,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }),
     ],
     pages: {
-        signIn: '/auth/login', // We'll create this custom page
+        signIn: '/auth/login',
     },
     callbacks: {
         async jwt({ token, user }) {
             if (user) {
                 token.id = user.id;
                 // @ts-ignore
-                token.isPremium = user.isPremium;
-                token.role = user.image; // Storing role
+                token.isPremium = (user as any).isPremium;
+                // @ts-ignore
+                token.role = (user as any).image;
             }
             return token;
         },
@@ -74,4 +75,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             return session;
         },
     },
-});
+    secret: process.env.NEXTAUTH_SECRET,
+};
+
+// Helper for server-side usage (mimics v5 auth())
+export const auth = () => getServerSession(authOptions);
