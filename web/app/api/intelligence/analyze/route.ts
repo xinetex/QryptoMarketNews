@@ -18,7 +18,7 @@ export async function POST(req: Request) {
         }
 
         // Check Usage Limits
-        if (sql && !session.user.isPremium) {
+        if (sql && !(session.user as any).isPremium) {
             const users = await sql`SELECT free_scans_used FROM users WHERE email = ${session.user.email}`;
             const usage = users[0]?.free_scans_used || 0;
 

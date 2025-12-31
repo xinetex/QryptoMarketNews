@@ -37,7 +37,7 @@ export async function POST() {
             success_url: `${process.env.NEXT_PUBLIC_URL}/intelligence?success=true`,
             cancel_url: `${process.env.NEXT_PUBLIC_URL}/intelligence?canceled=true`,
             metadata: {
-                userId: session.user.id || "",
+                userId: (session.user as any).id || "",
             },
         });
 
