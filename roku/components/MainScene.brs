@@ -262,10 +262,30 @@ sub onTickerDataChanged()
         tickerText = ""
         for each coin in tickerData
             changeSign = "+"
-            if coin.change24h < 0
+            ' Convert change24h to number for comparison (API may send as string)
+            changeVal = 0
+            if coin.change24h <> invalid
+                if type(coin.change24h) = "roString" or type(coin.change24h) = "String"
+                    changeVal = val(coin.change24h)
+                else
+                    changeVal = coin.change24h
+                end if
+            end if
+            
+            if changeVal < 0
                 changeSign = ""
             end if
-            tickerText = tickerText + coin.symbol + " $" + formatPrice(coin.price) + " " + changeSign + formatPercent(coin.change24h) + " • "
+            
+            priceVal = 0
+            if coin.price <> invalid
+                if type(coin.price) = "roString" or type(coin.price) = "String"
+                    priceVal = val(coin.price)
+                else
+                    priceVal = coin.price
+                end if
+            end if
+            
+            tickerText = tickerText + coin.symbol + " $" + formatPrice(priceVal) + " " + changeSign + formatPercent(changeVal) + " • "
         end for
         m.tickerContent.text = tickerText
     end if
