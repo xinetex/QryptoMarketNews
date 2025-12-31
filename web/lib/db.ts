@@ -10,20 +10,8 @@ export const sql = connectionString
     ? neon(connectionString)
     : null;
 
-export async function query<T = unknown>(queryString: string, params?: unknown[]): Promise<T[]> {
-    if (!sql) {
-        console.warn('DATABASE_URL not configured - using fallback storage');
-        return [];
-    }
-
-    try {
-        const result = await sql(queryString, params as (string | number | boolean | null)[]);
-        return result as T[];
-    } catch (error) {
-        console.error('Database query error:', error);
-        throw error;
-    }
-}
+// Note: Use sql tagged template literals directly for queries, e.g.:
+// const result = await sql`SELECT * FROM table WHERE id = ${id}`;
 
 // Initialize tables if they don't exist
 export async function initDatabase() {
