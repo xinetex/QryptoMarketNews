@@ -92,7 +92,7 @@ export default function NewsSlider({ autoPlay = true, interval = 5000 }: NewsSli
             : "bg-white/10 border-white/20";
 
     return (
-        <div className="glass-card p-4 relative overflow-hidden group">
+        <div className="w-full h-full relative overflow-hidden group">
             {/* Header */}
             <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">

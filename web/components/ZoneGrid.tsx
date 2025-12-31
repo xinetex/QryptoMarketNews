@@ -118,8 +118,8 @@ export default function ZoneGrid() {
 
             {/* Market News Card */}
             {settings?.features?.newsEnabled && (
-                <div className="zone-card group relative h-52 rounded-xl bg-[#12121A] border border-white/5 overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:border-neon-blue/50 hover:shadow-xl hover:shadow-neon-blue/10">
-                    <div className="w-full h-full p-2">
+                <div className="zone-card group relative h-52 rounded-xl bg-[#12121A] border border-white/5 p-5 overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:border-neon-blue/50 hover:shadow-xl hover:shadow-neon-blue/10">
+                    <div className="w-full h-full">
                         <NewsSlider autoPlay={true} interval={6000} />
                     </div>
                 </div>
