@@ -83,18 +83,31 @@ export default function TVOverlay() {
 
             {/* Top Bar */}
             <div className="absolute top-0 left-0 w-full p-8 flex justify-between items-start z-20 tv-element opacity-0">
-                <div className="flex items-center gap-4">
-                    <div className="p-3 bg-neon-purple/20 border border-neon-purple rounded-lg backdrop-blur-md text-neon-purple shadow-[0_0_15px_rgba(188,19,254,0.3)] icon-pulse">
-                        <Tv size={32} />
+                <div className="flex items-center gap-16">
+                    <div className="flex items-center gap-4">
+                        <div className="p-3 bg-neon-purple/20 border border-neon-purple rounded-lg backdrop-blur-md text-neon-purple shadow-[0_0_15px_rgba(188,19,254,0.3)] icon-pulse">
+                            <Tv size={32} />
+                        </div>
+                        <div>
+                            <h1 className="text-4xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple drop-shadow-[0_0_10px_rgba(0,243,255,0.5)]">
+                                QCHANNEL
+                            </h1>
+                            <p className="text-sm text-neon-blue/80 font-mono tracking-widest uppercase">
+                                Crypto Market Intelligence
+                            </p>
+                        </div>
                     </div>
-                    <div>
-                        <h1 className="text-4xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple drop-shadow-[0_0_10px_rgba(0,243,255,0.5)]">
-                            QCHANNEL
-                        </h1>
-                        <p className="text-sm text-neon-blue/80 font-mono tracking-widest uppercase">
-                            Crypto Market Intelligence
-                        </p>
-                    </div>
+
+                    {/* Sponsor */}
+                    <a href="https://queef.io" target="_blank" rel="noopener noreferrer" className="flex flex-col items-start group">
+                        <span className="text-[10px] text-zinc-500 uppercase tracking-widest mb-1 group-hover:text-neon-blue transition-colors">Sponsored by</span>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                            src="/sponsors/guardians.png"
+                            alt="Guardians of the Puff"
+                            className="h-10 w-auto object-contain brightness-90 group-hover:brightness-110 transition-all border border-white/10 rounded-lg group-hover:border-neon-blue/50"
+                        />
+                    </a>
                 </div>
 
                 <div className="flex gap-4 items-center">
