@@ -1,5 +1,6 @@
-// CoinGecko API Client
+// CoinGecko API Client with AgentCache.ai caching
 import type { CoinGeckoMarketResponse, CoinGeckoCategoryResponse, TickerData, ZoneData } from "./types/crypto";
+import { cachedCoinGeckoFetch, getCacheStats } from "./agentcache";
 
 const COINGECKO_API_BASE = "https://api.coingecko.com/api/v3";
 
@@ -68,22 +69,21 @@ const ZONE_CATEGORIES: Record<string, { name: string; icon: string; color: strin
 export { ZONE_CATEGORIES };
 
 /**
- * Fetch top coins for the ticker
+ * Fetch top coins for the ticker (with AgentCache)
  */
 export async function getTopCoins(): Promise<TickerData[]> {
     try {
-        const response = await fetch(
-            `${COINGECKO_API_BASE}/coins/markets?vs_currency=usd&ids=${TICKER_COINS.join(",")}&order=market_cap_desc&sparkline=false`,
+        // Use AgentCache for caching
+        const data = await cachedCoinGeckoFetch<CoinGeckoMarketResponse[]>(
+            '/coins/markets',
             {
-                next: { revalidate: 60 },
-            }
+                vs_currency: 'usd',
+                ids: TICKER_COINS.join(','),
+                order: 'market_cap_desc',
+                sparkline: 'false',
+            },
+            60 // 1 minute TTL
         );
-
-        if (!response.ok) {
-            throw new Error(`CoinGecko API error: ${response.status}`);
-        }
-
-        const data: CoinGeckoMarketResponse[] = await response.json();
 
         return data.map((coin) => ({
             symbol: coin.symbol.toUpperCase(),
@@ -102,22 +102,16 @@ export async function getTopCoins(): Promise<TickerData[]> {
 }
 
 /**
- * Fetch category data for zones
+ * Fetch category data for zones (with AgentCache)
  */
 export async function getCategoryData(): Promise<ZoneData[]> {
     try {
-        const response = await fetch(
-            `${COINGECKO_API_BASE}/coins/categories`,
-            {
-                next: { revalidate: 300 },
-            }
+        // Use AgentCache for caching
+        const data = await cachedCoinGeckoFetch<CoinGeckoCategoryResponse[]>(
+            '/coins/categories',
+            undefined,
+            300 // 5 minute TTL
         );
-
-        if (!response.ok) {
-            throw new Error(`CoinGecko API error: ${response.status}`);
-        }
-
-        const data: CoinGeckoCategoryResponse[] = await response.json();
 
         const zones: ZoneData[] = [];
 
@@ -163,7 +157,7 @@ export async function getCategoryData(): Promise<ZoneData[]> {
 }
 
 /**
- * Fetch coins by category for detail pages
+ * Fetch coins by category for detail pages (with AgentCache)
  */
 export async function getCoinsByCategory(categoryId: string): Promise<CoinGeckoMarketResponse[]> {
     try {
@@ -175,18 +169,20 @@ export async function getCoinsByCategory(categoryId: string): Promise<CoinGeckoM
         // Use the first category ID for the API call
         const apiCategoryId = zoneConfig.categoryIds[0];
 
-        const response = await fetch(
-            `${COINGECKO_API_BASE}/coins/markets?vs_currency=usd&category=${apiCategoryId}&order=market_cap_desc&per_page=20&sparkline=true`,
+        // Use AgentCache for caching
+        const data = await cachedCoinGeckoFetch<CoinGeckoMarketResponse[]>(
+            '/coins/markets',
             {
-                next: { revalidate: 120 },
-            }
+                vs_currency: 'usd',
+                category: apiCategoryId,
+                order: 'market_cap_desc',
+                per_page: '20',
+                sparkline: 'true',
+            },
+            120 // 2 minute TTL
         );
 
-        if (!response.ok) {
-            throw new Error(`CoinGecko API error: ${response.status}`);
-        }
-
-        return await response.json();
+        return data;
     } catch (error) {
         console.error("Failed to fetch category coins:", error);
         return [];
