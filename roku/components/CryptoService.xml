@@ -10,6 +10,12 @@
         <field id="coinRequest" type="string" />
         <field id="coinData" type="assocarray" />
         
+        <!-- Market pulse data from feed -->
+        <field id="marketPulse" type="assocarray" />
+        
+        <!-- App config from feed -->
+        <field id="appConfig" type="assocarray" />
+        
         <field id="prerollVastUrl" type="string" />
         <field id="apiBaseUrl" type="string" value="https://qryptomarket-news.vercel.app" />
         <!-- Zone detail requests - Task polls these -->

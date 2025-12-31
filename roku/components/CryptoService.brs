@@ -6,9 +6,8 @@ sub init()
 end sub
 
 sub runLoop()
-    ' Initial fetch
-    fetchTickerData()
-    fetchZoneData()
+    ' Initial fetch from Roku feed (includes ticker, zones, market pulse)
+    fetchRokuFeed()
     fetchAdTags()
     
     ' Track pending requests
@@ -83,6 +82,34 @@ sub fetchCoinDetails(coinId as string)
     
     if response <> invalid and response.data <> invalid
         m.top.coinData = response.data
+    end if
+end sub
+
+' Fetch all data from unified Roku feed API
+sub fetchRokuFeed()
+    url = m.top.apiBaseUrl + "/api/roku/feed"
+    response = makeApiRequest(url)
+    
+    if response <> invalid
+        ' Set ticker data from feed
+        if response.ticker <> invalid
+            m.top.tickerData = response.ticker
+        end if
+        
+        ' Set zone data from feed
+        if response.zones <> invalid
+            m.top.zoneData = response.zones
+        end if
+        
+        ' Set market pulse data from feed
+        if response.marketPulse <> invalid
+            m.top.marketPulse = response.marketPulse
+        end if
+        
+        ' Store config for reference
+        if response.config <> invalid
+            m.top.appConfig = response.config
+        end if
     end if
 end sub
 
