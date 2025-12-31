@@ -5,7 +5,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Text, Html, Stars } from "@react-three/drei";
 import * as THREE from "three";
 import * as d3 from "d3";
-import { formatPrice, formatPercent } from "@/lib/coingecko";
+import { formatPrice, formatChange } from "@/lib/coingecko";
 import { useRouter } from "next/navigation";
 
 interface ScatterDataPoint {
@@ -72,7 +72,7 @@ function ScatterPoint({ point, position, onClick }: { point: ScatterDataPoint, p
 
                             <span className="text-white/50">24h:</span>
                             <span className={`text-right font-mono ${point.change24h >= 0 ? 'text-neon-green' : 'text-neon-red'}`}>
-                                {formatPercent(point.change24h)}
+                                {formatChange(point.change24h)}
                             </span>
 
                             <span className="text-white/50">MCap:</span>
