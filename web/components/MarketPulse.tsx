@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { TrendingUp, TrendingDown, Activity, Minus } from "lucide-react";
-import { useCryptoPrices } from "@/lib/useCryptoPrices";
+import { useCryptoPrices } from "@/lib/hooks/useCrypto";
 
 interface MarketStatus {
     status: "bullish" | "bearish" | "neutral" | "positive" | "negative";
