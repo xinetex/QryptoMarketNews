@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { animate, stagger } from "animejs";
 import Link from "next/link";
-import { Tv, TrendingUp } from "lucide-react";
+import { Tv, TrendingUp, Brain } from "lucide-react";
 import ZoneGrid from "./ZoneGrid";
+import { useAdminSettings } from "@/hooks/useAdminSettings";
 import VideoBackground from "./VideoBackground";
 import MarketPulse from "./MarketPulse";
 import BreakingNews from "./BreakingNews";
@@ -15,6 +16,7 @@ export default function TVOverlay() {
     const overlayRef = useRef<HTMLDivElement>(null);
     const tickerRef = useRef<HTMLDivElement>(null);
     const { prices, loading } = useCryptoPrices(60000);
+    const { settings } = useAdminSettings();
     const [time, setTime] = useState(new Date());
 
     useEffect(() => {
@@ -69,6 +71,12 @@ export default function TVOverlay() {
         }
     }, [prices]);
 
+    const sponsor = settings?.sponsor || {
+        enabled: true,
+        imageUrl: "/sponsors/guardians.png", // Default image path
+        linkUrl: "https://queef.io"
+    };
+
     return (
         <div ref={overlayRef} className="relative w-full min-h-screen text-foreground overflow-y-auto">
             {/* Breaking News Banner */}
@@ -99,15 +107,13 @@ export default function TVOverlay() {
                     </div>
 
                     {/* Sponsor */}
-                    <a href="https://queef.io" target="_blank" rel="noopener noreferrer" className="flex flex-col items-start group">
-                        <span className="text-[10px] text-zinc-500 uppercase tracking-widest mb-1 group-hover:text-neon-blue transition-colors">Sponsored by</span>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                            src="/sponsors/guardians.png"
-                            alt="Guardians of the Puff"
-                            className="h-10 w-auto object-contain brightness-90 group-hover:brightness-110 transition-all border border-white/10 rounded-lg group-hover:border-neon-blue/50"
-                        />
-                    </a>
+                    {sponsor.enabled && (
+                        <a href={sponsor.linkUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-4 py-1.5 bg-glass border border-white/5 rounded-full hover:bg-white/5 transition-colors group">
+                            <span className="text-[10px] uppercase tracking-widest text-zinc-500 group-hover:text-zinc-400 transition-colors font-bold">Sponsored by</span>
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={sponsor.imageUrl} alt="Sponsor" className="h-8 w-auto object-contain" />
+                        </a>
+                    )}
                 </div>
 
                 <div className="flex gap-4 items-center">
@@ -133,6 +139,10 @@ export default function TVOverlay() {
                     </div>
                     <Link href="/galaxy" className="px-6 py-2 bg-glass border border-white/10 rounded-full backdrop-blur-md text-sm font-bold tracking-wide hover:bg-white/10 transition-colors cursor-pointer flex items-center gap-2">
                         <span>🌌</span> GALAXY
+                    </Link>
+                    <Link href="/intelligence" className="px-6 py-2 bg-glass border border-white/10 rounded-full backdrop-blur-md text-sm font-bold tracking-wide hover:bg-white/10 transition-colors cursor-pointer flex items-center gap-2 text-neon-purple hover:text-neon-purple/80 hover:border-neon-purple/50">
+                        <Brain size={16} />
+                        Q-INTEL
                     </Link>
                     <div className="px-6 py-2 bg-glass border border-white/10 rounded-full backdrop-blur-md text-sm font-bold tracking-wide hover:bg-white/10 transition-colors cursor-pointer">
                         MARKETS

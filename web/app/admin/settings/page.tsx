@@ -23,6 +23,11 @@ interface AppSettings {
         videoId: string;
         title: string;
     };
+    sponsor: {
+        enabled: boolean;
+        imageUrl: string;
+        linkUrl: string;
+    };
 }
 
 export default function SettingsPage() {
@@ -160,51 +165,100 @@ export default function SettingsPage() {
                     </section>
 
                     {/* YouTube Radio */}
-                    <section className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
-                        <h2 className="font-semibold mb-4">YouTube Live Radio</h2>
+                    <div className="glass-card p-6 border-l-4 border-l-red-500">
+                        <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                            <span>📺</span> YouTube Live Radio
+                        </h2>
                         <div className="space-y-4">
-                            <label className="flex items-center gap-3 cursor-pointer mb-2">
+                            <div className="flex items-center gap-2">
                                 <input
                                     type="checkbox"
-                                    checked={settings?.youtube?.enabled || false}
-                                    onChange={e => setSettings(s => s ? {
+                                    id="yt-enabled"
+                                    checked={settings?.youtube?.enabled ?? true}
+                                    onChange={(e) => setSettings(s => s ? {
                                         ...s,
-                                        youtube: { ...s.youtube, enabled: e.target.checked }
+                                        youtube: { ...s.youtube!, enabled: e.target.checked }
                                     } : s)}
-                                    className="w-5 h-5 rounded bg-zinc-800 border-zinc-700 text-indigo-500 focus:ring-indigo-500"
+                                    className="w-4 h-4 rounded border-white/20 bg-black/50 text-indigo-500 focus:ring-indigo-500"
                                 />
-                                <span>Enable Card</span>
-                            </label>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-sm text-zinc-400 mb-2">Video ID</label>
-                                    <input
-                                        type="text"
-                                        value={settings?.youtube?.videoId || ''}
-                                        onChange={e => setSettings(s => s ? {
-                                            ...s,
-                                            youtube: { ...s.youtube, videoId: e.target.value }
-                                        } : s)}
-                                        placeholder="e.g. 9ASXINLKuNE"
-                                        className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 focus:outline-none focus:border-indigo-500 font-mono"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm text-zinc-400 mb-2">Card Title</label>
-                                    <input
-                                        type="text"
-                                        value={settings?.youtube?.title || ''}
-                                        onChange={e => setSettings(s => s ? {
-                                            ...s,
-                                            youtube: { ...s.youtube, title: e.target.value }
-                                        } : s)}
-                                        placeholder="Card Title"
-                                        className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 focus:outline-none focus:border-indigo-500"
-                                    />
-                                </div>
+                                <label htmlFor="yt-enabled" className="text-sm font-medium">Enable Radio Card</label>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs uppercase tracking-wider text-zinc-500 mb-1">Video ID (e.g. 9ASXINLKuNE)</label>
+                                <input
+                                    type="text"
+                                    value={settings?.youtube?.videoId ?? "9ASXINLKuNE"}
+                                    onChange={(e) => setSettings(s => s ? {
+                                        ...s,
+                                        youtube: { ...s.youtube!, videoId: e.target.value }
+                                    } : s)}
+                                    className="w-full bg-black/50 border border-white/10 rounded px-3 py-2 font-mono text-sm"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs uppercase tracking-wider text-zinc-500 mb-1">Card Title</label>
+                                <input
+                                    type="text"
+                                    value={settings?.youtube?.title ?? "QCrypto Radio"}
+                                    onChange={(e) => setSettings(s => s ? {
+                                        ...s,
+                                        youtube: { ...s.youtube!, title: e.target.value }
+                                    } : s)}
+                                    className="w-full bg-black/50 border border-white/10 rounded px-3 py-2"
+                                />
                             </div>
                         </div>
-                    </section>
+                    </div>
+
+                    {/* Sponsorship Config */}
+                    <div className="glass-card p-6 border-l-4 border-l-yellow-500">
+                        <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                            <span>🤝</span> Sponsorship
+                        </h2>
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-2">
+                                <input
+                                    type="checkbox"
+                                    id="sponsor-enabled"
+                                    checked={settings?.sponsor?.enabled ?? true}
+                                    onChange={(e) => setSettings(s => s ? {
+                                        ...s,
+                                        sponsor: { ...s.sponsor!, enabled: e.target.checked }
+                                    } : s)}
+                                    className="w-4 h-4 rounded border-white/20 bg-black/50 text-indigo-500 focus:ring-indigo-500"
+                                />
+                                <label htmlFor="sponsor-enabled" className="text-sm font-medium">Enable Sponsor Banner</label>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs uppercase tracking-wider text-zinc-500 mb-1">Image URL (e.g. /guardians.png)</label>
+                                <input
+                                    type="text"
+                                    value={settings?.sponsor?.imageUrl ?? "/guardians_of_the_puff.png"}
+                                    onChange={(e) => setSettings(s => s ? {
+                                        ...s,
+                                        sponsor: { ...s.sponsor!, imageUrl: e.target.value }
+                                    } : s)}
+                                    className="w-full bg-black/50 border border-white/10 rounded px-3 py-2 font-mono text-sm"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs uppercase tracking-wider text-zinc-500 mb-1">Link URL</label>
+                                <input
+                                    type="text"
+                                    value={settings?.sponsor?.linkUrl ?? "https://queef.io"}
+                                    onChange={(e) => setSettings(s => s ? {
+                                        ...s,
+                                        sponsor: { ...s.sponsor!, linkUrl: e.target.value }
+                                    } : s)}
+                                    className="w-full bg-black/50 border border-white/10 rounded px-3 py-2 font-mono text-sm"
+                                />
+                            </div>
+                        </div>
+                    </div>
 
                     {/* Theme Colors */}
                     <section className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">

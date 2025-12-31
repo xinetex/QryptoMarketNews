@@ -36,6 +36,11 @@ const DEFAULT_SETTINGS: AppSettings = {
         videoId: "9ASXINLKuNE",
         title: "QCrypto Radio",
     },
+    sponsor: {
+        enabled: true,
+        imageUrl: "/guardians_of_the_puff.png",
+        linkUrl: "https://queef.io",
+    },
 };
 
 const DEFAULT_ZONES: ZoneConfig[] = [

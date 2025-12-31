@@ -45,6 +45,40 @@ export async function initDatabase() {
             )
         `;
 
+        // Users table
+        await sql`
+            CREATE TABLE IF NOT EXISTS users (
+                id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+                email VARCHAR(255) UNIQUE NOT NULL,
+                password VARCHAR(255) NOT NULL,
+                name VARCHAR(255),
+                is_premium BOOLEAN DEFAULT false,
+                free_scans_used INTEGER DEFAULT 0,
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+        `;
+
+        // Attempt to add column if it doesn't exist (migration for existing DB)
+        try {
+            await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS free_scans_used INTEGER DEFAULT 0`;
+        } catch (e) {
+            // Ignore if column exists
+        }
+
+        // Saved Ideas table
+        await sql`
+            CREATE TABLE IF NOT EXISTS saved_ideas (
+                id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+                user_id UUID REFERENCES users(id),
+                project_name VARCHAR(255) NOT NULL,
+                sector VARCHAR(255),
+                summary TEXT,
+                idea_title VARCHAR(255) NOT NULL,
+                idea_description TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+        `;
+
         console.log('Database tables initialized');
         return true;
     } catch (error) {

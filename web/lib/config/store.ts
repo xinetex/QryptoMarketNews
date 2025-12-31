@@ -29,6 +29,11 @@ export interface AppSettings {
         videoId: string;
         title: string;
     };
+    sponsor: {
+        enabled: boolean;
+        imageUrl: string;
+        linkUrl: string;
+    };
 }
 
 export interface ZoneConfig {
@@ -70,6 +75,11 @@ const DEFAULT_SETTINGS: AppSettings = {
         enabled: true,
         videoId: "9ASXINLKuNE", // Live Lo-Fi Radio
         title: "QCrypto Radio",
+    },
+    sponsor: {
+        enabled: true,
+        imageUrl: "/guardians_of_the_puff.png",
+        linkUrl: "https://queef.io",
     },
 };
 

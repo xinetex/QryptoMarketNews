@@ -134,7 +134,7 @@ export default function CoinDetailPage() {
                         <div className="hidden md:flex items-center gap-6 text-sm">
                             <Link href="/" className="text-zinc-100 font-medium">Markets</Link>
                             <Link href="/galaxy" className="hover:text-zinc-200 transition-colors">Galaxy</Link>
-                            <a href="#" className="hover:text-zinc-200 transition-colors">Intelligence</a>
+                            <Link href="/intelligence" className="hover:text-zinc-200 transition-colors">Intelligence</Link>
                         </div>
                     </div>
 
@@ -467,44 +467,104 @@ export default function CoinDetailPage() {
                     {/* Column 3: Risk & Sentiment */}
                     <div className="space-y-6">
 
-                        {/* Risk Profile */}
-                        <section className="border border-white/10 bg-zinc-900/20 rounded-xl p-5 backdrop-blur-sm relative overflow-hidden">
-                            <div className="absolute top-0 right-0 p-3 opacity-10">
-                                <ShieldCheck size={80} className="text-white" />
-                            </div>
+                        {(() => {
+                            // Dynamic Risk Calculation
+                            const liquidityScore = coin.liquidity_score || 50;
+                            const mcapRank = coin.market_cap_rank || 500;
+                            const volatility = Math.abs(coin.price_change_percentage_24h || 0);
+                            const fdvRatio = coin.fully_diluted_valuation ? (coin.market_cap / coin.fully_diluted_valuation) : 1;
 
-                            <h3 className="text-zinc-100 font-medium text-sm flex items-center gap-2 mb-4">
-                                <AlertTriangle size={14} className="text-red-400" />
-                                Risk Analysis
-                            </h3>
+                            let score = Math.min(99, Math.round(liquidityScore * 1.5));
+                            if (mcapRank < 50) score += 10;
+                            if (volatility > 10) score -= 10;
+                            if (fdvRatio < 0.5) score -= 15;
+                            score = Math.max(10, Math.min(98, score));
 
-                            <div className="flex items-center gap-4 mb-6">
-                                <div className="w-16 h-16 rounded-full border-4 border-emerald-500/20 border-r-emerald-500 border-t-emerald-500 flex items-center justify-center rotate-45">
-                                    <span className="text-lg font-bold text-zinc-100 -rotate-45">
-                                        {coin.liquidity_score ? Math.round(coin.liquidity_score * 1.5) : 85}
-                                    </span>
-                                </div>
-                                <div>
-                                    <div className="text-xs text-zinc-400 uppercase tracking-wider font-semibold">Security Score</div>
-                                    <div className="text-sm text-emerald-400">Low Risk</div>
-                                </div>
-                            </div>
+                            let riskLevel = "Medium Risk";
+                            let colorClass = "text-yellow-400";
+                            let strokeColor = "#facc15"; // yellow-400
 
-                            <div className="space-y-2">
-                                <div className="flex items-center gap-3 p-2 rounded bg-zinc-950/40 border border-white/5">
-                                    <ShieldCheck size={14} className="text-emerald-500" />
-                                    <span className="text-xs text-zinc-300">Audited by Certik & OtterSec</span>
-                                </div>
-                                <div className="flex items-center gap-3 p-2 rounded bg-zinc-950/40 border border-white/5">
-                                    <AlertTriangle size={14} className="text-orange-500" />
-                                    <span className="text-xs text-zinc-300">Centralized Admin Keys</span>
-                                </div>
-                                <div className="flex items-center gap-3 p-2 rounded bg-zinc-950/40 border border-white/5">
-                                    <Info size={14} className="text-blue-500" />
-                                    <span className="text-xs text-zinc-300">Regulatory: US exposure high</span>
-                                </div>
-                            </div>
-                        </section>
+                            if (score >= 75) {
+                                riskLevel = "Low Risk";
+                                colorClass = "text-emerald-400";
+                                strokeColor = "#34d399"; // emerald-400
+                            } else if (score < 50) {
+                                riskLevel = "High Risk";
+                                colorClass = "text-red-400";
+                                strokeColor = "#f87171"; // red-400
+                            }
+
+                            const factors = [];
+                            if (mcapRank < 100) factors.push({ icon: ShieldCheck, text: "Blue Chip / Established", color: "text-emerald-500" });
+                            else if (mcapRank > 500) factors.push({ icon: AlertTriangle, text: "Small Cap / High Volatility", color: "text-orange-500" });
+
+                            if (volatility > 15) factors.push({ icon: Activity, text: "Extreme Price Action", color: "text-red-500" });
+                            if (fdvRatio < 0.3) factors.push({ icon: AlertTriangle, text: "High Inflation Risk", color: "text-orange-500" });
+                            if (factors.length < 3) factors.push({ icon: CheckCircle, text: "Publicly Traded", color: "text-blue-500" });
+
+                            // SVG Chart calculations
+                            const radius = 28;
+                            const circumference = 2 * Math.PI * radius;
+                            const offset = circumference - (score / 100) * circumference;
+
+                            return (
+                                <section className="border border-white/10 bg-zinc-900/20 rounded-xl p-5 backdrop-blur-sm relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 p-3 opacity-10">
+                                        <ShieldCheck size={80} className="text-white" />
+                                    </div>
+
+                                    <h3 className="text-zinc-100 font-medium text-sm flex items-center gap-2 mb-4">
+                                        <AlertTriangle size={14} className="text-red-400" />
+                                        Risk Analysis
+                                    </h3>
+
+                                    <div className="flex items-center gap-4 mb-6">
+                                        <div className="relative w-16 h-16 flex items-center justify-center">
+                                            {/* SVG Donut Chart */}
+                                            <svg className="transform -rotate-90 w-16 h-16">
+                                                <circle
+                                                    cx="32"
+                                                    cy="32"
+                                                    r={radius}
+                                                    stroke="currentColor"
+                                                    strokeWidth="4"
+                                                    fill="transparent"
+                                                    className="text-zinc-800"
+                                                />
+                                                <circle
+                                                    cx="32"
+                                                    cy="32"
+                                                    r={radius}
+                                                    stroke={strokeColor}
+                                                    strokeWidth="4"
+                                                    fill="transparent"
+                                                    strokeDasharray={circumference}
+                                                    strokeDashoffset={offset}
+                                                    strokeLinecap="round"
+                                                    className="transition-all duration-1000 ease-out"
+                                                />
+                                            </svg>
+                                            <span className="absolute text-lg font-bold text-zinc-100">
+                                                {score}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <div className="text-xs text-zinc-400 uppercase tracking-wider font-semibold">Security Score</div>
+                                            <div className={`text-sm ${colorClass}`}>{riskLevel}</div>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        {factors.slice(0, 3).map((factor, idx) => (
+                                            <div key={idx} className="flex items-center gap-3 p-2 rounded bg-zinc-950/40 border border-white/5">
+                                                <factor.icon size={14} className={factor.color} />
+                                                <span className="text-xs text-zinc-300">{factor.text}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
+                            );
+                        })()}
 
                         {/* Social & Sentiment */}
                         <section className="border border-white/10 bg-zinc-900/20 rounded-xl p-5 backdrop-blur-sm">
