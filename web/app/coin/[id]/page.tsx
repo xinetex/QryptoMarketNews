@@ -277,8 +277,34 @@ export default function CoinDetailPage() {
                 {/* Dashboard Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-                    {/* Column 1: Supply */}
+                    {/* Column 1: Supply & Trading */}
                     <div className="space-y-6">
+                        {/* Trading Activity */}
+                        <section className="border border-white/10 bg-zinc-900/20 rounded-xl p-5 backdrop-blur-sm">
+                            <h3 className="text-zinc-100 font-medium text-sm flex items-center gap-2 mb-4">
+                                <Activity size={14} className="text-green-400" />
+                                Trading Activity
+                            </h3>
+
+                            <div className="grid grid-cols-2 gap-4 mb-4">
+                                <div className="bg-zinc-950/50 border border-white/5 p-3 rounded-lg">
+                                    <div className="text-xs text-zinc-500 mb-1">24h Volume</div>
+                                    <div className="text-lg text-zinc-200 font-medium">{formatMarketCap(coin.total_volume)}</div>
+                                </div>
+                                <div className="bg-zinc-950/50 border border-white/5 p-3 rounded-lg">
+                                    <div className="text-xs text-zinc-500 mb-1">Price Δ (24h)</div>
+                                    <div className={`text-lg font-medium ${coin.price_change_24h >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                                        {coin.price_change_24h >= 0 ? '+' : ''}{formatPrice(coin.price_change_24h)}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="text-xs text-zinc-500 flex items-center gap-2">
+                                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                                Last updated: {coin.last_updated ? new Date(coin.last_updated).toLocaleTimeString() : 'N/A'}
+                            </div>
+                        </section>
+
                         <section className="border border-white/10 bg-zinc-900/20 rounded-xl p-5 backdrop-blur-sm">
                             <div className="flex items-center justify-between mb-6">
                                 <h3 className="text-zinc-100 font-medium text-sm flex items-center gap-2">
@@ -347,6 +373,30 @@ export default function CoinDetailPage() {
                                 <div className="flex justify-between text-sm">
                                     <span className="text-zinc-400">All-Time Low</span>
                                     <span className="text-zinc-200 font-mono">{formatPrice(coin.atl)}</span>
+                                </div>
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-zinc-400">ATH Date</span>
+                                    <span className="text-zinc-200 font-mono text-xs">
+                                        {coin.ath_date ? new Date(coin.ath_date).toLocaleDateString() : 'N/A'}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-zinc-400">ATL Date</span>
+                                    <span className="text-zinc-200 font-mono text-xs">
+                                        {coin.atl_date ? new Date(coin.atl_date).toLocaleDateString() : 'N/A'}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between text-sm pt-2 border-t border-white/5">
+                                    <span className="text-zinc-400">From ATH</span>
+                                    <span className={`font-mono font-medium ${coin.ath_change_percentage > -20 ? 'text-emerald-400' : 'text-red-400'}`}>
+                                        {formatChange(coin.ath_change_percentage)}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-zinc-400">MCap Change 24h</span>
+                                    <span className={`font-mono font-medium ${coin.market_cap_change_percentage_24h >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                                        {formatChange(coin.market_cap_change_percentage_24h)}
+                                    </span>
                                 </div>
                             </div>
                         </section>
