@@ -107,7 +107,7 @@ export default function ZoneGrid() {
     return (
         <div
             ref={gridRef}
-            className="relative z-10 px-4 md:px-8 pt-64 md:pt-48 lg:pt-4 pb-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 pointer-events-auto"
+            className="relative z-10 px-4 md:px-8 pt-80 md:pt-64 lg:pt-20 pb-24 columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-4 md:gap-6 pointer-events-auto [&>*]:mb-4 md:[&>*]:mb-6"
         >
             {/* YouTube Live Radio Card */}
             {settings?.youtube?.enabled && (
@@ -137,7 +137,7 @@ export default function ZoneGrid() {
                     <Link
                         key={zone.id}
                         href={`/zone/${zone.id}`}
-                        className="zone-card group relative h-52 rounded-xl bg-[#12121A] border border-white/5 p-5 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:border-indigo-500/50 hover:shadow-xl hover:shadow-indigo-500/10"
+                        className="zone-card group relative h-52 rounded-xl bg-[#12121A] border border-white/5 p-5 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:border-indigo-500/50 hover:shadow-xl hover:shadow-indigo-500/10 break-inside-avoid"
                     >
                         {/* Gradient Overlay */}
                         <div className={`absolute inset-0 bg-gradient-to-br ${gradientClass} opacity-50 group-hover:opacity-80 transition-opacity duration-500`} />
