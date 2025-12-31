@@ -7,6 +7,7 @@ import { useCategoryData } from "@/lib/hooks/useCrypto";
 import type { ZoneData } from "@/lib/types/crypto";
 import Link from "next/link";
 import NewsSlider from "./NewsSlider";
+import HotMarketsSlider from "./HotMarketsSlider";
 import QGotchiCard from "./QGotchiCard";
 
 import { useAdminSettings } from "@/hooks/useAdminSettings";
@@ -170,6 +171,14 @@ export default function ZoneGrid() {
                     </Link>
                 );
             })}
+
+            {/* Hot Markets Card - Lower Right */}
+            <div className="zone-card group relative h-52 rounded-xl bg-[#12121A] border border-orange-500/20 p-5 overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:border-orange-500/50 hover:shadow-xl hover:shadow-orange-500/10 break-inside-avoid">
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-red-900/10 opacity-50 group-hover:opacity-80 transition-opacity duration-500" />
+                <div className="relative z-10 w-full h-full">
+                    <HotMarketsSlider autoPlay={true} interval={7000} />
+                </div>
+            </div>
         </div>
     );
 }
