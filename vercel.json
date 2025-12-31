@@ -1,24 +1,11 @@
 {
     "version": 2,
-    "name": "qryptomarket-news",
-    "builds": [
-        {
-            "src": "web/package.json",
-            "use": "@vercel/next",
-            "config": {
-                "projectSettings": {
-                    "rootDirectory": "web"
-                }
-            }
-        }
-    ],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "/web/$1"
-        }
-    ],
+    "framework": "nextjs",
+    "buildCommand": "npm run build",
+    "outputDirectory": ".next",
+    "installCommand": "npm install",
     "github": {
-        "enabled": true
+        "enabled": true,
+        "autoAlias": true
     }
 }
