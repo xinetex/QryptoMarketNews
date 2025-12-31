@@ -69,7 +69,7 @@ export default function TVOverlay() {
     }, [prices]);
 
     return (
-        <div ref={overlayRef} className="relative w-full h-screen text-foreground overflow-hidden">
+        <div ref={overlayRef} className="relative w-full min-h-screen text-foreground overflow-y-auto">
             {/* Video Background */}
             <VideoBackground showControls={true} />
 
