@@ -7,6 +7,7 @@ import ZoneGrid from "./ZoneGrid";
 import VideoBackground from "./VideoBackground";
 import NewsSlider from "./NewsSlider";
 import MarketPulse from "./MarketPulse";
+import BreakingNews from "./BreakingNews";
 import { useCryptoPrices } from "@/lib/hooks/useCrypto";
 import { formatPrice, formatChange } from "@/lib/coingecko";
 
@@ -70,6 +71,13 @@ export default function TVOverlay() {
 
     return (
         <div ref={overlayRef} className="relative w-full min-h-screen text-foreground overflow-y-auto">
+            {/* Breaking News Banner */}
+            <BreakingNews
+                message="Market Update: Crypto markets show strong momentum heading into 2025"
+                type="positive"
+                autoHide={15}
+            />
+
             {/* Video Background */}
             <VideoBackground showControls={true} />
 
