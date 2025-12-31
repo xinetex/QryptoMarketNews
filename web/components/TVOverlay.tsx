@@ -6,6 +6,7 @@ import { Tv, TrendingUp } from "lucide-react";
 import ZoneGrid from "./ZoneGrid";
 import VideoBackground from "./VideoBackground";
 import NewsSlider from "./NewsSlider";
+import MarketPulse from "./MarketPulse";
 import { useCryptoPrices } from "@/lib/hooks/useCrypto";
 import { formatPrice, formatChange } from "@/lib/coingecko";
 
@@ -98,6 +99,12 @@ export default function TVOverlay() {
                         </div>
                     </div>
                     <div className="h-10 w-px bg-white/20 mx-2 hidden md:block"></div>
+
+                    {/* Market Pulse Indicator */}
+                    <div className="hidden lg:block">
+                        <MarketPulse />
+                    </div>
+                    <div className="h-10 w-px bg-white/20 mx-2 hidden lg:block"></div>
 
                     <div className="px-6 py-2 bg-glass border border-white/10 rounded-full backdrop-blur-md text-sm font-bold tracking-wide hover:bg-white/10 transition-colors cursor-pointer flex items-center gap-2">
                         <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
