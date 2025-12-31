@@ -28,7 +28,7 @@ export default function MarketPulse() {
         let totalChange = 0;
 
         prices.forEach((coin) => {
-            const change = coin.price_change_percentage_24h || 0;
+            const change = coin.change24h || 0;
             totalChange += change;
             if (change >= 0) upCount++;
             else downCount++;
