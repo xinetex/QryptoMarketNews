@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import anime from "animejs/lib/anime.es.js";
+import { animate } from "animejs";
 
 interface SparklineProps {
     data: number[];
@@ -24,18 +24,22 @@ export default function Sparkline({
     useEffect(() => {
         if (!pathRef.current || !data || data.length === 0) return;
 
+        // Calculate stroke dash offset for animation
+        const path = pathRef.current;
+        const length = path.getTotalLength ? path.getTotalLength() : 1000;
+        path.style.strokeDasharray = `${length}`;
+        path.style.strokeDashoffset = `${length}`;
+
         // Animate stroke drawing
-        anime({
-            targets: pathRef.current,
-            strokeDashoffset: [anime.setDashoffset, 0],
+        animate(pathRef.current, {
+            strokeDashoffset: [length, 0],
             easing: 'easeInOutSine',
             duration: 1500,
             delay: 300,
         });
 
         // Animate fill fade-in
-        anime({
-            targets: fillRef.current,
+        animate(fillRef.current, {
             opacity: [0, 1],
             easing: 'linear',
             duration: 1000,
