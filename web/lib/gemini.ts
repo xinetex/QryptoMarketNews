@@ -51,3 +51,36 @@ export async function analyzeProject(projectName: string) {
         return null;
     }
 }
+
+export async function generateDailyConcepts() {
+    if (!apiKey) return null;
+
+    const prompt = `
+    You are Q-INTEL, the supreme crypto market strategist.
+    Generate 3 distinct, high-impact "Viral Community Initiatives" that any crypto project could adapt to boost engagement today.
+    
+    Focus on current trends (Memecoins, AI Agents, DeFi 2.0, RWA).
+    
+    Return a valid JSON ARRAY of objects with this structure (no markdown):
+    [
+        {
+            "project_name": "General Strategy",
+            "sector": "Trend Name (e.g. AI Agents)",
+            "idea_title": "Catchy Title",
+            "idea_description": "Detailed actionable paragraph on how to execute this campaign.",
+            "summary": "One-liner pitch."
+        }
+    ]
+    `;
+
+    try {
+        const result = await geminiModel.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
+        const jsonStr = text.replace(/```json/g, '').replace(/```/g, '').trim();
+        return JSON.parse(jsonStr);
+    } catch (error) {
+        console.error("Gemini Daily Error:", error);
+        return [];
+    }
+}

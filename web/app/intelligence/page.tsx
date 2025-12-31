@@ -17,6 +17,56 @@ interface AnalysisResult {
     riskLevel: string;
 }
 
+function DailyDropsFeed() {
+    const [drops, setDrops] = useState<any[]>([]);
+
+    useEffect(() => {
+        fetch('/api/intelligence/feed').then(res => res.json()).then(data => {
+            if (data.ideas) setDrops(data.ideas);
+        });
+    }, []);
+
+    if (drops.length === 0) return null;
+
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {drops.map((drop) => (
+                <div key={drop.id} className="glass-card hover:bg-white/5 transition-all p-5 group flex flex-col h-full border border-white/5 hover:border-neon-purple/50">
+                    <div className="flex justify-between items-start mb-3">
+                        <span className="px-2 py-1 rounded bg-neon-purple/10 text-neon-purple text-[10px] font-bold uppercase tracking-wider">
+                            {drop.sector || "Strategy"}
+                        </span>
+                        <span className="text-[10px] text-zinc-600 font-mono">
+                            {new Date(drop.created_at).toLocaleDateString()}
+                        </span>
+                    </div>
+
+                    <h3 className="text-lg font-bold text-zinc-100 mb-2 group-hover:text-neon-blue transition-colors">
+                        {drop.idea_title}
+                    </h3>
+                    <p className="text-sm text-zinc-400 mb-4 flex-1">
+                        {drop.summary || drop.idea_description.substring(0, 100) + "..."}
+                    </p>
+
+                    <div className="flex items-center justify-between pt-4 border-t border-white/5 mt-auto">
+                        <button className="text-xs font-bold text-zinc-500 hover:text-white flex items-center gap-1 transition-colors">
+                            VIEW INTEL <Search size={12} />
+                        </button>
+                        <div className="flex gap-2">
+                            <button className="p-1.5 hover:bg-white/10 rounded text-zinc-500 hover:text-neon-blue transition-colors">
+                                <Share2 size={14} />
+                            </button>
+                            <button className="p-1.5 hover:bg-white/10 rounded text-zinc-500 hover:text-neon-purple transition-colors">
+                                <Save size={14} />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+}
+
 export default function IntelligencePage() {
     const { data: session } = useSession();
     const router = useRouter();
@@ -141,6 +191,23 @@ export default function IntelligencePage() {
                         </div>
                     )}
                 </div>
+
+                {/* Daily Drops Section (Only visible when no search result) */}
+                {!result && !analyzing && (
+                    <div className="mb-20 animate-fade-in-up">
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                                <span className="w-2 h-8 bg-neon-purple rounded-sm"></span>
+                                DAILY STRATEGIC DROPS
+                            </h2>
+                            <span className="text-xs text-zinc-500 uppercase tracking-widest">
+                                AI-Generated Community Initiatives
+                            </span>
+                        </div>
+
+                        <DailyDropsFeed />
+                    </div>
+                )}
 
                 {/* Results Grid */}
                 {result && (

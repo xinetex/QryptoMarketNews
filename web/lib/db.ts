@@ -63,6 +63,9 @@ export async function initDatabase() {
         try {
             await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS free_scans_used INTEGER DEFAULT 0`;
             await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(50) DEFAULT 'user'`;
+
+            // Saved Ideas migrations
+            await sql`ALTER TABLE saved_ideas ADD COLUMN IF NOT EXISTS is_public BOOLEAN DEFAULT false`;
         } catch (e) {
             // Ignore
         }
