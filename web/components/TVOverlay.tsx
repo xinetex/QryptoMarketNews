@@ -159,7 +159,7 @@ export default function TVOverlay() {
 
 
             {/* Main Content Area (Zone Grid) */}
-            <div className="absolute inset-0 z-10 pointer-events-none flex flex-col justify-center">
+            <div className="relative z-10 pointer-events-none flex flex-col md:justify-center min-h-screen">
                 <ZoneGrid />
             </div>
 

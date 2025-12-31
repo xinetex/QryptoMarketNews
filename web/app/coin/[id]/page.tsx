@@ -631,10 +631,15 @@ export default function CoinDetailPage() {
                         </section>
 
                         {/* Action Button */}
-                        <button className="w-full py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium transition-all shadow-[0_0_15px_rgba(79,70,229,0.3)] hover:shadow-[0_0_20px_rgba(79,70,229,0.5)] flex items-center justify-center gap-2">
+                        <a
+                            href={`${process.env.NEXT_PUBLIC_EXCHANGE_URL || 'http://localhost:3001'}/markets?search=${coin.symbol}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium transition-all shadow-[0_0_15px_rgba(79,70,229,0.3)] hover:shadow-[0_0_20px_rgba(79,70,229,0.5)] flex items-center justify-center gap-2"
+                        >
                             <ArrowRightLeft size={16} />
-                            Trade on Exchange
-                        </button>
+                            Trade on QExchange
+                        </a>
                     </div>
                 </div>
             </main>
