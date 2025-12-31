@@ -139,7 +139,7 @@ export default function HotMarketsSlider({ autoPlay = true, interval = 6000 }: H
             {/* Market Content */}
             <div ref={slideRef} className="min-h-[80px]">
                 <a
-                    href={`https://qppbet.vercel.app/markets/${currentMarket.slug}`}
+                    href={`https://qppbet.vercel.app/markets/${currentMarket.id}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block group/link"
