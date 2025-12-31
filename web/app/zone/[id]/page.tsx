@@ -6,6 +6,8 @@ import { ArrowLeft, Zap, Brain, Rocket, Globe, Palette, Gamepad, LucideIcon } fr
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import CoinCard from "@/components/CoinCard";
+import SlidePanel from "@/components/SlidePanel";
+import CoinDetailPanel from "@/components/CoinDetailPanel";
 import { ZONE_CATEGORIES } from "@/lib/coingecko";
 import type { CoinGeckoMarketResponse } from "@/lib/types/crypto";
 
@@ -18,6 +20,7 @@ export default function ZoneDetailPage() {
     const zoneId = params.id as string;
     const [coins, setCoins] = useState<CoinGeckoMarketResponse[]>([]);
     const [loading, setLoading] = useState(true);
+    const [selectedCoin, setSelectedCoin] = useState<string | null>(null);
 
     const zoneConfig = ZONE_CATEGORIES[zoneId];
     const IconComponent = zoneConfig ? ICON_MAP[zoneConfig.icon] || Zap : Zap;
@@ -61,6 +64,14 @@ export default function ZoneDetailPage() {
             });
         }
     }, [loading, coins]);
+
+    const handleCoinClick = (coinId: string) => {
+        setSelectedCoin(coinId);
+    };
+
+    const handleClosePanel = () => {
+        setSelectedCoin(null);
+    };
 
     if (!zoneConfig) {
         return (
@@ -118,7 +129,11 @@ export default function ZoneDetailPage() {
                     ) : coins.length > 0 ? (
                         <div className="flex flex-col gap-4">
                             {coins.map((coin, index) => (
-                                <div key={coin.id} className="coin-card opacity-0">
+                                <div
+                                    key={coin.id}
+                                    className="coin-card opacity-0 cursor-pointer"
+                                    onClick={() => handleCoinClick(coin.id)}
+                                >
                                     <CoinCard coin={coin} rank={index + 1} />
                                 </div>
                             ))}
@@ -132,6 +147,15 @@ export default function ZoneDetailPage() {
                     )}
                 </div>
             </main>
+
+            {/* Sliding Detail Panel */}
+            <SlidePanel
+                isOpen={!!selectedCoin}
+                onClose={handleClosePanel}
+                title={coins.find(c => c.id === selectedCoin)?.name || "Coin Details"}
+            >
+                {selectedCoin && <CoinDetailPanel coinId={selectedCoin} />}
+            </SlidePanel>
         </div>
     );
 }
