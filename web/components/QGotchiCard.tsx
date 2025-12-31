@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 
 type Mood = "happy" | "neutral" | "sad" | "excited" | "sleepy";
 
@@ -61,70 +60,80 @@ export default function QGotchiCard({ mode = "mild" }: QGotchiCardProps) {
     }, [xpToNext]);
 
     const moodEmoji = { happy: "😊", excited: "🤩", sad: "😢", sleepy: "😴", neutral: "😐" }[mood];
-    const moodColor = {
-        happy: "from-green-500/20 to-emerald-500/20",
-        excited: "from-yellow-500/20 to-orange-500/20",
-        sad: "from-blue-500/20 to-indigo-500/20",
-        sleepy: "from-purple-500/20 to-violet-500/20",
-        neutral: "from-zinc-500/20 to-zinc-600/20",
+    const moodGradient = {
+        happy: "from-green-600/80 via-emerald-500/60 to-transparent",
+        excited: "from-orange-600/80 via-yellow-500/60 to-transparent",
+        sad: "from-blue-700/80 via-indigo-500/60 to-transparent",
+        sleepy: "from-purple-700/80 via-violet-500/60 to-transparent",
+        neutral: "from-zinc-800/90 via-zinc-700/70 to-transparent",
     }[mood];
 
     return (
-        <div className={`zone-card group relative h-52 rounded-xl bg-gradient-to-br ${moodColor} border border-white/10 p-4 overflow-hidden transition-all duration-500 hover:border-neon-purple/50 hover:shadow-xl hover:shadow-neon-purple/20`}>
-            {/* Header Row */}
-            <div className="flex justify-between items-start mb-2">
-                <div className="flex items-center gap-2">
-                    <span className="text-sm">🐣</span>
-                    <span className="text-xs font-bold text-white">QGotchi</span>
-                    <span className="text-[9px] bg-neon-purple/40 px-1 py-0.5 rounded">Lv.{level}</span>
-                </div>
-                <div className="text-lg">{moodEmoji}</div>
-            </div>
+        <div
+            className="zone-card group relative h-52 rounded-xl border border-white/10 overflow-hidden transition-all duration-500 hover:border-neon-purple/50 hover:shadow-xl hover:shadow-neon-purple/20"
+            style={{
+                backgroundImage: `url(${CHARACTER.image})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center top",
+            }}
+        >
+            {/* Mood-based gradient overlay */}
+            <div className={`absolute inset-0 bg-gradient-to-t ${moodGradient} transition-all duration-1000`} />
 
-            {/* Main Content: Character + Speech Bubble */}
-            <div className="flex items-start gap-2 mb-2">
-                {/* Character */}
-                <div className={`relative w-14 h-14 flex-shrink-0 transition-transform ${isAnimating ? "scale-110" : ""}`}>
-                    <Image
-                        src={CHARACTER.image}
-                        alt={CHARACTER.name}
-                        fill
-                        className={`object-contain drop-shadow-[0_0_8px_rgba(188,19,254,0.5)] ${mood === "excited" ? "animate-bounce" : ""}`}
-                    />
-                    {isAnimating && <span className="absolute -top-1 -right-1 text-xs animate-ping">💎</span>}
+            {/* Dark overlay on left for text readability */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
+
+            {/* Content */}
+            <div className="relative z-10 h-full p-4 flex flex-col justify-between">
+                {/* Header */}
+                <div className="flex justify-between items-start">
+                    <div>
+                        <div className="flex items-center gap-1.5 mb-0.5">
+                            <span className="text-sm">🐣</span>
+                            <span className="text-sm font-bold text-white drop-shadow-lg">QGotchi</span>
+                            <span className="text-[9px] bg-neon-purple/60 backdrop-blur px-1.5 py-0.5 rounded-full font-bold">Lv.{level}</span>
+                        </div>
+                        <p className="text-[10px] text-white/70">{CHARACTER.name}</p>
+                    </div>
+                    <div className="text-2xl drop-shadow-lg">{moodEmoji}</div>
                 </div>
 
                 {/* Speech Bubble */}
                 <div
-                    className="relative flex-1 bg-white/90 text-zinc-800 rounded-lg px-2 py-1.5 text-[10px] leading-tight cursor-pointer shadow-md"
+                    className="bg-white/95 backdrop-blur text-zinc-800 rounded-xl px-3 py-2 cursor-pointer shadow-xl max-w-[70%] relative"
                     onClick={() => setDialogue(getDialogue(mood))}
                 >
-                    <div className="absolute left-[-6px] top-3 w-0 h-0 border-t-[5px] border-t-transparent border-b-[5px] border-b-transparent border-r-[6px] border-r-white/90" />
-                    <p className="font-medium">{dialogue}</p>
-                    <span className="text-[7px] text-zinc-400 absolute bottom-0.5 right-1">tap▼</span>
+                    <p className="text-xs font-medium leading-snug">{dialogue}</p>
+                    <span className="text-[8px] text-zinc-400 absolute bottom-1 right-2">tap▼</span>
+                    {/* Speech bubble tail */}
+                    <div className="absolute -bottom-2 left-4 w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[10px] border-t-white/95" />
+                </div>
+
+                {/* Bottom Stats Bar */}
+                <div className="bg-black/50 backdrop-blur-sm rounded-lg px-3 py-2">
+                    <div className="flex justify-between items-center text-[10px] mb-1.5">
+                        <div className="flex items-center gap-3">
+                            <span><span className="text-white/50">💎</span> <span className="text-white font-bold">{drops}</span></span>
+                            <span><span className="text-white/50">Mode:</span> <span className="text-neon-purple font-bold capitalize">{mode}</span></span>
+                        </div>
+                        <span className="text-white/40">SOL ◎</span>
+                    </div>
+                    {/* XP Bar */}
+                    <div className="flex items-center gap-2">
+                        <span className="text-[9px] text-white/50">XP</span>
+                        <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                            <div
+                                className={`h-full bg-gradient-to-r from-neon-purple to-neon-blue transition-all duration-500 ${isAnimating ? "animate-pulse" : ""}`}
+                                style={{ width: `${(xp / xpToNext) * 100}%` }}
+                            />
+                        </div>
+                        <span className="text-[9px] text-white/50">{xp}/{xpToNext}</span>
+                    </div>
                 </div>
             </div>
 
-            {/* XP Bar */}
-            <div className="mb-2">
-                <div className="flex justify-between text-[9px] text-white/50 mb-0.5">
-                    <span>XP</span>
-                    <span>{xp}/{xpToNext}</span>
-                </div>
-                <div className="h-1 bg-white/10 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-neon-purple to-neon-blue transition-all" style={{ width: `${(xp / xpToNext) * 100}%` }} />
-                </div>
-            </div>
-
-            {/* Stats Row */}
-            <div className="flex justify-between text-[9px]">
-                <div><span className="text-white/50">Drops</span> <span className="text-white font-bold">{drops}💎</span></div>
-                <div><span className="text-white/50">Mode</span> <span className="text-white font-bold capitalize">{mode}</span></div>
-                <div><span className="text-white/50">Chain</span> <span className="text-white font-bold">SOL◎</span></div>
-            </div>
-
-            {/* Bottom Badge */}
-            <div className="absolute bottom-1 right-2 text-[8px] text-white/20">$SOLQUEEF • Clean Puff</div>
+            {/* Bottom corner branding */}
+            <div className="absolute bottom-1 right-2 text-[8px] text-white/30 z-10">$SOLQUEEF</div>
         </div>
     );
 }
