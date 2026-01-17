@@ -8,72 +8,81 @@
     <script type="text/brightscript" uri="MainScene.brs" />
 
     <children>
-        <!-- Dark Background -->
+        <!-- Deep Space Background Gradient (Simulated with Dark Blue/Purple) -->
         <Rectangle id="backgroundRect"
             width="1920"
             height="1080"
-            color="#0a0a0f" />
+            color="#050510" />
+            
+        <!-- Ambient Glow (Top Left) -->
+        <Rectangle id="ambientGlow"
+            width="1920"
+            height="500"
+            color="#1a1a2e"
+            opacity="0.5" />
 
-        <!-- TOP HEADER BAR (60px) -->
+        <!-- TOP HEADER BAR (80px) -->
         <Group id="headerBar" translation="[0,40]">
-            <!-- Logo/Brand -->
+            <!-- Logo/Brand with Neon Effect -->
             <Label id="heroTitle"
                 translation="[60,0]"
-                text="QCHANNEL"
-                font="font:MediumBoldSystemFont"
+                text="PROPHET TV"
+                font="font:LargeBoldSystemFont"
                 color="#00f3ff" />
             <Label id="heroSubtitle"
-                translation="[250,2]"
+                translation="[60,45]"
                 text="Crypto Market Intelligence"
                 font="font:SmallSystemFont"
-                color="#ffffff70" />
+                color="#bc13fe" />
             
             <!-- Live Indicator -->
-            <Group id="liveIndicator" translation="[1760,0]">
+            <Group id="liveIndicator" translation="[1750,15]">
                 <Rectangle id="liveDot"
-                    width="10"
-                    height="10"
+                    width="12"
+                    height="12"
                     color="#ff0000"
-                    translation="[0,8]" />
+                    translation="[0,6]" />
                 <Label id="liveText"
-                    translation="[18,0]"
+                    translation="[20,0]"
                     text="LIVE"
                     font="font:SmallBoldSystemFont"
                     color="#ffffff" />
             </Group>
         </Group>
 
-        <!-- MARKET TICKER (50px) -->
-        <Group id="tickerSection" translation="[0,100]">
+        <!-- MARKET TICKER (60px) -->
+        <Group id="tickerSection" translation="[0,120]">
+            <!-- Glassmorphism Background -->
             <Rectangle id="tickerBg"
                 width="1920"
-                height="50"
-                color="#00000080" />
+                height="60"
+                color="#ffffff10" />
+                
             <Label id="tickerLabel"
-                translation="[60,12]"
-                text="▲ MARKET"
+                translation="[60,15]"
+                text="▲ MARKETS"
                 font="font:SmallBoldSystemFont"
                 color="#00f3ff" />
             <Label id="tickerContent"
-                translation="[200,12]"
-                text="BTC $94,500 +2.1% • ETH $3,420 +1.8% • SOL $198 +5.2%"
+                translation="[200,15]"
+                text="Loading market data..."
                 font="font:SmallBoldSystemFont"
                 color="#ffffff" />
         </Group>
 
         <!-- MAIN CONTENT AREA -->
-        <!-- Left Panel: Featured Zone (400px wide) -->
-        <Group id="heroSection" translation="[60,170]">
+        <!-- Left Panel: Featured Zone (Glass Style) -->
+        <Group id="heroSection" translation="[60,220]">
             <Rectangle id="heroBg"
-                width="400"
-                height="500"
-                color="#12121a" />
+                width="420"
+                height="540"
+                color="#ffffff05" />
             
-            <!-- Zone Image (smaller) -->
+            <!-- Zone Image -->
             <Poster id="heroImage"
                 translation="[0,0]"
-                width="400"
-                height="200"
+                width="420"
+                height="240"
                 loadDisplayMode="scaleToFill"
                 uri="pkg:/images/zones/solana-hero.png" />
 
@@ -81,70 +90,81 @@
             <Timer id="adTimer" repeat="true" duration="15" />
             <Timer id="adRevertTimer" repeat="false" duration="8" />
             
-            <!-- Zone Info -->
-            <Group id="spotlightContent" translation="[20,220]">
+            <!-- Zone Info Container -->
+            <Group id="spotlightContent" translation="[25,260]">
                 <Label id="spotlightZoneName"
                     text="Solana Ecosystem"
                     font="font:MediumBoldSystemFont"
                     color="#ffffff"
-                    width="360" />
+                    width="370" />
+                
                 <Label id="spotlightStats"
-                    translation="[0,40]"
+                    translation="[0,45]"
                     text="TVL $8.2B • 24h +5.2%"
                     font="font:SmallBoldSystemFont"
                     color="#10b981" />
+                    
                 <Label id="spotlightDesc"
-                    translation="[0,75]"
+                    translation="[0,90]"
                     text="High-performance blockchain with DeFi, NFTs, and meme coins"
                     font="font:SmallSystemFont"
-                    color="#ffffff80"
-                    maxLines="3"
-                    width="360"
+                    color="#ffffff90"
+                    maxLines="4"
+                    width="370"
+                    lineSpacing="2"
                     wrap="true" />
             </Group>
         </Group>
 
-        <!-- Right Panel: Zone Grid (1400px) -->
-        <Group id="zonesSection" translation="[500,170]">
+        <!-- Right Panel: Zone Grid -->
+        <Group id="zonesSection" translation="[520,220]">
             <Label id="zonesHeader"
-                text="SELECT YOUR ZONE"
+                text="EXPLORE ZONES"
                 font="font:SmallBoldSystemFont"
-                color="#ffffff70" />
+                color="#ffffff50" 
+                translation="[0,-30]" />
             
-            <!-- Zone RowList - focus locks at 2nd slot (offset 320) -->
-            <RowList id="zoneGrid"
-                translation="[0,40]"
+            <!-- Zone Grid with better spacing -->
+            <!-- Zone Grid (Fixed Layout) -->
+            <MarkupGrid id="zoneGrid"
+                translation="[0,0]"
                 itemComponentName="ZoneCard"
+                numColumns="4"
                 numRows="2"
-                itemSize="[1100,220]"
-                rowItemSize="[[300,200]]"
-                rowItemSpacing="[[20,0]]"
-                focusXOffset="[0]"
+                itemSize="[310,240]"
+                itemSpacing="[20,20]"
                 focusable="true"
-                drawFocusFeedback="true"
-                showRowLabel="false"
-                showRowCounter="false" />
+                drawFocusFeedback="false" />
         </Group>
 
-        <!-- BOTTOM NEWS TICKER (80px) -->
-        <Group id="newsSection" translation="[0,720]">
+        <!-- BOTTOM NEWS TICKER -->
+        <Group id="newsSection" translation="[0,850]">
             <Rectangle id="newsBg"
                 width="1920"
                 height="80"
-                color="#0f0f15" />
+                color="#000000"
+                opacity="0.8" />
             <Label id="newsIcon"
                 translation="[60,25]"
                 text="📰 NEWS"
                 font="font:SmallBoldSystemFont"
                 color="#bc13fe" />
             <Label id="newsContent"
-                translation="[200,15]"
-                text="Bitcoin Approaches New All-Time High Amid Institutional Demand"
+                translation="[200,25]"
+                text="Loading news..."
                 font="font:SmallSystemFont"
                 color="#ffffff"
                 width="1600"
-                maxLines="2" />
+                maxLines="1" />
         </Group>
+
+        <!-- Footer Branding -->
+        <Label id="footerBrand"
+            translation="[1700,950]"
+            text="PROPHET TV"
+            font="font:SmallestSystemFont"
+            color="#ffffff30"
+            horizAlign="right" />
 
         <!-- Crypto Data Service -->
         <CryptoService id="cryptoService" />

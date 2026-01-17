@@ -13,7 +13,7 @@ mm_icon_focus_sd=pkg:/images/channel-poster-sd.png
 splash_screen_hd=pkg:/images/splash-hd.png
 splash_screen_sd=pkg:/images/splash-sd.png
 
-ui_resolutions=hd
+ui_resolutions=fhd
 bs_const=DEBUG=true
 
 # Scene Graph support

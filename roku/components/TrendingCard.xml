@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Prophet TV Trending Card - AI Market Mover Display -->
+<component name="TrendingCard" extends="Group">
+    <interface>
+        <field id="itemContent" type="node" onChange="onContentSet" />
+        <field id="focusPercent" type="float" onChange="onFocusChanged" />
+    </interface>
+
+    <script type="text/brightscript" uri="TrendingCard.brs" />
+
+    <children>
+        <Group id="cardContainer">
+            <!-- Glass Background -->
+            <Rectangle id="cardBg"
+                width="580"
+                height="200"
+                color="#ffffff08" />
+            
+            <!-- Focus Border -->
+            <Rectangle id="focusBorder"
+                width="588"
+                height="208"
+                translation="[-4,-4]"
+                color="#bc13fe"
+                opacity="0" />
+
+            <!-- Coin Icon -->
+            <Poster id="coinIcon"
+                translation="[20,20]"
+                width="60"
+                height="60"
+                loadDisplayMode="scaleToFit" />
+
+            <!-- Symbol & Name -->
+            <Group id="coinInfo" translation="[100,20]">
+                <Label id="symbolLabel"
+                    text="BTC"
+                    font="font:LargeBoldSystemFont"
+                    color="#ffffff" />
+                <Label id="nameLabel"
+                    translation="[0,40]"
+                    text="Bitcoin"
+                    font="font:SmallSystemFont"
+                    color="#ffffff70" />
+            </Group>
+
+            <!-- Price & Change -->
+            <Group id="priceInfo" translation="[400,20]">
+                <Label id="priceLabel"
+                    text="$94,521"
+                    font="font:MediumBoldSystemFont"
+                    color="#ffffff"
+                    horizAlign="right"
+                    width="160" />
+                <Label id="changeLabel"
+                    translation="[0,35]"
+                    text="+2.34%"
+                    font="font:SmallBoldSystemFont"
+                    color="#10b981"
+                    horizAlign="right"
+                    width="160" />
+            </Group>
+
+            <!-- AI Reason (Bottom) -->
+            <Rectangle id="reasonBg"
+                translation="[0,100]"
+                width="580"
+                height="100"
+                color="#ffffff05" />
+            <Label id="reasonIcon"
+                translation="[20,115]"
+                text="🤖"
+                font="font:SmallBoldSystemFont"
+                color="#bc13fe" />
+            <Label id="reasonLabel"
+                translation="[50,115]"
+                text="AI Insight: Institutional buying pressure continues"
+                font="font:SmallSystemFont"
+                color="#ffffff90"
+                width="510"
+                maxLines="2"
+                wrap="true" />
+
+            <!-- Trending Badge -->
+            <Group id="trendingBadge" translation="[480,85]" visible="false">
+                <Rectangle id="badgeBg"
+                    width="80"
+                    height="24"
+                    color="#bc13fe" />
+                <Label id="badgeLabel"
+                    translation="[10,2]"
+                    text="🔥 HOT"
+                    font="font:SmallestBoldSystemFont"
+                    color="#ffffff" />
+            </Group>
+        </Group>
+    </children>
+</component>

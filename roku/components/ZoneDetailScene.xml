@@ -9,11 +9,18 @@
     <script type="text/brightscript" uri="ZoneDetailScene.brs" />
 
     <children>
-        <!-- Dark Background -->
+        <!-- Deep Space Background Gradient -->
         <Rectangle id="backgroundRect"
             width="1920"
             height="1080"
-            color="#060606" />
+            color="#050510" />
+
+        <!-- Ambient Glow -->
+        <Rectangle id="ambientGlow"
+            width="1920"
+            height="500"
+            color="#1a1a2e"
+            opacity="0.5" />
 
         <!-- Compact Header Bar (80px) -->
         <Group id="headerSection" translation="[0,0]">

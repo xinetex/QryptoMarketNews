@@ -9,60 +9,62 @@
     <script type="text/brightscript" uri="ZoneCard.brs" />
 
     <children>
-        <!-- Card Container -->
+        <!-- Card Container Scaler -->
         <Group id="cardContainer">
-            <!-- Background with Zone Color -->
+            <!-- Glass Background -->
             <Rectangle id="cardBg"
-                width="300"
-                height="200"
-                color="#12121a" />
+                width="310"
+                height="240"
+                color="#ffffff10" />
             
-            <!-- Focus Border (hidden by default) -->
+            <!-- Focus Border Glow (Dynamic) -->
             <Rectangle id="focusBorder"
-                width="308"
-                height="208"
+                width="318"
+                height="248"
                 translation="[-4,-4]"
-                color="#00000000"
+                color="#00f3ff"
                 opacity="0" />
 
-            <!-- Zone Icon (Image) -->
-            <Group id="iconContainer" translation="[15,15]">
+            <!-- Zone Icon with Glow -->
+            <Group id="iconContainer" translation="[20,20]">
                 <Rectangle id="iconBg"
-                    width="50"
-                    height="50"
-                    color="#ffffff10" />
+                    width="60"
+                    height="60"
+                    color="#ffffff08" />
                 <Poster id="iconImage"
-                    translation="[8,8]"
-                    width="34"
-                    height="34"
+                    translation="[10,10]"
+                    width="40"
+                    height="40"
                     loadDisplayMode="scaleToFit" />
             </Group>
 
-            <!-- TVL Badge -->
-            <Group id="tvlBadge" translation="[200,15]">
+            <!-- TVL Badge (Top Right) -->
+            <Group id="tvlBadge" translation="[190,20]">
                 <Rectangle id="tvlBg"
-                    width="85"
-                    height="26"
-                    color="#00000060" />
+                    width="100"
+                    height="30"
+                    color="#00000080" />
                 <Label id="tvlLabel"
-                    translation="[8,3]"
+                    translation="[0,4]"
                     text="$8.2B"
                     font="font:SmallBoldSystemFont"
-                    color="#10b981" />
+                    color="#10b981"
+                    width="100"
+                    horizAlign="center" />
             </Group>
 
             <!-- Zone Title -->
             <Label id="titleLabel"
-                translation="[15,75]"
+                translation="[20,100]"
                 text="Zone Name"
-                font="font:SmallBoldSystemFont"
+                font="font:MediumBoldSystemFont"
                 color="#ffffff"
                 width="270"
                 maxLines="2"
                 wrap="true" />
 
             <!-- Change Indicator -->
-            <Group id="changeIndicator" translation="[15,130]">
+            <Group id="changeIndicator" translation="[20,170]">
                 <Label id="changeArrow"
                     text="▲"
                     font="font:SmallBoldSystemFont"
@@ -74,28 +76,21 @@
                     color="#10b981" />
             </Group>
 
-            <!-- Description (1 line) -->
+            <!-- Short Description -->
             <Label id="descLabel"
-                translation="[15,160]"
-                text="Description"
-                font="font:SmallSystemFont"
-                color="#ffffff50"
+                translation="[20,200]"
+                text="Description text"
+                font="font:SmallestSystemFont"
+                color="#ffffff60"
                 width="270"
                 maxLines="1" />
 
-            <!-- Color Accent Bar -->
+            <!-- Dynamic Color Accent Bar -->
             <Rectangle id="accentBar"
-                translation="[0,196]"
-                width="300"
+                translation="[0,236]"
+                width="310"
                 height="4"
                 color="#9945FF" />
-
-            <!-- Selection Glow -->
-            <Rectangle id="selectionGlow"
-                width="300"
-                height="200"
-                color="#00000000"
-                opacity="0" />
         </Group>
     </children>
 </component>

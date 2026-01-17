@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Prophet TV Trending Scene - AI-Powered Market Movers -->
+<component name="TrendingScene" extends="Scene">
+    <interface>
+        <field id="exitRequested" type="boolean" value="false" />
+    </interface>
+
+    <script type="text/brightscript" uri="TrendingScene.brs" />
+
+    <children>
+        <!-- Deep Space Background -->
+        <Rectangle id="backgroundRect"
+            width="1920"
+            height="1080"
+            color="#050510" />
+        
+        <!-- Ambient Glow -->
+        <Rectangle id="ambientGlow"
+            width="1920"
+            height="500"
+            color="#1a0a3e"
+            opacity="0.4" />
+
+        <!-- Header -->
+        <Group id="header" translation="[60,40]">
+            <Label id="headerTitle"
+                text="🔮 WHAT'S MOVING"
+                font="font:LargeBoldSystemFont"
+                color="#bc13fe" />
+            <Label id="headerSubtitle"
+                translation="[0,50]"
+                text="AI-Powered Market Intelligence"
+                font="font:SmallSystemFont"
+                color="#ffffff70" />
+        </Group>
+
+        <!-- Trending Cards Grid -->
+        <MarkupGrid id="trendingGrid"
+            translation="[60,150]"
+            itemComponentName="TrendingCard"
+            numColumns="3"
+            numRows="2"
+            itemSize="[580,200]"
+            itemSpacing="[30,30]"
+            focusable="true"
+            drawFocusFeedback="false" />
+
+        <!-- Bottom Info Bar -->
+        <Group id="infoBar" translation="[0,960]">
+            <Rectangle id="infoBarBg"
+                width="1920"
+                height="120"
+                color="#000000"
+                opacity="0.8" />
+            <Label id="sentimentLabel"
+                translation="[60,30]"
+                text="Market Sentiment: 67% Bullish"
+                font="font:MediumBoldSystemFont"
+                color="#10b981" />
+            <Label id="updateTime"
+                translation="[60,70]"
+                text="Last updated: Just now"
+                font="font:SmallSystemFont"
+                color="#ffffff50" />
+            <Label id="exitHint"
+                translation="[1500,45]"
+                text="Press BACK to exit"
+                font="font:SmallSystemFont"
+                color="#ffffff30" />
+        </Group>
+
+        <!-- Refresh Timer -->
+        <Timer id="refreshTimer" repeat="true" duration="300" />
+        
+        <!-- Crypto Service -->
+        <CryptoService id="cryptoService" />
+    </children>
+</component>

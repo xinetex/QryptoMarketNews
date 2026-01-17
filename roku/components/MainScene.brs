@@ -22,6 +22,8 @@ sub init()
     m.cryptoService = m.top.findNode("cryptoService")
     m.cryptoService.observeField("tickerData", "onTickerDataChanged")
     m.cryptoService.observeField("zoneData", "onZoneDataChanged")
+    m.cryptoService.observeField("newsData", "onNewsDataChanged")
+    m.cryptoService.observeField("intelligenceData", "onIntelligenceDataChanged")
     m.cryptoService.control = "run"
     
     ' Setup Ad Timers
@@ -37,9 +39,15 @@ sub init()
     m.originalZoneData = invalid
     m.adIndex = -1
     
-    ' Setup focus observers for row list
-    m.zoneGrid.observeField("rowItemFocused", "onZoneFocused")
-    m.zoneGrid.observeField("rowItemSelected", "onZoneSelected")
+    ' Ambient Mode references
+    m.ambientScene = invalid
+    m.idleTimer = invalid
+    m.idleSeconds = 0
+    setupIdleTimer()
+    
+    ' Setup focus observers for grid
+    m.zoneGrid.observeField("itemFocused", "onZoneFocused")
+    m.zoneGrid.observeField("itemSelected", "onZoneSelected")
     
     ' Start live indicator animation
     startLiveAnimation()
@@ -150,32 +158,21 @@ sub loadZoneData()
     ' Store zones for reference
     m.zones = zones
     
-    ' Populate RowList dynamically (supports any number of zones)
+    ' Populate MarkupGrid (Flat list)
     content = CreateObject("roSGNode", "ContentNode")
-    itemsPerRow = 4
-    numRows = int((zones.count() + itemsPerRow - 1) / itemsPerRow) ' Ceiling division
     
-    for rowIndex = 0 to numRows - 1
-        row = content.createChild("ContentNode")
-        startIndex = rowIndex * itemsPerRow
-        endIndex = startIndex + itemsPerRow - 1
-        
-        for i = startIndex to endIndex
-            if i < zones.count()
-                zone = zones[i]
-                item = row.createChild("ContentNode")
-                item.addFields({
-                    id: zone.id,
-                    title: zone.name,
-                    description: zone.description,
-                    icon: zone.icon,
-                    zoneColor: zone.color,
-                    tvl: zone.tvl,
-                    change: zone.change,
-                    coingeckoId: zone.coingeckoId
-                })
-            end if
-        end for
+    for each zone in zones
+        item = content.createChild("ContentNode")
+        item.addFields({
+            id: zone.id,
+            title: zone.name,
+            description: zone.description,
+            icon: zone.icon,
+            zoneColor: zone.color,
+            tvl: zone.tvl,
+            change: zone.change,
+            coingeckoId: zone.coingeckoId
+        })
     end for
     
     m.zoneGrid.content = content
@@ -188,17 +185,10 @@ sub loadZoneData()
 end sub
 
 sub onZoneFocused(event as object)
-    gridInfo = event.getData() ' Returns [rowIndex, itemIndex]
-    if gridInfo = invalid or gridInfo.count() < 2 then return
+    itemIndex = event.getData() ' Returns flat index for MarkupGrid
     
-    ' Flatten index for m.zones lookup
-    itemsPerRow = 4 
-    rowIndex = gridInfo[0]
-    itemIndex = gridInfo[1]
-    flatIndex = (rowIndex * itemsPerRow) + itemIndex
-    
-    if m.zones <> invalid and flatIndex < m.zones.count()
-        updateSpotlight(m.zones[flatIndex])
+    if m.zones <> invalid and itemIndex < m.zones.count()
+        updateSpotlight(m.zones[itemIndex])
     end if
 end sub
 
@@ -220,18 +210,12 @@ sub updateSpotlight(zone as object)
 end sub
 
 sub onZoneSelected(event as object)
-    gridIndices = event.getData()
-    if gridIndices <> invalid and gridIndices.count() = 2
-        rowIndex = gridIndices[0]
-        itemIndex = gridIndices[1]
-        itemsPerRow = 4
-        flatIndex = (rowIndex * itemsPerRow) + itemIndex
-        
-        if m.zones <> invalid and flatIndex < m.zones.count()
-            zone = m.zones[flatIndex]
-            print "Selected zone: " + zone.name
-            showZoneDetail(zone)
-        end if
+    itemIndex = event.getData() ' Flat index for MarkupGrid
+    
+    if m.zones <> invalid and itemIndex < m.zones.count()
+        zone = m.zones[itemIndex]
+        print "Selected zone: " + zone.name
+        showZoneDetail(zone)
     end if
 end sub
 
@@ -310,6 +294,35 @@ sub onZoneDataChanged()
     end if
 end sub
 
+sub onNewsDataChanged()
+    newsData = m.cryptoService.newsData
+    if newsData <> invalid and newsData.count() > 0
+        ' Cycle through headlines for the news ticker
+        headlines = []
+        for each item in newsData
+            if item.title <> invalid
+                headlines.push(item.title)
+            end if
+        end for
+        
+        if headlines.count() > 0
+            m.newsContent.text = "📰 " + headlines[0]
+            
+            ' Store for cycling
+            m.newsHeadlines = headlines
+            m.currentNewsIndex = 0
+        end if
+    end if
+end sub
+
+sub onIntelligenceDataChanged()
+    intelligence = m.cryptoService.intelligenceData
+    if intelligence <> invalid and intelligence.data <> invalid
+        ' Update market pulse or trending info if we have UI for it
+        print "[MainScene] Intelligence data received: " + str(intelligence.data.count()) + " movers"
+    end if
+end sub
+
 function formatPrice(price as float) as string
     if price >= 1000
         return str(int(price)).trim()
@@ -327,9 +340,23 @@ end function
 function onKeyEvent(key as string, press as boolean) as boolean
     if not press then return false
     
-    ' Handle zone detail scene first
+    ' Reset idle timer on any key press
+    m.idleSeconds = 0
+    
+    ' Handle ambient scene
+    if m.ambientScene <> invalid and m.ambientScene.visible
+        return false ' Let ambient scene handle it
+    end if
+    
+    ' Handle zone detail scene
     if m.zoneDetailScene <> invalid and m.zoneDetailScene.visible
         return false ' Let detail scene handle it
+    end if
+    
+    ' Launch Ambient Mode with 'A' or 'options' button
+    if key = "options" or key = "play"
+        launchAmbientMode()
+        return true
     end if
     
     if key = "back"
@@ -338,3 +365,42 @@ function onKeyEvent(key as string, press as boolean) as boolean
     
     return false
 end function
+
+' ===== AMBIENT MODE =====
+sub setupIdleTimer()
+    m.idleTimer = m.top.createChild("Timer")
+    m.idleTimer.repeat = true
+    m.idleTimer.duration = 1
+    m.idleTimer.observeField("fire", "onIdleTimerFired")
+    m.idleTimer.control = "start"
+end sub
+
+sub onIdleTimerFired()
+    m.idleSeconds = m.idleSeconds + 1
+    
+    ' Auto-launch ambient mode after 90 seconds of inactivity
+    if m.idleSeconds >= 90
+        if m.ambientScene = invalid or not m.ambientScene.visible
+            launchAmbientMode()
+        end if
+    end if
+end sub
+
+sub launchAmbientMode()
+    if m.ambientScene = invalid
+        m.ambientScene = m.top.createChild("AmbientScene")
+        m.ambientScene.observeField("exitRequested", "onAmbientExitRequested")
+    end if
+    
+    m.ambientScene.visible = true
+    m.ambientScene.setFocus(true)
+    m.idleSeconds = 0
+end sub
+
+sub onAmbientExitRequested()
+    if m.ambientScene <> invalid
+        m.ambientScene.visible = false
+        m.zoneGrid.setFocus(true)
+        m.idleSeconds = 0
+    end if
+end sub

@@ -10,57 +10,57 @@
 
     <children>
         <Group id="itemContainer">
-            <!-- Background -->
+            <!-- Glass Background -->
             <Rectangle id="itemBg"
-                width="400"
-                height="80"
-                color="#0f0f0f" />
+                width="420"
+                height="85"
+                color="#ffffff08" />
             
-            <!-- Focus Border -->
+            <!-- Focus Border Glow -->
             <Rectangle id="focusBorder"
-                width="408"
-                height="88"
+                width="428"
+                height="93"
                 translation="[-4,-4]"
                 color="#00f3ff"
                 opacity="0" />
 
-            <!-- Coin Image (smaller) -->
+            <!-- Coin Image (Icon) -->
             <Poster id="coinImage"
-                translation="[8,8]"
-                width="50"
-                height="50"
+                translation="[15,12]"
+                width="60"
+                height="60"
                 loadDisplayMode="scaleToFit" />
 
-            <!-- Coin Info (tighter) -->
-            <Group id="coinInfo" translation="[65,8]">
+            <!-- Coin Info -->
+            <Group id="coinInfo" translation="[90,12]">
                 <Label id="coinName"
                     text="Bitcoin"
                     font="font:SmallBoldSystemFont"
                     color="#ffffff"
-                    width="120"
+                    width="180"
                     maxLines="1" />
                 <Label id="coinSymbol"
-                    translation="[0,22]"
+                    translation="[0,30]"
                     text="BTC"
                     font="font:SmallestSystemFont"
-                    color="#ffffff60" />
+                    color="#ffffff70" />
             </Group>
 
-            <!-- Price & Change (compact) -->
-            <Group id="priceInfo" translation="[260,8]">
+            <!-- Price & Change -->
+            <Group id="priceInfo" translation="[270,12]">
                 <Label id="coinPrice"
                     text="$94,500"
                     font="font:SmallBoldSystemFont"
                     color="#ffffff"
                     horizAlign="right"
-                    width="120" />
+                    width="130" />
                 <Label id="coinChange"
-                    translation="[0,22]"
+                    translation="[0,30]"
                     text="+2.1%"
                     font="font:SmallestBoldSystemFont"
                     color="#10b981"
                     horizAlign="right"
-                    width="120" />
+                    width="130" />
             </Group>
         </Group>
     </children>

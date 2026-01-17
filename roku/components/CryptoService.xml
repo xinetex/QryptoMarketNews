@@ -19,6 +19,10 @@
         <!-- Prediction markets from feed -->
         <field id="predictions" type="array" />
         
+        <!-- AgentCache Intelligence Data -->
+        <field id="intelligenceData" type="assocarray" />
+        <field id="briefingData" type="assocarray" />
+        
         <field id="prerollVastUrl" type="string" />
         <field id="apiBaseUrl" type="string" value="https://qryptomarket-news.vercel.app" />
         <!-- Zone detail requests - Task polls these -->

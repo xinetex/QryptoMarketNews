@@ -112,6 +112,10 @@ sub fetchRokuFeed()
             m.top.predictions = response.predictions
         end if
     end if
+    
+    ' Also fetch from AgentCache for enhanced data
+    fetchAgentCacheNews()
+    fetchAgentCacheIntelligence()
 end sub
 
 sub fetchZoneData()
@@ -152,13 +156,51 @@ sub fetchZoneCoins(zoneId as string)
 end sub
 
 sub fetchNews()
-    url = m.top.apiBaseUrl + "/api/news"
+    ' First try AgentCache news endpoint
+    url = "https://agentcache.ai/api/qchannel/news?format=roku&limit=5"
     response = makeApiRequest(url)
     
-    if response <> invalid and response.data <> invalid
-        m.top.newsData = response.data
+    if response <> invalid and response.items <> invalid
+        m.top.newsData = response.items
     else
-        m.top.newsData = []
+        ' Fallback to local API
+        url = m.top.apiBaseUrl + "/api/news"
+        response = makeApiRequest(url)
+        if response <> invalid and response.data <> invalid
+            m.top.newsData = response.data
+        else
+            m.top.newsData = []
+        end if
+    end if
+end sub
+
+' Fetch news from AgentCache
+sub fetchAgentCacheNews()
+    url = "https://agentcache.ai/api/qchannel/news?format=roku&limit=5"
+    response = makeApiRequest(url)
+    
+    if response <> invalid and response.headlines <> invalid
+        m.top.newsData = response.items
+    end if
+end sub
+
+' Fetch market intelligence from AgentCache
+sub fetchAgentCacheIntelligence()
+    url = "https://agentcache.ai/api/qchannel/intelligence?type=movers&limit=10"
+    response = makeApiRequest(url)
+    
+    if response <> invalid
+        m.top.intelligenceData = response
+    end if
+end sub
+
+' Fetch daily briefing from AgentCache
+sub fetchAgentCacheBriefing()
+    url = "https://agentcache.ai/api/qchannel/briefing"
+    response = makeApiRequest(url)
+    
+    if response <> invalid
+        m.top.briefingData = response
     end if
 end sub
 
