@@ -343,18 +343,25 @@ function onKeyEvent(key as string, press as boolean) as boolean
     ' Reset idle timer on any key press
     m.idleSeconds = 0
     
-    ' Handle ambient scene
+    ' Handle active overlay scenes
     if m.ambientScene <> invalid and m.ambientScene.visible
-        return false ' Let ambient scene handle it
+        return false
     end if
-    
-    ' Handle zone detail scene
     if m.zoneDetailScene <> invalid and m.zoneDetailScene.visible
-        return false ' Let detail scene handle it
+        return false
+    end if
+    if m.settingsScene <> invalid and m.settingsScene.visible
+        return false
     end if
     
-    ' Launch Ambient Mode with 'A' or 'options' button
-    if key = "options" or key = "play"
+    ' OPTIONS button opens Settings
+    if key = "options"
+        launchSettingsMode()
+        return true
+    end if
+    
+    ' PLAY button launches Ambient Mode
+    if key = "play"
         launchAmbientMode()
         return true
     end if
@@ -402,6 +409,40 @@ sub onAmbientExitRequested()
         m.ambientScene.visible = false
         m.zoneGrid.setFocus(true)
         m.idleSeconds = 0
+    end if
+end sub
+
+sub launchSettingsMode()
+    if m.settingsScene = invalid
+        m.settingsScene = m.top.createChild("SettingsScene")
+        m.settingsScene.observeField("exitRequested", "onSettingsExitRequested")
+        m.settingsScene.pairingToken = m.top.pairingToken
+    end if
+    
+    m.settingsScene.visible = true
+    m.settingsScene.setFocus(true)
+end sub
+
+sub onSettingsExitRequested()
+    if m.settingsScene <> invalid
+        launchMode = m.settingsScene.launchMode
+        m.settingsScene.visible = false
+        m.settingsScene.launchMode = ""
+        
+        ' Launch requested mode
+        if launchMode = "screensaver"
+            launchScreensaverMode()
+        else if launchMode = "ambient"
+            launchAmbientMode()
+        else if launchMode = "nft"
+            launchNFTGalleryMode()
+        else if launchMode = "predictions"
+            launchPredictionMode()
+        else if launchMode = "briefing"
+            launchBriefingMode()
+        else
+            m.zoneGrid.setFocus(true)
+        end if
     end if
 end sub
 

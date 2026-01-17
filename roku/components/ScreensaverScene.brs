@@ -1,5 +1,5 @@
 ' Prophet TV Screensaver
-' BrightScript logic for portfolio screensaver with burn-in prevention
+' Simplified portfolio screensaver with live prices
 
 sub init()
     m.top.setFocus(true)
@@ -15,7 +15,6 @@ sub init()
     m.sentimentValue = m.top.findNode("sentimentValue")
     m.clockLabel = m.top.findNode("clockLabel")
     m.dateLabel = m.top.findNode("dateLabel")
-    m.particleContainer = m.top.findNode("particleContainer")
     
     ' Position tracking for movement
     m.baseX = 480
@@ -36,49 +35,9 @@ sub init()
     m.moveTimer.observeField("fire", "onMoveTimerFired")
     m.moveTimer.control = "start"
     
-    m.particleTimer = m.top.findNode("particleTimer")
-    m.particleTimer.observeField("fire", "onParticleTimerFired")
-    m.particleTimer.control = "start"
-    
-    ' Create particles
-    m.particles = []
-    createParticles(15)
-    
     ' Initial updates
     updateClock()
     updateDate()
-end sub
-
-sub createParticles(count as integer)
-    for i = 0 to count - 1
-        particle = m.particleContainer.createChild("Rectangle")
-        particleSize = 2 + (rnd(0) * 3)
-        particle.width = particleSize
-        particle.height = particleSize
-        particle.color = "#ffffff"
-        particle.opacity = 0.02 + (rnd(0) * 0.03)
-        particle.translation = [rnd(0) * 1920, rnd(0) * 1080]
-        
-        particleData = {}
-        particleData.node = particle
-        particleData.speedX = (rnd(0) - 0.5) * 0.5
-        particleData.speedY = -0.2 - (rnd(0) * 0.3)
-        m.particles.push(particleData)
-    end for
-end sub
-
-sub onParticleTimerFired()
-    for each p in m.particles
-        pos = p.node.translation
-        newX = pos[0] + p.speedX
-        newY = pos[1] + p.speedY
-        
-        if newY < -10 then newY = 1090
-        if newX < -10 then newX = 1930
-        if newX > 1930 then newX = -10
-        
-        p.node.translation = [newX, newY]
-    end for
 end sub
 
 sub onMoveTimerFired()
@@ -88,17 +47,7 @@ sub onMoveTimerFired()
     offsetX = 20 * m.moveDirection
     offsetY = 15 * m.moveDirection
     
-    ' Animate movement
-    moveAnim = m.top.createChild("Animation")
-    moveAnim.duration = 5
-    moveAnim.easeFunction = "inOutQuad"
-    
-    posInterp = moveAnim.createChild("Vector2DFieldInterpolator")
-    posInterp.key = [0.0, 1.0]
-    posInterp.keyValue = [m.contentGroup.translation, [m.baseX + offsetX, m.baseY + offsetY]]
-    posInterp.fieldToInterp = m.contentGroup.id + ".translation"
-    
-    moveAnim.control = "start"
+    m.contentGroup.translation = [m.baseX + offsetX, m.baseY + offsetY]
 end sub
 
 sub onUpdateTimerFired()
@@ -131,8 +80,7 @@ sub updateDate()
     dt.toLocalTime()
     
     days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-    months = ["January", "February", "March", "April", "May", "June", 
-              "July", "August", "September", "October", "November", "December"]
+    months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     
     dayName = days[dt.getDayOfWeek()]
     monthName = months[dt.getMonth() - 1]
@@ -143,7 +91,8 @@ end sub
 
 sub onTickerDataChanged()
     tickerData = m.cryptoService.tickerData
-    if tickerData = invalid or tickerData.count() = 0 then return
+    if tickerData = invalid then return
+    if tickerData.count() = 0 then return
     
     for each coin in tickerData
         if coin.symbol = "BTC"
@@ -161,7 +110,6 @@ sub onTickerDataChanged()
         end if
     end for
     
-    ' Update sentiment
     updateSentiment(tickerData)
 end sub
 
@@ -178,11 +126,14 @@ end sub
 
 sub updateSentiment(data as object)
     bullish = 0
+    total = data.count()
+    if total = 0 then return
+    
     for each coin in data
         if val(str(coin.change24h)) > 0 then bullish = bullish + 1
     end for
     
-    pct = int((bullish / data.count()) * 100)
+    pct = int((bullish / total) * 100)
     m.sentimentFill.width = int(400 * pct / 100)
     m.sentimentValue.text = str(pct).trim() + "% Bullish"
     
