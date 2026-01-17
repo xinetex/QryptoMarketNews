@@ -52,17 +52,18 @@ end sub
 sub createParticles(count as integer)
     for i = 0 to count - 1
         particle = m.particleContainer.createChild("Rectangle")
-        particle.width = 2 + rnd(3)
-        particle.height = particle.width
+        particleSize = 2 + (rnd(0) * 3)
+        particle.width = particleSize
+        particle.height = particleSize
         particle.color = "#ffffff"
-        particle.opacity = 0.02 + rnd(0) * 0.03
-        particle.translation = [rnd(1920), rnd(1080)]
+        particle.opacity = 0.02 + (rnd(0) * 0.03)
+        particle.translation = [rnd(0) * 1920, rnd(0) * 1080]
         
-        m.particles.push({
-            node: particle,
-            speedX: (rnd(0) - 0.5) * 0.5,
-            speedY: -0.2 - rnd(0) * 0.3
-        })
+        particleData = {}
+        particleData.node = particle
+        particleData.speedX = (rnd(0) - 0.5) * 0.5
+        particleData.speedY = -0.2 - (rnd(0) * 0.3)
+        m.particles.push(particleData)
     end for
 end sub
 

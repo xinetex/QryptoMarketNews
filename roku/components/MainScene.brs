@@ -491,6 +491,23 @@ sub onTrendingExitRequested()
     end if
 end sub
 
+sub launchNFTGalleryMode()
+    if m.nftGalleryScene = invalid
+        m.nftGalleryScene = m.top.createChild("NFTGalleryScene")
+        m.nftGalleryScene.observeField("exitRequested", "onNFTGalleryExitRequested")
+    end if
+    
+    m.nftGalleryScene.visible = true
+    m.nftGalleryScene.setFocus(true)
+end sub
+
+sub onNFTGalleryExitRequested()
+    if m.nftGalleryScene <> invalid
+        m.nftGalleryScene.visible = false
+        m.zoneGrid.setFocus(true)
+    end if
+end sub
+
 sub showCoinDetail(coinId as string)
     ' Use crypto service to fetch and show coin detail
     m.cryptoService.coinRequest = coinId
