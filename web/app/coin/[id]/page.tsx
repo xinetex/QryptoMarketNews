@@ -101,7 +101,7 @@ export default function CoinDetailPage() {
             <div className="min-h-screen bg-[#09090b] flex items-center justify-center">
                 <div className="text-center">
                     <h1 className="text-2xl text-zinc-100 mb-4">Coin Not Found</h1>
-                    <Link href="/" className="text-indigo-400 hover:underline">← Back to QChannel</Link>
+                    <Link href="/" className="text-indigo-400 hover:underline">← Back to Prophet TV</Link>
                 </div>
             </div>
         );
@@ -127,7 +127,7 @@ export default function CoinDetailPage() {
                             <div className="w-6 h-6 bg-zinc-100 text-zinc-950 rounded flex items-center justify-center font-bold text-xs tracking-tighter">
                                 QC
                             </div>
-                            <span className="font-medium tracking-tight text-sm">QChannel</span>
+                            <span className="font-medium tracking-tight text-sm">Prophet TV</span>
                         </Link>
 
                         {/* Nav Links */}
@@ -142,7 +142,7 @@ export default function CoinDetailPage() {
                     <div className="relative hidden sm:block">
                         <input
                             type="text"
-                            placeholder="Search tokens, pairs..."
+                            placeholder="Search Prophets, pairs..."
                             className="bg-zinc-900 border border-white/10 rounded-md py-1.5 pl-9 pr-4 text-xs text-zinc-300 focus:outline-none focus:ring-1 focus:ring-zinc-700 w-64 placeholder:text-zinc-600"
                         />
                         <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] bg-zinc-800 border border-white/5 px-1.5 rounded text-zinc-500">⌘K</span>
@@ -309,7 +309,7 @@ export default function CoinDetailPage() {
                             <div className="flex items-center justify-between mb-6">
                                 <h3 className="text-zinc-100 font-medium text-sm flex items-center gap-2">
                                     <Coins size={14} className="text-indigo-400" />
-                                    Supply & Tokenomics
+                                    Supply & Prophetomics
                                 </h3>
                             </div>
 
@@ -648,7 +648,7 @@ export default function CoinDetailPage() {
             <footer className="border-t border-white/5 py-8 mt-6">
                 <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
                     <div className="text-xs text-zinc-600">
-                        © 2024 QChannel Intelligence. Data provided for informational purposes only.
+                        © 2026 Prophet TV. Data provided for informational purposes only.
                     </div>
                     <div className="flex gap-4 text-xs text-zinc-500">
                         <a href="#" className="hover:text-zinc-300">Privacy</a>

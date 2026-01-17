@@ -18,7 +18,7 @@
         
         <!-- Brand Label -->
         <Label id="brandLabel"
-            text="📊 QCHANNEL"
+            text="📊 PROPHET TV"
             translation="[20, 18]"
             font="font:SmallBoldSystemFont"
             color="0x6366f1FF" />

@@ -109,7 +109,7 @@ export default function ZoneDetailPage() {
                         <h1 className="text-3xl font-bold tracking-tight">
                             {zoneConfig.name}
                         </h1>
-                        <p className="text-white/60 font-mono">Top tokens by market cap</p>
+                        <p className="text-white/60 font-mono">Top Prophets by market cap</p>
                     </div>
                 </div>
             </header>

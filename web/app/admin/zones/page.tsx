@@ -85,7 +85,7 @@ export default function ZonesPage() {
                     </Link>
                     <div>
                         <h1 className="text-2xl font-bold">Zone Management</h1>
-                        <p className="text-zinc-400 text-sm">Configure crypto category zones</p>
+                        <p className="text-zinc-400 text-sm">Configure Prophet category zones</p>
                     </div>
                 </div>
 
@@ -181,8 +181,8 @@ export default function ZonesPage() {
                                     <button
                                         onClick={() => toggleZone(zone.id)}
                                         className={`p-2 rounded-lg transition-colors ${zone.enabled
-                                                ? 'bg-emerald-500/20 text-emerald-400'
-                                                : 'bg-zinc-800 text-zinc-500'
+                                            ? 'bg-emerald-500/20 text-emerald-400'
+                                            : 'bg-zinc-800 text-zinc-500'
                                             }`}
                                     >
                                         {zone.enabled ? <Eye size={20} /> : <EyeOff size={20} />}

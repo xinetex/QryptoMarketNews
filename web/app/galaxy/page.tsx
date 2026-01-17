@@ -127,10 +127,10 @@ export default function GalaxyPage() {
 
                         <div>
                             <h1 className="text-3xl font-bold tracking-tight">
-                                🌌 Crypto Galaxy
+                                🌌 Prophet Galaxy
                             </h1>
                             <p className="text-white/60 font-mono">
-                                Explore the universe of crypto markets in 3D
+                                Explore the universe of Prophet markets in 3D
                             </p>
                         </div>
                     </div>

@@ -80,7 +80,7 @@ export default function RegisterPage() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="w-full bg-black/40 border border-white/10 rounded-lg py-2.5 pl-10 text-white placeholder:text-zinc-600 focus:outline-none focus:border-neon-blue focus:ring-1 focus:ring-neon-blue/50 transition-all font-mono text-sm"
-                                placeholder="agent@qchannel.tv"
+                                placeholder="agent@prophet.tv"
                                 required
                             />
                         </div>

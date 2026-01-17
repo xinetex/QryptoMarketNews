@@ -143,7 +143,7 @@ export async function GET() {
             zones: enabledZones.map(zone => ({
                 id: zone.id,
                 title: zone.name,
-                shortDescription: `${zone.icon} ${zone.name} tokens`,
+                shortDescription: `${zone.icon} ${zone.name} Prophets`,
                 icon: zone.icon,
                 color: zone.color,
                 coinLimit: zone.coinLimit,

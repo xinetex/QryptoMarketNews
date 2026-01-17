@@ -11,7 +11,7 @@ interface StreamConfig {
 }
 
 export default function StreamPage() {
-    const [stream, setStream] = useState<StreamConfig>({ hlsUrl: '', isLive: false, title: 'QChannel Live' });
+    const [stream, setStream] = useState<StreamConfig>({ hlsUrl: '', isLive: false, title: 'Prophet TV Live' });
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState<string | null>(null);
@@ -90,8 +90,8 @@ export default function StreamPage() {
                                 <button
                                     onClick={() => setStream(s => ({ ...s, isLive: !s.isLive }))}
                                     className={`px-6 py-2 rounded-lg font-medium transition-colors ${stream.isLive
-                                            ? 'bg-red-600 hover:bg-red-500'
-                                            : 'bg-emerald-600 hover:bg-emerald-500'
+                                        ? 'bg-red-600 hover:bg-red-500'
+                                        : 'bg-emerald-600 hover:bg-emerald-500'
                                         }`}
                                 >
                                     {stream.isLive ? 'Go Offline' : 'Go Live'}

@@ -12,7 +12,7 @@ interface LiveStreamCardProps {
 
 export default function LiveStreamCard({
     streamUrl,
-    title = "QChannel Live",
+    title = "Prophet TV Live",
     description = "Live crypto market coverage",
     isLive = false,
 }: LiveStreamCardProps) {

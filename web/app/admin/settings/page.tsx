@@ -201,7 +201,7 @@ export default function SettingsPage() {
                                 <label className="block text-xs uppercase tracking-wider text-zinc-500 mb-1">Card Title</label>
                                 <input
                                     type="text"
-                                    value={settings?.youtube?.title ?? "QCrypto Radio"}
+                                    value={settings?.youtube?.title ?? "Prophet Radio"}
                                     onChange={(e) => setSettings(s => s ? {
                                         ...s,
                                         youtube: { ...s.youtube!, title: e.target.value }

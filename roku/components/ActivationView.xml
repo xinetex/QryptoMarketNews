@@ -22,7 +22,7 @@
         
         <!-- Logo -->
         <Label 
-            text="QChannel" 
+            text="Prophet TV" 
             width="1920" 
             translation="[0, 80]" 
             horizAlign="center" 
@@ -81,7 +81,7 @@
         
         <!-- Features List -->
         <Label 
-            text="📊 Live Crypto Prices  •  📈 Market Analysis  •  📰 Breaking News" 
+            text="📊 Live Prophet Prices  •  📈 Market Analysis  •  📰 Breaking News" 
             width="1920" 
             translation="[0, 900]" 
             horizAlign="center" 

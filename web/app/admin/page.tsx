@@ -55,7 +55,7 @@ export default function AdminDashboard() {
         },
         {
             title: "Zone Management",
-            description: "Configure crypto zones and categories",
+            description: "Configure Prophet zones and categories",
             href: "/admin/zones",
             icon: Layers,
             color: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
@@ -83,9 +83,9 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between mb-8">
                     <div>
                         <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-                            QChannel Admin
+                            Prophet TV Admin
                         </h1>
-                        <p className="text-zinc-400 mt-1">Manage your crypto channel</p>
+                        <p className="text-zinc-400 mt-1">Manage your Prophet channel</p>
                     </div>
                     <Link
                         href="/"

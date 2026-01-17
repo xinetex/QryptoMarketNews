@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "QChannel - Crypto Market Intelligence",
-  description: "Real-time cryptocurrency market data, news, and insights",
+  title: "Prophet TV - Prophet Market Intelligence",
+  description: "Real-time Prophet market data, news, and insights",
 };
 
 import { Providers } from "./providers";

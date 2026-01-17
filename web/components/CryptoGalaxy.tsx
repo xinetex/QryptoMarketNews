@@ -218,7 +218,7 @@ export default function CryptoGalaxy({ zones }: CryptoGalaxyProps) {
 
             {/* Legend overlay */}
             <div className="absolute bottom-4 left-4 p-4 bg-black/60 rounded-xl backdrop-blur-sm">
-                <div className="text-white/80 text-sm font-bold mb-2">CRYPTO GALAXY</div>
+                <div className="text-white/80 text-sm font-bold mb-2">PROPHET GALAXY</div>
                 <div className="text-white/50 text-xs">
                     🟢 Green glow = 24h gain<br />
                     🔴 Red glow = 24h loss<br />

@@ -100,7 +100,7 @@ export default function TVOverlay() {
                         </div>
                         <div>
                             <h1 className="text-2xl lg:text-4xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple drop-shadow-[0_0_10px_rgba(0,243,255,0.5)]">
-                                QCHANNEL
+                                PROPHET TV
                             </h1>
                             <p className="text-[10px] lg:text-sm text-neon-blue/80 font-mono tracking-widest uppercase hidden md:block">
                                 Crypto Market Intelligence

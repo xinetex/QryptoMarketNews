@@ -162,7 +162,7 @@ export default function ZoneGrid() {
                                 {zone.name}
                             </h3>
                             <p className="text-xs text-zinc-500 group-hover:text-zinc-400 transition-colors">
-                                Explore {zone.name.toLowerCase()} tokens
+                                Explore {zone.name.toLowerCase()} Prophets
                             </p>
                         </div>
 
