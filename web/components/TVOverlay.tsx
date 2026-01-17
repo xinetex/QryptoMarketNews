@@ -91,11 +91,11 @@ export default function TVOverlay() {
             <div className="absolute top-0 left-0 w-full p-3 lg:p-8 flex flex-col lg:flex-row justify-between items-start lg:items-center z-20 tv-element opacity-0 pointer-events-none">
                 <div className="flex flex-col lg:flex-row items-start lg:items-center gap-2 lg:gap-16 w-full lg:w-auto pointer-events-auto">
                     <div className="flex items-center gap-2 lg:gap-4">
-                        <div className="p-1.5 lg:p-3 bg-neon-purple/20 border border-neon-purple rounded-lg backdrop-blur-md shadow-[0_0_15px_rgba(188,19,254,0.3)] icon-pulse">
+                        <div className="bg-neon-purple/20 border border-neon-purple rounded-lg backdrop-blur-md shadow-[0_0_15px_rgba(188,19,254,0.3)] icon-pulse overflow-hidden">
                             <img
                                 src="/prophet-logo.png"
                                 alt="Prophet TV"
-                                className="w-6 h-6 lg:w-8 lg:h-8 object-contain"
+                                className="w-9 h-9 lg:w-14 lg:h-14 object-cover"
                             />
                         </div>
                         <div>
