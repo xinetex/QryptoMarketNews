@@ -13,8 +13,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://qryptomarket-news.vercel.app"),
   title: "Prophet TV - Prophet Market Intelligence",
   description: "Real-time Prophet market data, news, and insights",
+  openGraph: {
+    images: [{ url: "/opengraph-image.png" }],
+  },
 };
 
 import { Providers } from "./providers";
