@@ -404,3 +404,95 @@ sub onAmbientExitRequested()
         m.idleSeconds = 0
     end if
 end sub
+
+' ===== VOICE & SECOND SCREEN =====
+sub onVoiceQuery()
+    query = m.top.voiceQuery
+    if query = invalid or query = "" then return
+    
+    print "[MainScene] Voice query: " + query
+    
+    ' Create voice result scene
+    if m.voiceResultScene = invalid
+        m.voiceResultScene = m.top.createChild("VoiceResultScene")
+        m.voiceResultScene.observeField("exitRequested", "onVoiceExitRequested")
+    end if
+    
+    m.voiceResultScene.query = query
+    m.voiceResultScene.visible = true
+    m.voiceResultScene.setFocus(true)
+end sub
+
+sub onVoiceExitRequested()
+    if m.voiceResultScene <> invalid
+        m.voiceResultScene.visible = false
+        m.zoneGrid.setFocus(true)
+    end if
+end sub
+
+sub onDeepLink()
+    link = m.top.deepLink
+    if link = invalid then return
+    
+    print "[MainScene] Deep link: " + link.contentId
+    
+    ' Handle different content types
+    if link.mediaType = "zone"
+        ' Navigate to specific zone
+        for each zone in m.zones
+            if zone.id = link.contentId
+                showZoneDetail(zone)
+                exit for
+            end if
+        end for
+    else if link.mediaType = "coin"
+        ' Navigate to coin detail
+        showCoinDetail(link.contentId)
+    else if link.mediaType = "ambient"
+        launchAmbientMode()
+    else if link.mediaType = "trending"
+        launchTrendingMode()
+    end if
+end sub
+
+sub onEcpAction()
+    action = m.top.ecpAction
+    if action = invalid or action = "" then return
+    
+    print "[MainScene] ECP action: " + action
+    
+    if action = "ambient"
+        launchAmbientMode()
+    else if action = "trending"
+        launchTrendingMode()
+    else if action = "home"
+        ' Return to main grid
+        if m.zoneDetailScene <> invalid then m.zoneDetailScene.visible = false
+        if m.ambientScene <> invalid then m.ambientScene.visible = false
+        if m.voiceResultScene <> invalid then m.voiceResultScene.visible = false
+        m.zoneGrid.setFocus(true)
+    end if
+end sub
+
+sub launchTrendingMode()
+    if m.trendingScene = invalid
+        m.trendingScene = m.top.createChild("TrendingScene")
+        m.trendingScene.observeField("exitRequested", "onTrendingExitRequested")
+    end if
+    
+    m.trendingScene.visible = true
+    m.trendingScene.setFocus(true)
+end sub
+
+sub onTrendingExitRequested()
+    if m.trendingScene <> invalid
+        m.trendingScene.visible = false
+        m.zoneGrid.setFocus(true)
+    end if
+end sub
+
+sub showCoinDetail(coinId as string)
+    ' Use crypto service to fetch and show coin detail
+    m.cryptoService.coinRequest = coinId
+end sub
+

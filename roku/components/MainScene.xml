@@ -3,6 +3,12 @@
 <component name="MainScene" extends="Scene">
     <interface>
         <field id="selectedZone" type="node" />
+        <!-- Voice & Second Screen Support -->
+        <field id="voiceQuery" type="string" onChange="onVoiceQuery" />
+        <field id="deviceId" type="string" />
+        <field id="pairingToken" type="string" />
+        <field id="deepLink" type="assocarray" onChange="onDeepLink" />
+        <field id="ecpAction" type="string" onChange="onEcpAction" />
     </interface>
 
     <script type="text/brightscript" uri="MainScene.brs" />

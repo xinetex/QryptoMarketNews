@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Prophet TV Voice Result Scene - AI Search Results -->
+<component name="VoiceResultScene" extends="Scene">
+    <interface>
+        <field id="query" type="string" onChange="onQuerySet" />
+        <field id="exitRequested" type="boolean" value="false" />
+    </interface>
+
+    <script type="text/brightscript" uri="VoiceResultScene.brs" />
+
+    <children>
+        <!-- Background -->
+        <Rectangle id="backgroundRect"
+            width="1920"
+            height="1080"
+            color="#050510" />
+        
+        <!-- Ambient Glow -->
+        <Rectangle id="ambientGlow"
+            width="1920"
+            height="400"
+            color="#1a0a3e"
+            opacity="0.4" />
+
+        <!-- Voice Icon and Query Display -->
+        <Group id="queryHeader" translation="[60,60]">
+            <Label id="voiceIcon"
+                text="🎙️"
+                font="font:LargestBoldSystemFont"
+                color="#bc13fe" />
+            <Label id="queryLabel"
+                translation="[80,10]"
+                text="What's Bitcoin doing?"
+                font="font:LargeBoldSystemFont"
+                color="#ffffff" />
+            <Label id="queryHint"
+                translation="[80,60]"
+                text="AI-Powered Results"
+                font="font:SmallSystemFont"
+                color="#ffffff50" />
+        </Group>
+
+        <!-- Main Result Card -->
+        <Group id="resultCard" translation="[60,200]">
+            <Rectangle id="resultBg"
+                width="1800"
+                height="400"
+                color="#ffffff08" />
+            
+            <!-- Coin Icon -->
+            <Poster id="coinIcon"
+                translation="[40,40]"
+                width="100"
+                height="100"
+                loadDisplayMode="scaleToFit" />
+
+            <!-- Coin Info -->
+            <Group id="coinInfo" translation="[180,40]">
+                <Label id="coinName"
+                    text="Bitcoin"
+                    font="font:LargeBoldSystemFont"
+                    color="#ffffff" />
+                <Label id="coinSymbol"
+                    translation="[0,50]"
+                    text="BTC"
+                    font="font:MediumSystemFont"
+                    color="#ffffff70" />
+            </Group>
+
+            <!-- Price Display -->
+            <Group id="priceDisplay" translation="[1400,40]">
+                <Label id="priceLabel"
+                    text="$94,521"
+                    font="font:LargestBoldSystemFont"
+                    color="#ffffff"
+                    horizAlign="right"
+                    width="360" />
+                <Label id="changeLabel"
+                    translation="[0,70]"
+                    text="+2.34% (24h)"
+                    font="font:MediumBoldSystemFont"
+                    color="#10b981"
+                    horizAlign="right"
+                    width="360" />
+            </Group>
+
+            <!-- AI Summary -->
+            <Group id="aiSummary" translation="[40,180]">
+                <Label id="aiIcon"
+                    text="🤖 AI Analysis"
+                    font="font:SmallBoldSystemFont"
+                    color="#bc13fe" />
+                <Label id="summaryText"
+                    translation="[0,35]"
+                    text="Bitcoin is showing bullish momentum with strong institutional demand. ETF inflows continue to drive prices higher. The 24-hour trading volume is above average, indicating healthy market participation."
+                    font="font:MediumSystemFont"
+                    color="#ffffff90"
+                    width="1720"
+                    maxLines="4"
+                    wrap="true" />
+            </Group>
+        </Group>
+
+        <!-- Quick Actions -->
+        <Group id="actions" translation="[60,650]">
+            <Label id="actionsLabel"
+                text="Quick Actions"
+                font="font:SmallBoldSystemFont"
+                color="#ffffff50" />
+            
+            <Group id="actionButtons" translation="[0,40]">
+                <Rectangle id="viewDetailsBtn"
+                    width="300"
+                    height="80"
+                    color="#bc13fe" />
+                <Label id="viewDetailsLabel"
+                    translation="[20,25]"
+                    text="📊 View Details"
+                    font="font:SmallBoldSystemFont"
+                    color="#ffffff" />
+                
+                <Rectangle id="addWatchlistBtn"
+                    translation="[340,0]"
+                    width="300"
+                    height="80"
+                    color="#ffffff10" />
+                <Label id="addWatchlistLabel"
+                    translation="[360,25]"
+                    text="⭐ Add to Watchlist"
+                    font="font:SmallBoldSystemFont"
+                    color="#ffffff" />
+            </Group>
+        </Group>
+
+        <!-- Related Suggestions -->
+        <Group id="suggestions" translation="[60,800]">
+            <Label id="suggestionsLabel"
+                text="Related Searches"
+                font="font:SmallBoldSystemFont"
+                color="#ffffff50" />
+            <Label id="suggestionsList"
+                translation="[0,30]"
+                text="Try: 'Ethereum price' • 'Solana news' • 'Top gainers' • 'Market sentiment'"
+                font="font:SmallSystemFont"
+                color="#ffffff30" />
+        </Group>
+
+        <!-- Exit Hint -->
+        <Label id="exitHint"
+            translation="[1600,1000]"
+            text="Press BACK to exit"
+            font="font:SmallSystemFont"
+            color="#ffffff30" />
+
+        <!-- Crypto Service -->
+        <CryptoService id="cryptoService" />
+    </children>
+</component>
