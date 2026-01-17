@@ -40,7 +40,7 @@
                 <Label id="mainPrice"
                     translation="[100,30]"
                     text="$94,521"
-                    font="font:HugeBoldSystemFont"
+                    font="font:LargestBoldSystemFont"
                     color="#ffffff" />
                 
                 <Label id="mainChange"
