@@ -3,92 +3,85 @@
 <component name="ScreensaverScene" extends="Group">
     <interface>
         <field id="exitRequested" type="boolean" value="false" />
+        <field id="contentData" type="assocarray" onChange="onContentDataChanged" />
     </interface>
 
     <script type="text/brightscript" uri="ScreensaverScene.brs" />
 
     <children>
-        <!-- Deep Space Background -->
-        <Rectangle id="backgroundRect"
-            width="1920"
-            height="1080"
-            color="#020208" />
-        
-        <!-- Gradient Overlay -->
-        <Rectangle id="gradientOverlay"
-            width="1920"
-            height="1080"
-            color="#0a0a2e"
-            opacity="0.5" />
+        <!-- Background Layer (Black) -->
+        <Rectangle width="1920" height="1080" color="#000000" />
 
-        <!-- Center Content Group -->
-        <Group id="contentGroup" translation="[480,270]">
-            <!-- Brand -->
-            <Label id="brandLabel"
-                text="PROPHET TV"
-                font="font:SmallBoldSystemFont"
+        <!-- Double Buffer for Cross-Fades -->
+        <Poster id="artLayer1" width="1920" height="1080" loadDisplayMode="scaleToFill" />
+        <Poster id="artLayer2" width="1920" height="1080" loadDisplayMode="scaleToFill" opacity="0" />
+        
+        <!-- Gradient at bottom for text readability -->
+        <Rectangle width="1920" height="300" translation="[0,780]" color="#000000c0" />
+
+        <!-- Art Info Overlay -->
+        <Group id="infoGroup" translation="[100, 850]">
+            <Label id="collectionName" 
+                text="Loading Art Gallery..." 
+                font="font:LargeBoldSystemFont" 
                 color="#bc13fe" />
             
-            <!-- Main Display -->
-            <Label id="mainSymbol"
-                translation="[0,50]"
-                text="₿"
-                font="font:LargestBoldSystemFont"
-                color="#f7931a" />
-            
-            <Label id="mainPrice"
-                translation="[100,30]"
-                text="$94,521"
-                font="font:LargestBoldSystemFont"
+            <Label id="artTitle" 
+                translation="[0, 50]" 
+                text="" 
+                font="font:MediumSystemFont" 
                 color="#ffffff" />
-            
-            <Label id="mainChange"
-                translation="[100,100]"
-                text="+2.34%"
-                font="font:LargeBoldSystemFont"
+                
+            <Label id="artPrice" 
+                translation="[0, 90]" 
+                text="" 
+                font="font:SmallSystemFont" 
                 color="#10b981" />
-            
-            <!-- Secondary Prices -->
-            <Group id="secondaryDisplay" translation="[0,200]">
-                <Label id="eth"
-                    text="ETH $3,421 +1.8%"
-                    font="font:MediumSystemFont"
-                    color="#627eea" />
-                <Label id="sol"
-                    translation="[0,45]"
-                    text="SOL $198 +5.2%"
-                    font="font:MediumSystemFont"
-                    color="#9945ff" />
-                <Label id="xrp"
-                    translation="[0,90]"
-                    text="XRP $2.41 +3.1%"
-                    font="font:MediumSystemFont"
-                    color="#00aae4" />
-            </Group>
-            
-            <!-- Clock -->
-            <Label id="clockLabel"
-                translation="[0,350]"
-                text="11:30 PM"
-                font="font:LargeBoldSystemFont"
-                color="#ffffff30" />
-            
-            <!-- Date -->
-            <Label id="dateLabel"
-                translation="[0,410]"
-                text="Thursday, January 16"
-                font="font:SmallSystemFont"
-                color="#ffffff20" />
+            <Label id="artPrice" 
+                translation="[0, 90]" 
+                text="" 
+                font="font:SmallSystemFont" 
+                color="#10b981" />
         </Group>
+
+        <!-- Bouncing Ticker (DVD Style) -->
+        <Group id="bounceGroup" translation="[500, 500]">
+             <Rectangle width="300" height="60" color="#000000" opacity="0.8" cornerRadius="30" />
+             <Label id="bounceLabel" 
+                width="300" 
+                height="60" 
+                horizAlign="center" 
+                vertAlign="center" 
+                text="PROPHET TV" 
+                font="font:SmallBoldSystemFont" 
+                color="#00f3ff" />
+        </Group>
+
+        <!-- Clock (Small, Top Right) -->
+        <Label id="clockLabel"
+            translation="[1650, 50]"
+            text=""
+            font="font:MediumSystemFont"
+            color="#ffffff50" />
 
         <!-- Exit Hint -->
         <Label id="exitHint"
-            translation="[810,1020]"
-            text="Press OK or BACK to exit"
+            translation="[0, 1000]"
+            width="1920"
+            horizAlign="center"
+            text="Press OK to resume"
             font="font:SmallSystemFont"
-            color="#ffffff20" />
+            color="#ffffff30" />
 
-        <!-- Clock Timer -->
+        <!-- Timers -->
+        <Timer id="slideTimer" repeat="true" duration="15" />
         <Timer id="clockTimer" repeat="true" duration="60" />
+        <Timer id="animTimer" repeat="true" duration="0.03" />
+
+        <!-- Fade Animation -->
+        <Animation id="fadeAnim" duration="2" easeFunction="linear">
+            <FloatFieldInterpolator id="fadeInInterp" key="[0.0, 1.0]" keyValue="[0.0, 1.0]" fieldToInterp="artLayer2.opacity" />
+            <FloatFieldInterpolator id="fadeOutInterp" key="[0.0, 1.0]" keyValue="[1.0, 0.0]" fieldToInterp="artLayer1.opacity" />
+        </Animation>
     </children>
 </component>

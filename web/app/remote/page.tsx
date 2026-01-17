@@ -1,55 +1,113 @@
 "use client";
 
-import { useState } from "react";
+import { useState } from 'react';
+import { motion } from 'framer-motion';
 
 export default function RemotePage() {
-    const [activeZone, setActiveZone] = useState("Home");
+    const [status, setStatus] = useState("Connected");
 
-    // Mock list of zones to control
-    const zones = [
-        { id: "solana", name: "Solana" },
-        { id: "ai", name: "AI Agents" },
-        { id: "memes", name: "Meme Trenches" },
-        { id: "rwa", name: "Real World Assets" },
-    ];
+    const sendCommand = async (key: string) => {
+        // Haptic feedback
+        if (navigator.vibrate) navigator.vibrate(50);
+
+        try {
+            await fetch('/api/roku/remote', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ key })
+            });
+        } catch (e) {
+            setStatus("Connection Failed");
+        }
+    };
 
     return (
-        <div className="min-h-screen bg-black text-white p-4">
-            <header className="flex justify-between items-center mb-8 pt-4">
-                <h1 className="text-xl font-bold text-purple-400">Prophet TV Remote</h1>
-                <div className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold animate-pulse">
-                    CONNECTED
-                </div>
-            </header>
+        <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6 select-none overflow-hidden">
+            <h1 className="text-2xl font-bold mb-8 tracking-widest text-[#bc13fe]">PROPHET REMOTE</h1>
 
-            <div className="grid grid-cols-2 gap-4 mb-8">
-                {zones.map((zone) => (
-                    <button
-                        key={zone.id}
-                        onClick={() => setActiveZone(zone.name)}
-                        className={`p-6 rounded-2xl border transition-all ${activeZone === zone.name
-                                ? "bg-purple-600 border-purple-400 shadow-lg shadow-purple-900/30"
-                                : "bg-slate-900 border-slate-800 hover:bg-slate-800"
-                            }`}
+            <div className="bg-[#111] p-8 rounded-[40px] shadow-2xl border border-[#333] w-full max-w-sm flex flex-col gap-8">
+
+                {/* D-PAD */}
+                <div className="relative w-64 h-64 mx-auto bg-[#1a1a1a] rounded-full shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] flex items-center justify-center">
+                    {/* Up */}
+                    <RemoteBtn
+                        onClick={() => sendCommand('Up')}
+                        className="absolute top-2 left-1/2 -translate-x-1/2 w-20 h-20 rounded-t-2xl active:bg-[#bc13fe]"
+                        icon="▲"
+                    />
+                    {/* Down */}
+                    <RemoteBtn
+                        onClick={() => sendCommand('Down')}
+                        className="absolute bottom-2 left-1/2 -translate-x-1/2 w-20 h-20 rounded-b-2xl active:bg-[#bc13fe]"
+                        icon="▼"
+                    />
+                    {/* Left */}
+                    <RemoteBtn
+                        onClick={() => sendCommand('Left')}
+                        className="absolute left-2 top-1/2 -translate-y-1/2 w-20 h-20 rounded-l-2xl active:bg-[#bc13fe]"
+                        icon="◀"
+                    />
+                    {/* Right */}
+                    <RemoteBtn
+                        onClick={() => sendCommand('Right')}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 w-20 h-20 rounded-r-2xl active:bg-[#bc13fe]"
+                        icon="▶"
+                    />
+                    {/* OK */}
+                    <motion.button
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => sendCommand('Select')}
+                        className="w-20 h-20 bg-[#222] rounded-full shadow-[0_4px_10px_rgba(0,0,0,0.8)] z-10 font-bold border border-[#444] text-[#bc13fe]"
                     >
-                        <div className="font-bold text-lg">{zone.name}</div>
-                    </button>
-                ))}
-            </div>
+                        OK
+                    </motion.button>
+                </div>
 
-            <div className="bg-slate-900 rounded-2xl p-6 border border-slate-800">
-                <h2 className="text-xs uppercase tracking-widest text-slate-500 mb-4">
-                    Now Playing
-                </h2>
-                <div className="text-2xl font-bold mb-2">{activeZone}</div>
-                <div className="text-slate-400 text-sm">
-                    Displaying market intelligence on big screen...
+                {/* Main Controls */}
+                <div className="grid grid-cols-3 gap-6 px-4">
+                    <ControlBtn label="Back" icon="↩" onClick={() => sendCommand('Back')} />
+                    <ControlBtn label="Home" icon="🏠" onClick={() => sendCommand('Home')} />
+                    <ControlBtn label="Replay" icon="↺" onClick={() => sendCommand('InstantReplay')} />
+                </div>
+
+                {/* Playback */}
+                <div className="grid grid-cols-3 gap-6 px-4 mt-2">
+                    <ControlBtn label="Rev" icon="⏪" onClick={() => sendCommand('Rev')} />
+                    <ControlBtn label="Play" icon="⏯" onClick={() => sendCommand('Play')} />
+                    <ControlBtn label="Fwd" icon="⏩" onClick={() => sendCommand('Fwd')} />
                 </div>
             </div>
 
-            <div className="mt-8 text-center text-xs text-slate-700">
-                Phase 2 Complete • Remote Active
+            <div className="mt-8 text-[#666] text-sm flex items-center gap-2">
+                <div className={`w-2 h-2 rounded-full ${status === 'Connected' ? 'bg-green-500' : 'bg-red-500'}`} />
+                {status}
             </div>
         </div>
+    );
+}
+
+function RemoteBtn({ onClick, className, icon }: any) {
+    return (
+        <button
+            onClick={onClick}
+            className={`flex items-center justify-center text-2xl text-gray-400 hover:text-white transition-colors ${className}`}
+        >
+            {icon}
+        </button>
+    );
+}
+
+function ControlBtn({ label, icon, onClick }: any) {
+    return (
+        <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={onClick}
+            className="flex flex-col items-center gap-2"
+        >
+            <div className="w-16 h-16 bg-[#222] rounded-2xl flex items-center justify-center text-xl shadow-lg border border-[#333] active:bg-[#bc13fe] active:border-transparent active:text-white transition-all">
+                {icon}
+            </div>
+            <span className="text-xs text-gray-500 font-medium uppercase tracking-wider">{label}</span>
+        </motion.button>
     );
 }

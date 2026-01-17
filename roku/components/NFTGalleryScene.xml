@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Prophet TV NFT Gallery - AI-Curated Digital Art Experience -->
+<!-- Prophet TV NFT Gallery - Cinematic Art Experience -->
 <component name="NFTGalleryScene" extends="Group">
     <interface>
         <field id="exitRequested" type="boolean" value="false" />
@@ -9,179 +9,93 @@
     <script type="text/brightscript" uri="NFTGalleryScene.brs" />
 
     <children>
-        <!-- Cinematic Background -->
-        <Rectangle id="backgroundRect"
+        <!-- Background Layer (Black) -->
+        <Rectangle id="backgroundRect" width="1920" height="1080" color="#000000" />
+            
+        <!-- Full Screen Hero Image -->
+        <Poster id="featuredImage"
             width="1920"
             height="1080"
-            color="#030014" />
+            loadDisplayMode="scaleToFill" />
+
+        <!-- Cinematic Gradient Overlays -->
+        <!-- Top Gradient for Header Readability -->
+        <Rectangle width="1920" height="300" 
+            color="#000000" 
+            opacity="0.8" />
             
-        <!-- Ambient Gradients -->
-        <Rectangle width="1920" height="600" translation="[0,0]" color="#1a0b2e" opacity="0.4" />
-        <Rectangle width="1920" height="500" translation="[0,580]" color="#0f172a" opacity="0.6" />
-        
-        <!-- Dynamic Background Glow (changes per collection) -->
-        <Rectangle id="dynamicGlow"
+        <!-- Bottom Focus Area Gradient -->
+        <Poster id="bottomGradient"
+            translation="[0, 500]"
             width="1920"
-            height="800"
-            color="#6366f1"
-            opacity="0.1" />
+            height="580"
+            uri="pkg:/images/gradient_bottom.png"
+            opacity="0.95" /> 
+        <!-- Fallback Rectangle if image missing -->
+        <Rectangle translation="[0, 500]" width="1920" height="580" color="#000000" opacity="0.9" />
 
-        <!-- Header -->
-        <Group id="header" translation="[60,40]">
-            <Label id="headerIcon"
-                text="🖼️"
-                font="font:LargestBoldSystemFont"
-                color="#f97316" />
-            <Label id="headerTitle"
-                translation="[80,10]"
-                text="NFT Gallery"
-                font="font:LargeBoldSystemFont"
-                color="#ffffff" />
-            <Label id="headerSubtitle"
-                translation="[80,55]"
-                text="AI-Curated Collections"
-                font="font:SmallSystemFont"
-                color="#ffffff50" />
+        <!-- Curation Tabs (Top Center) -->
+        <Group id="filterTabs" translation="[600, 40]">
+            <LayoutGroup orientation="horizontal" itemSpacings="[20]">
+                <Group id="tab1" >
+                    <Rectangle id="tab1Bg" width="220" height="40" color="#bc13fe" cornerRadius="20" />
+                    <Label id="tab1Label" translation="[0,8]" width="220" horizAlign="center" text="Trending" font="font:SmallBoldSystemFont" color="#ffffff" />
+                </Group>
+                <Group id="tab2">
+                    <Rectangle id="tab2Bg" width="220" height="40" color="#ffffff20" cornerRadius="20" />
+                    <Label id="tab2Label" translation="[0,8]" width="220" horizAlign="center" text="Blue Chip" font="font:SmallBoldSystemFont" color="#ffffff80" />
+                </Group>
+                <Group id="tab3">
+                    <Rectangle id="tab3Bg" width="220" height="40" color="#ffffff20" cornerRadius="20" />
+                    <Label id="tab3Label" translation="[0,8]" width="220" horizAlign="center" text="Aesthetic" font="font:SmallBoldSystemFont" color="#ffffff80" />
+                </Group>
+                <Group id="tab4">
+                    <Rectangle id="tab4Bg" width="220" height="40" color="#ffffff20" cornerRadius="20" />
+                    <Label id="tab4Label" translation="[0,8]" width="220" horizAlign="center" text="Generative" font="font:SmallBoldSystemFont" color="#ffffff80" />
+                </Group>
+            </LayoutGroup>
         </Group>
 
-        <!-- Curation Filter Tabs -->
-        <Group id="filterTabs" translation="[400,50]">
-            <Group id="tab1" translation="[0,0]">
-                <Rectangle id="tab1Bg" width="150" height="45" color="#bc13fe" />
-                <Label id="tab1Label" translation="[20,10]" text="🔥 Trending" font="font:SmallBoldSystemFont" color="#ffffff" />
-            </Group>
-            <Group id="tab2" translation="[170,0]">
-                <Rectangle id="tab2Bg" width="150" height="45" color="#ffffff10" />
-                <Label id="tab2Label" translation="[20,10]" text="💎 Blue Chip" font="font:SmallBoldSystemFont" color="#ffffff70" />
-            </Group>
-            <Group id="tab3" translation="[340,0]">
-                <Rectangle id="tab3Bg" width="150" height="45" color="#ffffff10" />
-                <Label id="tab3Label" translation="[20,10]" text="🌅 Aesthetic" font="font:SmallBoldSystemFont" color="#ffffff70" />
-            </Group>
-            <Group id="tab4" translation="[510,0]">
-                <Rectangle id="tab4Bg" width="150" height="45" color="#ffffff10" />
-                <Label id="tab4Label" translation="[20,10]" text="🎭 Generative" font="font:SmallBoldSystemFont" color="#ffffff70" />
-            </Group>
-        </Group>
-
-        <!-- Featured NFT Display (Large Hero) -->
-        <Group id="featuredArea" translation="[60,130]">
-            <Rectangle id="featuredBg"
-                width="700"
-                height="700"
-                color="#ffffff08" />
-            <Poster id="featuredImage"
-                translation="[10,10]"
-                width="680"
-                height="550"
-                loadDisplayMode="scaleToZoom" />
-            
-            <!-- Featured Info Overlay -->
-            <Rectangle id="featuredOverlay"
-                translation="[0,560]"
-                width="700"
-                height="140"
-                color="#00000090" />
+        <!-- Art Details (Overlay on Image) -->
+        <Group id="featuredInfo" translation="[100, 480]">
             <Label id="featuredTitle"
-                translation="[20,575]"
-                text="Bored Ape #1234"
-                font="font:LargeBoldSystemFont"
-                color="#ffffff" />
+                text=""
+                font="font:LargestBoldSystemFont"
+                color="#ffffff"
+                width="1200" />
+            
             <Label id="featuredCollection"
-                translation="[20,620]"
-                text="Bored Ape Yacht Club"
-                font="font:SmallSystemFont"
+                translation="[0, 60]"
+                text=""
+                font="font:MediumSystemFont"
                 color="#bc13fe" />
-            <Label id="featuredPrice"
-                translation="[20,650]"
-                text="Floor: 42.5 ETH ($145,320)"
-                font="font:MediumBoldSystemFont"
-                color="#10b981" />
-            
-            <!-- AI Curation Reason -->
-            <Label id="curationReason"
-                translation="[20,690]"
-                text="🤖 Trending: +340% volume this week"
-                font="font:SmallSystemFont"
-                color="#f97316" />
-            
-            <!-- Rarity Score -->
-            <Group id="rarityBadge" translation="[520,575]">
-                <Rectangle id="rarityBg" width="160" height="55" color="#f9731620" />
-                <Label id="rarityLabel" translation="[15,8]" text="Rarity Rank" font="font:SmallSystemFont" color="#f97316" />
-                <Label id="rarityValue" translation="[15,28]" text="#142 / 10,000" font="font:SmallBoldSystemFont" color="#ffffff" />
-            </Group>
+                
+            <LayoutGroup translation="[0, 110]" orientation="horizontal" itemSpacings="[40]">
+                 <Label id="featuredPrice" text="" font="font:MediumBoldSystemFont" color="#10b981" />
+                 <Label id="statVolume" text="" font="font:MediumSystemFont" color="#ffffff70" />
+                 <Label id="statOwners" text="" font="font:MediumSystemFont" color="#ffffff70" />
+            </LayoutGroup>
         </Group>
 
-        <!-- Collection Grid (Right Side) -->
-        <Group id="collectionGrid" translation="[800,130]">
-            <Label id="gridTitle"
-                text="More from this collection"
-                font="font:SmallBoldSystemFont"
-                color="#ffffff50" />
-            
-            <MarkupGrid id="nftGrid"
-                translation="[0,40]"
-                itemComponentName="NFTItem"
-                numColumns="4"
-                numRows="2"
-                itemSize="[260,280]"
-                itemSpacing="[20,20]"
-                focusable="true"
-                drawFocusFeedback="false" />
-        </Group>
-
-        <!-- Recently Sold Ticker -->
-        <Group id="soldTicker" translation="[0,880]">
-            <Rectangle id="tickerBg"
-                width="1920"
-                height="70"
-                color="#00000080" />
-            <Label id="tickerIcon"
-                translation="[60,22]"
-                text="💰 Recent Sales:"
-                font="font:SmallBoldSystemFont"
-                color="#10b981" />
-            <Label id="tickerContent"
-                translation="[220,22]"
-                text="BAYC #8442 sold for 68 ETH  •  Azuki #1234 sold for 12 ETH  •  Pudgy #5678 sold for 8.5 ETH"
-                font="font:SmallSystemFont"
-                color="#ffffff70" />
-        </Group>
-
-        <!-- Collection Stats Panel -->
-        <Group id="statsPanel" translation="[60,860]">
-            <Rectangle id="statsBg"
-                width="700"
-                height="80"
-                color="#ffffff05" />
-            <Group id="stat1" translation="[30,20]">
-                <Label text="Floor" font="font:SmallSystemFont" color="#ffffff50" />
-                <Label translation="[0,20]" id="statFloor" text="42.5 ETH" font="font:SmallBoldSystemFont" color="#ffffff" />
-            </Group>
-            <Group id="stat2" translation="[180,20]">
-                <Label text="24h Volume" font="font:SmallSystemFont" color="#ffffff50" />
-                <Label translation="[0,20]" id="statVolume" text="1,234 ETH" font="font:SmallBoldSystemFont" color="#10b981" />
-            </Group>
-            <Group id="stat3" translation="[340,20]">
-                <Label text="Owners" font="font:SmallSystemFont" color="#ffffff50" />
-                <Label translation="[0,20]" id="statOwners" text="5,432" font="font:SmallBoldSystemFont" color="#ffffff" />
-            </Group>
-            <Group id="stat4" translation="[480,20]">
-                <Label text="Listed" font="font:SmallSystemFont" color="#ffffff50" />
-                <Label translation="[0,20]" id="statListed" text="12%" font="font:SmallBoldSystemFont" color="#f97316" />
-            </Group>
-        </Group>
-
-        <!-- Navigation Hints -->
-        <Group id="navHints" translation="[800,950]">
-            <Label text="← → Filter  •  ↑ ↓ Browse  •  OK Select  •  BACK Exit" font="font:SmallSystemFont" color="#ffffff20" />
-        </Group>
+        <!-- Navigation Strip (Bottom 2 Rows) -->
+        <PosterGrid id="nftGrid"
+            translation="[100, 660]"
+            itemSize="[260, 200]"
+            numColumns="6"
+            numRows="1"
+            spacing="[20, 20]"
+            posterShape="16x9"
+            caption1NumLines="1"
+            caption2NumLines="1"
+            basePosterSize="[260, 200]" 
+            focusable="true" />
 
         <!-- Timers -->
-        <Timer id="autoScrollTimer" repeat="true" duration="5" />
-        <Timer id="tickerScrollTimer" repeat="true" duration="0.05" />
+        <Timer id="autoScrollTimer" repeat="true" duration="8" />
         <Timer id="safetyTimer" repeat="false" duration="3" />
+
+        <!-- Navigation Hints -->
+        <Label translation="[1500, 1000]" text="* to Filter | BACK to Exit" font="font:SmallSystemFont" color="#ffffff30" />
 
         <!-- Crypto Service -->
         <CryptoService id="cryptoService" />

@@ -32,6 +32,7 @@ sub init()
     m.nftGallery = m.top.findNode("nftGallery")
     m.nftGrid = m.top.findNode("nftGrid")
     m.heroBackdrop = m.top.findNode("heroBackdrop")
+    m.qrCode = m.top.findNode("qrCode")
     
     ' Get CryptoService
     m.cryptoService = invalid
@@ -247,6 +248,15 @@ sub updateUI(coin as object)
     ' For NFTs, could load collection images here
     if isNFT
         loadNFTGallery()
+    end if
+    
+    ' Set QR Code for Mobile Deeplink
+    if coin.id <> invalid
+        ' Direct link to coin page on mobile web
+        mobileUrl = "https://prophet.tv/coin/" + coin.id
+        ' Generate QR via public API
+        qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + mobileUrl
+        m.qrCode.uri = qrUrl
     end if
 end sub
 

@@ -16,6 +16,8 @@ sub onContentSet()
     ' Set NFT image
     if content.image <> invalid
         m.nftImage.uri = content.image
+    else if content.hdPosterUrl <> invalid
+        m.nftImage.uri = content.hdPosterUrl
     end if
     
     ' Set title

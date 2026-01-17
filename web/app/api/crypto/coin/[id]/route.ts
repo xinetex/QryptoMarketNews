@@ -17,11 +17,23 @@ export async function GET(
             );
         }
 
+        // Check Cache
+        const cacheKey = `coin_detail_${coinId}`;
+        const cachedData = await cache.get(cacheKey);
+        if (cachedData) {
+            return NextResponse.json({ data: cachedData });
+        }
+
         // Fetch FULL coin details (includes description, links, detailed market data)
         const response = await fetch(
             `${COINGECKO_API_BASE}/coins/${coinId}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=true`,
             {
-                next: { revalidate: 300 }, // Cache deeper details for 5 minutes
+                // Next.js caching is good, but we use our manual cache for finer control typically,
+                // or just rely on Next's fetch cache. 
+                // However, the user asked for "Redis Caching" explicitly.
+                // We'll disable Next's cache here to rely on ours, or keep strictly simpler.
+                // Let's rely on ours for shared state across lambdas (if Redis).
+                cache: 'no-store',
                 headers: {
                     'Accept': 'application/json',
                 }

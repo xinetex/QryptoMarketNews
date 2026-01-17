@@ -9,7 +9,9 @@ sub runLoop()
     ' Initial fetch from Roku feed (includes ticker, zones, market pulse)
     fetchRokuFeed()
     fetchAdTags()
+    fetchAdTags()
     fetchVisuals()
+    m.top.nftRequest = true ' Trigger initial NFT load for screensaver
     
     ' Track pending requests
     m.pendingZoneCoinsRequest = ""
@@ -34,15 +36,14 @@ sub runLoop()
         end if
         
         ' Check for NFT request
-        if m.top.nftRequest = true
-            url = "https://qryptomarket-news.vercel.app/api/content/nfts?mode=" + m.top.nftMode
-            ' Assuming makeApiRequest is intended here, but it doesn't take a context object.
-            ' The original code uses fetchNews() which internally calls makeApiRequest.
-            ' For now, we'll just call makeApiRequest and assign to a dummy variable.
-            ' If a specific NFT data structure is needed, a new fetchNftData() function should be created.
+        if m.top.nftRequest = true or m.top.nftData = invalid
+            ' Auto-fetch if missing or requested
+            ' Auto-fetch if missing or requested
+            url = m.top.apiBaseUrl + "/api/content/nfts?mode=" + m.top.nftMode
             response = makeApiRequest(url)
-            if response <> invalid and response.data <> invalid
-                m.top.nftData = response.data ' Assuming nftData field exists on m.top
+            if response <> invalid and response.collections <> invalid
+                m.top.nftData = response ' Screensaver expects { collections: [...] }
+                print "[CryptoService] NFT Data Loaded: " + str(response.collections.count()) + " collections"
             end if
             m.top.nftRequest = false
         end if

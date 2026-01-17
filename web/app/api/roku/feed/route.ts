@@ -130,7 +130,7 @@ export async function GET() {
             ticker: tickerData.slice(0, 15),
 
             // Prediction Markets (NEW)
-            predictions: predictions.slice(0, 5).map(m => ({
+            predictions: predictions.slice(0, 20).map(m => ({
                 id: m.id,
                 question: m.question,
                 yesOdds: m.yesOdds,

@@ -5,7 +5,7 @@ sub init()
     ' Populate Menu
     menuContent = CreateObject("roSGNode", "ContentNode")
     
-    items = ["Home", "Live Markets", "Podcasts", "NFT Gallery", "Settings"]
+    items = ["Home", "Live Markets", "Portfolio", "Podcasts", "NFT Gallery", "Settings"]
     
     for each item in items
         node = menuContent.createChild("ContentNode")
@@ -47,6 +47,13 @@ sub fetchZones()
     m.contentTask.control = "run"
 end sub
 
+sub fetchWatchlist()
+    m.contentTask = CreateObject("roSGNode", "ContentTask")
+    m.contentTask.requestType = "watchlist"
+    m.contentTask.observeField("contentResult", "onContentResult")
+    m.contentTask.control = "run"
+end sub
+
 sub onContentResult()
     if m.contentTask <> invalid and m.contentTask.contentResult <> invalid
         m.contentRows.content = m.contentTask.contentResult
@@ -68,17 +75,32 @@ sub onMenuFocus()
     if content <> invalid
         m.sectionTitle.text = content.title
         
+        ' Reset logic
+        m.contentRows.itemComponentName = "ZoneCard" ' Default
+        
         ' Load content based on section
         if content.title = "Home" or content.title = "Podcasts"
              ' Reuse podcast fetch for now
              m.loaderTimer.control = "start"
         else if content.title = "Live Markets"
              fetchZones()
+        else if content.title = "Portfolio"
+             fetchWatchlist()
+        else if content.title = "NFT Gallery"
+             m.contentRows.itemComponentName = "NFTItem" ' Switch to NFT layout
+             fetchNFTs()
         else
              ' Clear rows for other modes
              m.contentRows.content = invalid
         end if
     end if
+end sub
+
+sub fetchNFTs()
+    m.contentTask = CreateObject("roSGNode", "ContentTask")
+    m.contentTask.requestType = "nfts"
+    m.contentTask.observeField("contentResult", "onContentResult")
+    m.contentTask.control = "run"
 end sub
 
 

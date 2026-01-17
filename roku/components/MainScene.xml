@@ -28,6 +28,12 @@
             color="#1a1a2e"
             opacity="0.5" />
 
+        <!-- Transition Animation -->
+        <Animation id="fadeContent" duration="0.3" repeat="false" easeFunction="linear">
+            <FloatFieldInterpolator id="fadeInterpolator" key="[0.0, 1.0]" keyValue="[1.0, 0.0]" fieldToInterp="headerBar.opacity" />
+        </Animation>
+
+
         <!-- TOP HEADER BAR (80px) -->
         <Group id="headerBar" translation="[0,40]">
             <!-- Logo/Brand with Neon Effect -->
@@ -54,6 +60,14 @@
                     text="LIVE"
                     font="font:SmallBoldSystemFont"
                     color="#ffffff" />
+            </Group>
+            
+            <!-- Fear & Greed Widget -->
+            <Group id="fngWidget" translation="[1500, 10]">
+                 <Label id="fngLabel" 
+                    text="F&amp;G: --" 
+                    font="font:SmallSystemFont" 
+                    color="#ffffff80" />
             </Group>
         </Group>
 
@@ -178,5 +192,12 @@
 
         <!-- NEW: Watchlist Style UI Layer (Phase 4) -->
         <WatchlistLayer id="watchlistLayer" visible="false" />
+        
+        <!-- Transition Overlay (Fade to Black) -->
+        <Rectangle id="transitionOverlay" width="1920" height="1080" color="#000000" opacity="0.0" visible="false" />
+
+        <Animation id="fadeAnimation" duration="0.4" repeat="false" easeFunction="inOut">
+            <FloatFieldInterpolator id="fadeInterpolator" key="[0.0, 0.5, 1.0]" keyValue="[0.0, 1.0, 0.0]" fieldToInterp="transitionOverlay.opacity" />
+        </Animation>
     </children>
 </component>

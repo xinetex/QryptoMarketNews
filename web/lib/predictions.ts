@@ -15,11 +15,18 @@ export interface PredictionMarket {
 export async function getPredictions(): Promise<PredictionMarket[]> {
     try {
         // Fetch live events from PolyMarket Gamma API
+        // Added User-Agent to prevent 403s
         const response = await fetch('https://gamma-api.polymarket.com/events?closed=false&limit=20&sort=volume', {
-            next: { revalidate: 60 } // Cache for 1 minute
+            method: 'GET',
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'application/json'
+            },
+            next: { revalidate: 30 } // Cache for 30 seconds
         });
 
         if (!response.ok) {
+            console.error(`PolyMarket API error: ${response.status} ${response.statusText}`);
             throw new Error(`PolyMarket API error: ${response.statusText}`);
         }
 
@@ -28,7 +35,6 @@ export async function getPredictions(): Promise<PredictionMarket[]> {
         // Transform PolyMarket events into our PredictionMarket format
         return events.map((event: any) => {
             // Find the main "Yes/No" market within the event
-            // Usually the first market or the one matching the event slug
             const market = event.markets?.[0];
 
             if (!market) return null;
@@ -39,8 +45,10 @@ export async function getPredictions(): Promise<PredictionMarket[]> {
 
             try {
                 if (market.outcomePrices) {
-                    yesPrice = parseFloat(JSON.parse(market.outcomePrices)[0] || "0.5");
-                    noPrice = parseFloat(JSON.parse(market.outcomePrices)[1] || "0.5");
+                    // It comes as a JSON string like "[\"0.0395\",\"0.9605\"]"
+                    const prices = JSON.parse(market.outcomePrices);
+                    yesPrice = parseFloat(prices[0] || "0.5");
+                    noPrice = parseFloat(prices[1] || "0.5");
                 }
             } catch (e) {
                 console.error("Error parsing outcome prices", e);
@@ -51,14 +59,14 @@ export async function getPredictions(): Promise<PredictionMarket[]> {
                 question: event.title,
                 category: event.tags?.[0]?.label || "General",
                 endDate: event.endDate,
-                yesPool: 0, // Not provided directly, but logic doesn't strictly depend on it
+                yesPool: 0,
                 noPool: 0,
                 totalVolume: Math.floor(event.volume || 0),
                 yesOdds: Math.floor(yesPrice * 100),
                 noOdds: Math.floor(noPrice * 100),
                 isHot: (event.volume || 0) > 1000000
             };
-        }).filter((m: any) => m !== null); // Remove any failed mappings
+        }).filter((m: any) => m !== null);
 
     } catch (error) {
         console.error("Failed to fetch PolyMarket data, using fallback mocks:", error);

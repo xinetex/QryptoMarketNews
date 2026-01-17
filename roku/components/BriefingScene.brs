@@ -153,10 +153,35 @@ sub onAudioStateChanged()
     if state = "playing"
         m.playStatus.text = "▶ Now Playing"
         m.progressTimer.control = "start"
-    else if state = "stopped" or state = "finished"
+    else if state = "stopped"
         m.playStatus.text = "Stopped"
         m.progressTimer.control = "stop"
         m.progressFill.width = 0
+    else if state = "finished"
+        m.playStatus.text = "Finished"
+        m.progressTimer.control = "stop"
+        m.progressFill.width = 0
+        
+        ' Auto-play next episode
+        playNextEpisode()
+    end if
+end sub
+
+sub playNextEpisode()
+    if m.episodeList.content = invalid then return
+    
+    ' Find current index using the focused item as a proxy (usually synced)
+    ' Or better, track m.currentEpisodeIndex explicitly when playing
+    nextIdx = m.episodeList.itemFocused + 1
+    
+    if nextIdx < m.episodeList.content.getChildCount()
+        ' Move focus and play
+        m.episodeList.jumpToItem = nextIdx
+        ' Give UI a moment to update focus? No, just play.
+        item = m.episodeList.content.getChild(nextIdx)
+        if item <> invalid
+            playAudio(item)
+        end if
     end if
 end sub
 

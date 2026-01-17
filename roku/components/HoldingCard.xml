@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Holding Card - Financial Asset Display -->
+<component name="HoldingCard" extends="Group">
+    <interface>
+        <field id="itemContent" type="node" onChange="onContentSet" />
+        <field id="focusPercent" type="float" onChange="onFocusChanged" />
+    </interface>
+
+    <script type="text/brightscript" uri="HoldingCard.brs" />
+
+    <children>
+        <!-- Background -->
+        <Rectangle id="bg" width="400" height="200" color="#ffffff08" cornerRadius="12" />
+        
+        <!-- Focus Border -->
+        <Rectangle id="focusBorder" width="408" height="208" translation="[-4,-4]" color="#bc13fe" opacity="0" filled="false" cornerRadius="16" />
+
+        <!-- Coin Icon -->
+        <Poster id="icon" width="60" height="60" translation="[20,20]" />
+        
+        <!-- Name & Symbol -->
+        <Label id="symbol" translation="[90,20]" text="BTC" font="font:LargeBoldSystemFont" color="#ffffff" />
+        <Label id="name" translation="[90,55]" text="Bitcoin" font="font:SmallSystemFont" color="#ffffff70" />
+
+        <!-- Value (Big Center) -->
+        <Label id="value" translation="[20,90]" text="$0.00" font="font:LargeBoldSystemFont" color="#ffffff" width="360" horizAlign="right" />
+
+        <!-- Holdings Amount -->
+        <Label id="amount" translation="[20,140]" text="0.00 BTC" font="font:SmallSystemFont" color="#ffffff70" />
+
+        <!-- P&L (Bottom Right) -->
+        <Label id="pnl" translation="[200,140]" text="+0.00%" font="font:SmallBoldSystemFont" color="#10b981" width="180" horizAlign="right" />
+    </children>
+</component>

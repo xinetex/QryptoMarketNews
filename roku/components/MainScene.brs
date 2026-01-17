@@ -15,6 +15,10 @@ sub init()
     m.zoneGrid = m.top.findNode("zoneGrid")
     m.liveDot = m.top.findNode("liveDot")
     
+    ' Transition Components
+    m.transitionOverlay = m.top.findNode("transitionOverlay")
+    m.fadeAnimation = m.top.findNode("fadeAnimation")
+    
     ' Zone detail scene reference
     m.zoneDetailScene = invalid
     
@@ -24,6 +28,7 @@ sub init()
     m.cryptoService.observeField("zoneData", "onZoneDataChanged")
     m.cryptoService.observeField("newsData", "onNewsDataChanged")
     m.cryptoService.observeField("intelligenceData", "onIntelligenceDataChanged")
+    m.cryptoService.observeField("briefingData", "onBriefingDataReceived")
     m.cryptoService.control = "run"
     
     ' Setup Ad Timers
@@ -237,9 +242,8 @@ end sub
 
 sub handleSpecialModes()
     print "[MainScene] handleSpecialModes called"
-    print "[MainScene] Launching Ambient Mode..."
-    launchAmbientMode()
-    print "[MainScene] Ambient Mode launched"
+    print "[MainScene] Launching Control Center (Settings)..."
+    launchSettingsMode()
 end sub
 
 ' Navigate to zone detail screen
@@ -344,6 +348,28 @@ sub onIntelligenceDataChanged()
         ' Update market pulse or trending info if we have UI for it
         print "[MainScene] Intelligence data received: " + str(intelligence.data.count()) + " movers"
     end if
+    
+    ' Check for Fear & Greed in briefingData (exposed via intelligence or separate?)
+    ' Actually CryptoService updates briefingData separately.
+    ' Let's observe briefingData in MainScene too.
+end sub
+
+sub onBriefingDataReceived()
+    data = m.cryptoService.briefingData
+    if data <> invalid and data.marketStatus <> invalid
+        status = data.marketStatus
+        fngLabel = m.top.findNode("fngLabel")
+        if fngLabel <> invalid
+            fngLabel.text = "F&G: " + str(status.score).trim()
+            
+            ' Color code
+            if status.score >= 50
+                 fngLabel.color = "#10b981" ' Green
+            else
+                 fngLabel.color = "#ef4444" ' Red
+            end if
+        end if
+    end if
 end sub
 
 function formatPrice(price as float) as string
@@ -389,6 +415,14 @@ function onKeyEvent(key as string, press as boolean) as boolean
     ' Rewind button launches NFT Gallery
     if key = "rewind"
         launchNFTGalleryMode()
+        return true
+    end if
+    
+
+
+    ' Fast Forward launches Portfolio (Gamification)
+    if key = "fastforward"
+        launchPortfolioMode()
         return true
     end if
     
@@ -447,11 +481,57 @@ sub launchAmbientMode()
     if m.zonesSection <> invalid then m.zonesSection.visible = false
     if m.newsSection <> invalid then m.newsSection.visible = false
     
-    print "[MainScene] Setting ambient visible and focused"
-    m.ambientScene.visible = true
-    m.ambientScene.setFocus(true)
-    m.idleSeconds = 0
     print "[MainScene] Ambient scene set up complete"
+    
+    ' Trigger Fade Transition
+    performTransition(m.ambientScene)
+end sub
+
+sub performTransition(targetScene as object)
+    m.transitionOverlay.visible = true
+    m.pendingTargetScene = targetScene
+    m.fadeAnimation.observeField("state", "onFadeAnimationState")
+    m.fadeAnimation.control = "start"
+end sub
+
+sub onFadeAnimationState()
+    if m.fadeAnimation.state = "stopped"
+        m.transitionOverlay.visible = false
+        m.fadeAnimation.unobserveField("state")
+        m.pendingTargetScene = invalid
+    else if m.fadeAnimation.state = "running"
+        ' Check if we are at peak opacity (midway)
+        ' But SG animations don't give a callback at keyframes easily.
+        ' Instead, we'll swap visibility halfway through using a timer or just immediately if fast.
+        ' Actually, cleaner way: Fade In (to black) -> Swap -> Fade Out (to clear).
+        ' But our animation is 0 -> 1 -> 0.
+        ' We can just swap visibility immediately? No, user sees jump.
+        ' Let's set a timer for 0.2s (half of 0.4s duration) to do the swap.
+        
+        if m.transitionTimer = invalid
+             m.transitionTimer = m.top.createChild("Timer")
+             m.transitionTimer.duration = 0.2
+             m.transitionTimer.repeat = false
+             m.transitionTimer.observeField("fire", "onTransitionSwap")
+        end if
+        m.transitionTimer.control = "start"
+    end if
+end sub
+
+sub onTransitionSwap()
+    if m.pendingTargetScene <> invalid
+        ' Hide Main
+        if m.headerBar <> invalid then m.headerBar.visible = false
+        if m.tickerSection <> invalid then m.tickerSection.visible = false
+        if m.heroSection <> invalid then m.heroSection.visible = false
+        if m.zonesSection <> invalid then m.zonesSection.visible = false
+        if m.newsSection <> invalid then m.newsSection.visible = false
+        
+        ' Show Target
+        m.pendingTargetScene.visible = true
+        m.pendingTargetScene.setFocus(true)
+        m.idleSeconds = 0
+    end if
 end sub
 
 sub onAmbientExitRequested()
@@ -476,8 +556,8 @@ sub launchSettingsMode()
         m.settingsScene.observeField("exitRequested", "onSettingsExitRequested")
     end if
     
-    m.settingsScene.visible = true
-    m.settingsScene.setFocus(true)
+    ' Trigger Fade Transition
+    performTransition(m.settingsScene)
 end sub
 
 sub onSettingsExitRequested()
@@ -632,8 +712,7 @@ sub launchNFTGalleryMode()
         m.nftGalleryScene.observeField("exitRequested", "onNFTGalleryExitRequested")
     end if
     
-    m.nftGalleryScene.visible = true
-    m.nftGalleryScene.setFocus(true)
+    performTransition(m.nftGalleryScene)
 end sub
 
 sub onNFTGalleryExitRequested()
@@ -654,8 +733,7 @@ sub launchBriefingMode()
         m.briefingScene.observeField("exitRequested", "onBriefingExitRequested")
     end if
     
-    m.briefingScene.visible = true
-    m.briefingScene.setFocus(true)
+    performTransition(m.briefingScene)
 end sub
 
 sub onBriefingExitRequested()
@@ -671,8 +749,7 @@ sub launchPredictionMode()
         m.predictionScene.observeField("exitRequested", "onPredictionExitRequested")
     end if
     
-    m.predictionScene.visible = true
-    m.predictionScene.setFocus(true)
+    performTransition(m.predictionScene)
 end sub
 
 sub onPredictionExitRequested()
@@ -688,8 +765,12 @@ sub launchScreensaverMode()
         m.screensaverScene.observeField("exitRequested", "onScreensaverExitRequested")
     end if
     
-    m.screensaverScene.visible = true
-    m.screensaverScene.setFocus(true)
+    performTransition(m.screensaverScene)
+    
+    ' Pass data if available
+    if m.cryptoService.nftData <> invalid
+        m.screensaverScene.contentData = m.cryptoService.nftData
+    end if
 end sub
 
 sub onScreensaverExitRequested()
@@ -697,6 +778,22 @@ sub onScreensaverExitRequested()
         m.screensaverScene.visible = false
         m.zoneGrid.setFocus(true)
         m.idleSeconds = 0
+    end if
+end sub
+
+sub launchPortfolioMode()
+    if m.portfolioScene = invalid
+        m.portfolioScene = m.top.createChild("PortfolioScene")
+        m.portfolioScene.observeField("exitRequested", "onPortfolioExitRequested")
+    end if
+    
+    performTransition(m.portfolioScene)
+end sub
+
+sub onPortfolioExitRequested()
+    if m.portfolioScene <> invalid
+        m.portfolioScene.visible = false
+        m.zoneGrid.setFocus(true)
     end if
 end sub
 

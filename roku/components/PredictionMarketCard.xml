@@ -12,43 +12,44 @@
         <!-- Card Container -->
         <Group id="container">
             <!-- Background -->
-            <Rectangle id="cardBg" width="880" height="120" color="#ffffff08" />
+            <Rectangle id="cardBg" width="880" height="90" color="#ffffff08" />
             
             <!-- Focus Border -->
-            <Rectangle id="focusBorder" width="888" height="128" translation="[-4,-4]" color="#f59e0b" opacity="0" />
+            <Rectangle id="focusBorder" width="880" height="90" translation="[0,0]" color="#f59e0b" opacity="0" filled="false" />
 
             <!-- Icon/Category -->
-            <Group translation="[20,20]">
+            <Group translation="[15,15]">
                 <Rectangle width="60" height="60" color="#ffffff10" cornerRadius="8" />
                 <Label id="iconLabel" text="?" translation="[0,10]" width="60" horizAlign="center" font="font:LargeBoldSystemFont" />
             </Group>
 
             <!-- Question & Info -->
-            <Label id="questionLabel" translation="[100,15]" text="Loading question..." font="font:MediumBoldSystemFont" color="#ffffff" width="550" maxLines="1" />
+            <Label id="questionLabel" translation="[90,12]" text="Loading..." font="font:MediumBoldSystemFont" color="#ffffff" width="500" maxLines="1" />
             
-            <Group translation="[100,55]">
-                <Label id="volumeLabel" text="Vol: $0" font="font:SmallSystemFont" color="#ffffff70" />
-                <Label id="dateLabel" translation="[150,0]" text="Ends: --" font="font:SmallSystemFont" color="#ffffff70" />
+            <Group translation="[90,50]">
+                <Label id="volumeLabel" text="Vol: $450K" font="font:SmallSystemFont" color="#ffffff70" />
+                <Label id="dateLabel" translation="[140,0]" text="Ends: 12/31" font="font:SmallSystemFont" color="#ffffff70" />
+                <Label id="trendLabel" translation="[280,0]" text="🔥 Trending" font="font:SmallSystemFont" color="#f59e0b" />
             </Group>
 
-            <!-- Odds Visuals (Right Side) -->
-            <Group translation="[620,20]">
+            <!-- Odds Visuals (Right Side - Compact) -->
+            <Group translation="[620,15]">
                 <!-- YES Option -->
-                <Rectangle id="yesBg" width="110" height="80" color="#10b98120" />
-                <Label id="yesPct" text="50%" translation="[0,15]" width="110" horizAlign="center" font="font:LargeBoldSystemFont" color="#10b981" />
-                <Label text="YES" translation="[0,50]" width="110" horizAlign="center" font="font:SmallBoldSystemFont" color="#10b981" />
+                <Rectangle id="yesBg" width="100" height="60" color="#10b98120" />
+                <Label id="yesPct" text="50%" translation="[0,8]" width="100" horizAlign="center" font="font:LargeBoldSystemFont" color="#10b981" />
+                <Label text="YES" translation="[0,38]" width="100" horizAlign="center" font="font:TinySystemFont" color="#10b981" />
                 
                 <!-- NO Option -->
-                <Group translation="[120,0]">
-                    <Rectangle id="noBg" width="110" height="80" color="#ef444420" />
-                    <Label id="noPct" text="50%" translation="[0,15]" width="110" horizAlign="center" font="font:LargeBoldSystemFont" color="#ef4444" />
-                    <Label text="NO" translation="[0,50]" width="110" horizAlign="center" font="font:SmallBoldSystemFont" color="#ef4444" />
+                <Group translation="[110,0]">
+                    <Rectangle id="noBg" width="100" height="60" color="#ef444420" />
+                    <Label id="noPct" text="50%" translation="[0,8]" width="100" horizAlign="center" font="font:LargeBoldSystemFont" color="#ef4444" />
+                    <Label text="NO" translation="[0,38]" width="100" horizAlign="center" font="font:TinySystemFont" color="#ef4444" />
                 </Group>
             </Group>
 
             <!-- Market Depth / Sentiment Bar (Bottom) -->
-            <Rectangle id="depthBarYes" translation="[0,116]" width="440" height="4" color="#10b981" />
-            <Rectangle id="depthBarNo" translation="[440,116]" width="440" height="4" color="#ef4444" />
+            <Rectangle id="depthBarYes" translation="[0,86]" width="440" height="4" color="#10b981" />
+            <Rectangle id="depthBarNo" translation="[440,86]" width="440" height="4" color="#ef4444" />
         </Group>
     </children>
 </component>

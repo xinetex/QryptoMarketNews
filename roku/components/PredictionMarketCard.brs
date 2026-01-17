@@ -10,6 +10,8 @@ sub init()
     m.volumeLabel = m.top.findNode("volumeLabel")
     m.dateLabel = m.top.findNode("dateLabel")
     
+    m.trendLabel = m.top.findNode("trendLabel")
+    
     m.yesPct = m.top.findNode("yesPct")
     m.noPct = m.top.findNode("noPct")
     
@@ -36,14 +38,26 @@ sub onContentSet()
     
     ' Set Volume & Date
     volStr = "$0"
+    volVal = 0
     if content.volume <> invalid 
+        volVal = content.volume
         volStr = "$" + formatNumber(content.volume)
     end if
     m.volumeLabel.text = "Vol: " + volStr
     
     if content.endDate <> invalid
-        ' Simple date formatter would go here, using raw string for now
         m.dateLabel.text = "Ends: " + left(content.endDate, 10)
+    end if
+    
+    ' Trend Logic (Simulation)
+    if volVal > 1000000
+        m.trendLabel.text = "🔥 Hot"
+        m.trendLabel.color = "#ef4444"
+    else if yesVal > 75 or noVal > 75
+        m.trendLabel.text = "⚡ Volatile"
+        m.trendLabel.color = "#f59e0b"
+    else
+        m.trendLabel.text = ""
     end if
     
     ' Update Depth Bars
@@ -53,9 +67,9 @@ sub onContentSet()
     
     m.depthBarYes.width = yesWidth
     m.depthBarNo.width = noWidth
-    m.depthBarNo.translation = [yesWidth, 116]
+    m.depthBarNo.translation = [yesWidth, 86]
     
-    ' Icon (using first letter of question as fallback if no category icon)
+    ' Icon (using first letter of question as fallback)
     if content.question <> invalid and len(content.question) > 0
         m.iconLabel.text = left(content.question, 1)
     end if
@@ -66,14 +80,15 @@ sub onFocusChanged()
     
     if focusPct > 0
         m.focusBorder.opacity = focusPct
-        m.cardBg.color = "#ffffff15"
+        ' Premium dark highlight
+        m.cardBg.color = "#ffffff25"
         
-        ' Slight scale up
-        scale = 1.0 + (0.02 * focusPct)
+        ' Pop effect: Scale to 1.08x
+        scale = 1.0 + (0.08 * focusPct)
         m.container.scale = [scale, scale]
         
-        ' Center the scale
-        shift = -8 * focusPct
+        ' Center the scale trigger
+        shift = -35 * focusPct
         m.container.translation = [shift, shift]
     else
         m.focusBorder.opacity = 0

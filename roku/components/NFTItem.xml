@@ -11,22 +11,23 @@
     <children>
         <Group id="cardContainer">
             <!-- NFT Art Image -->
+
+            
             <Poster id="nftImage"
                 width="260"
-                height="220"
+                height="200"
                 loadDisplayMode="scaleToZoom"
-                loadingBitmapUri=""
-                failedBitmapUri="" />
+                />
 
             <!-- Overlay with title -->
             <Rectangle id="titleOverlay"
-                translation="[0,200]"
+                translation="[0,150]"
                 width="260"
-                height="60"
+                height="50"
                 color="#000000CC" />
 
             <Label id="nftTitle"
-                translation="[10,210]"
+                translation="[10,155]"
                 text="NFT #1234"
                 font="font:SmallBoldSystemFont"
                 color="#ffffff"
@@ -34,7 +35,7 @@
                 maxLines="1" />
 
             <Label id="nftPrice"
-                translation="[10,235]"
+                translation="[10,175]"
                 text="Floor: 0.5 ETH"
                 font="font:SmallSystemFont"
                 color="#10b981" />
@@ -42,7 +43,7 @@
             <!-- Focus border -->
             <Rectangle id="focusBorder"
                 width="268"
-                height="268"
+                height="208"
                 translation="[-4,-4]"
                 color="#00000000"
                 opacity="0" />

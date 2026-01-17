@@ -212,5 +212,19 @@
                 </Group>
             </Group>
         </Group>
+            <!-- QR Code Section (Bottom Right) -->
+            <Group id="qrSection" translation="[1650, 850]">
+                <Poster id="qrCode"
+                    width="200"
+                    height="200"
+                    loadDisplayMode="scaleToFit" />
+                <Label id="qrLabel"
+                    translation="[-20, 210]"
+                    text="Open on Mobile"
+                    width="240"
+                    horizAlign="center"
+                    font="font:SmallSystemFont"
+                    color="#ffffff80" />
+            </Group>
     </children>
 </component>

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { cache } from '@/lib/cache';
 import Parser from 'rss-parser';
 
 // Initialize RSS Parser
@@ -25,6 +26,13 @@ const PODCAST_FEEDS = [
 
 export async function GET() {
     try {
+        // OPTIMIZATION: Check Cache (1 Hour TTL)
+        const CACHE_KEY = "briefing_feed_v1";
+        const cached = await cache.get(CACHE_KEY);
+        if (cached) {
+            return NextResponse.json(cached);
+        }
+
         const allEpisodes: any[] = [];
 
         // Fetch all feeds in parallel
@@ -70,13 +78,18 @@ export async function GET() {
         // Sort by date (newest first)
         allEpisodes.sort((a, b) => b.timestamp - a.timestamp);
 
-        return NextResponse.json({
+        const responsePayload = {
             meta: {
                 total: allEpisodes.length,
                 generatedAt: new Date().toISOString()
             },
             items: allEpisodes
-        });
+        };
+
+        // Cache for 1 hour (3600 seconds)
+        await cache.set(CACHE_KEY, responsePayload, 3600);
+
+        return NextResponse.json(responsePayload);
 
     } catch (error) {
         console.error("Briefing API Error:", error);

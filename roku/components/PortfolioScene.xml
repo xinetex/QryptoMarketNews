@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Prophet TV Portfolio Dashboard -->
+<component name="PortfolioScene" extends="Scene">
+    <interface>
+        <field id="exitRequested" type="boolean" value="false" />
+    </interface>
+
+    <script type="text/brightscript" uri="PortfolioScene.brs" />
+
+    <children>
+        <!-- Background -->
+        <Rectangle id="bg" width="1920" height="1080" color="#050510" />
+        
+        <!-- Ambient Glow (Green for Profit) -->
+        <Rectangle id="glow" width="1920" height="1080" color="#10b981" opacity="0.05" />
+
+        <!-- Header: Total Balance -->
+        <Group translation="[100, 80]">
+            <Label text="TOTAL BALANCE" font="font:SmallBoldSystemFont" color="#ffffff50" />
+            <Label id="totalBalance" translation="[0, 30]" text="$10,420.69" font="font:LargestBoldSystemFont" color="#ffffff" />
+            <Label id="totalPnl" translation="[0, 110]" text="+$420.69 (4.20%)" font="font:MediumBoldSystemFont" color="#10b981" />
+        </Group>
+
+        <!-- Main Content: Holdings Grid -->
+        <Label translation="[100, 250]" text="Your Assets" font="font:MediumSystemFont" color="#ffffff50" />
+        <MarkupGrid id="holdingsGrid" 
+            translation="[100, 300]" 
+            itemComponentName="HoldingCard" 
+            numColumns="3" 
+            numRows="3" 
+            itemSize="[400, 200]" 
+            itemSpacing="[20, 20]" 
+            vertFocusAnimationStyle="fixedFocusWrap" />
+
+        <!-- Sidebar: Leaderboard -->
+        <Group translation="[1400, 80]">
+            <Label text="Global Rank" font="font:SmallBoldSystemFont" color="#ffffff50" />
+            <Label id="rankLabel" translation="[0, 30]" text="#42" font="font:LargestBoldSystemFont" color="#f59e0b" />
+            
+            <Label translation="[0, 150]" text="Top Traders" font="font:SmallSystemFont" color="#ffffff50" />
+            <LabelList id="leaderList" 
+                translation="[0, 190]" 
+                itemSize="[400, 50]" 
+                color="#ffffff80" 
+                focusedColor="#f59e0b" />
+        </Group>
+
+        <!-- CTA: Mobile Scan -->
+        <Group translation="[1400, 750]">
+            <Poster id="qrCode" width="200" height="200" uri="pkg:/images/qr_placeholder.png" />
+            <Label translation="[0, 220]" text="Trade on Mobile" font="font:SmallBoldSystemFont" color="#ffffff" />
+            <Label translation="[0, 250]" text="Scan to buy/sell" font="font:SmallSystemFont" color="#ffffff50" />
+        </Group>
+        
+        <!-- Navigation Hint -->
+        <Label translation="[100, 980]" text="BACK to Exit" font="font:SmallSystemFont" color="#ffffff30" />
+    </children>
+</component>

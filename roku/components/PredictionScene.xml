@@ -26,9 +26,9 @@
             translation="[60,180]" 
             itemComponentName="PredictionMarketCard" 
             numColumns="1" 
-            numRows="5" 
-            itemSize="[880,130]" 
-            itemSpacing="[0,20]" 
+            numRows="8" 
+            itemSize="[880,90]" 
+            itemSpacing="[0,12]" 
             vertFocusAnimationStyle="fixedFocusWrap"
             drawFocusFeedback="false" />
 
