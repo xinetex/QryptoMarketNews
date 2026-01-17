@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Prophet TV Briefing Scene - Daily Market Summary -->
+<component name="BriefingScene" extends="Scene">
+    <interface>
+        <field id="exitRequested" type="boolean" value="false" />
+    </interface>
+
+    <script type="text/brightscript" uri="BriefingScene.brs" />
+
+    <children>
+        <!-- Background -->
+        <Rectangle id="backgroundRect"
+            width="1920"
+            height="1080"
+            color="#050510" />
+        
+        <!-- Ambient Glow -->
+        <Rectangle id="ambientGlow"
+            width="1920"
+            height="400"
+            color="#1a0a3e"
+            opacity="0.4" />
+
+        <!-- Header -->
+        <Group id="header" translation="[60,50]">
+            <Label id="headerIcon"
+                text="🔊"
+                font="font:LargestBoldSystemFont"
+                color="#bc13fe" />
+            <Label id="headerTitle"
+                translation="[80,10]"
+                text="Daily Market Briefing"
+                font="font:LargeBoldSystemFont"
+                color="#ffffff" />
+            <Label id="headerDate"
+                translation="[80,60]"
+                text="January 16, 2026"
+                font="font:SmallSystemFont"
+                color="#ffffff50" />
+        </Group>
+
+        <!-- Main Content Card -->
+        <Group id="mainCard" translation="[60,180]">
+            <Rectangle id="cardBg"
+                width="1800"
+                height="550"
+                color="#ffffff08" />
+            
+            <!-- Greeting -->
+            <Label id="greetingLabel"
+                translation="[40,30]"
+                text="Good Evening"
+                font="font:LargeBoldSystemFont"
+                color="#10b981" />
+            
+            <!-- Summary Text -->
+            <Label id="summaryText"
+                translation="[40,100]"
+                text="Loading market briefing..."
+                font="font:MediumSystemFont"
+                color="#ffffff"
+                width="1720"
+                maxLines="6"
+                wrap="true" />
+            
+            <!-- Highlights Section -->
+            <Group id="highlights" translation="[40,350]">
+                <Label id="highlightsTitle"
+                    text="📌 Key Highlights"
+                    font="font:SmallBoldSystemFont"
+                    color="#bc13fe" />
+                <Label id="highlight1"
+                    translation="[0,35]"
+                    text="• BTC holding strong above $94,000"
+                    font="font:SmallSystemFont"
+                    color="#ffffff90" />
+                <Label id="highlight2"
+                    translation="[0,65]"
+                    text="• SOL DeFi TVL hits new all-time high"
+                    font="font:SmallSystemFont"
+                    color="#ffffff90" />
+                <Label id="highlight3"
+                    translation="[0,95]"
+                    text="• AI tokens outperform broader market"
+                    font="font:SmallSystemFont"
+                    color="#ffffff90" />
+                <Label id="highlight4"
+                    translation="[0,125]"
+                    text="• RWA sector crosses $30B market cap"
+                    font="font:SmallSystemFont"
+                    color="#ffffff90" />
+            </Group>
+        </Group>
+
+        <!-- Market Status Panel -->
+        <Group id="statusPanel" translation="[60,770]">
+            <Rectangle id="statusBg"
+                width="580"
+                height="180"
+                color="#ffffff05" />
+            <Label id="statusTitle"
+                translation="[20,20]"
+                text="Market Status"
+                font="font:SmallBoldSystemFont"
+                color="#ffffff50" />
+            <Label id="sentimentLabel"
+                translation="[20,60]"
+                text="Sentiment: Bullish (67%)"
+                font="font:MediumBoldSystemFont"
+                color="#10b981" />
+            <Label id="volumeLabel"
+                translation="[20,100]"
+                text="Volume: Above Average"
+                font="font:SmallSystemFont"
+                color="#ffffff70" />
+            <Label id="volatilityLabel"
+                translation="[20,130]"
+                text="Volatility: Moderate"
+                font="font:SmallSystemFont"
+                color="#ffffff70" />
+        </Group>
+
+        <!-- Top Movers Panel -->
+        <Group id="moversPanel" translation="[670,770]">
+            <Rectangle id="moversBg"
+                width="580"
+                height="180"
+                color="#ffffff05" />
+            <Label id="moversTitle"
+                translation="[20,20]"
+                text="Top Movers"
+                font="font:SmallBoldSystemFont"
+                color="#ffffff50" />
+            <Label id="mover1"
+                translation="[20,60]"
+                text="🥇 SOL +5.2%"
+                font="font:MediumBoldSystemFont"
+                color="#10b981" />
+            <Label id="mover2"
+                translation="[20,100]"
+                text="🥈 AI16Z +12.5%"
+                font="font:SmallSystemFont"
+                color="#10b981" />
+            <Label id="mover3"
+                translation="[20,130]"
+                text="🥉 BTC +2.3%"
+                font="font:SmallSystemFont"
+                color="#10b981" />
+        </Group>
+
+        <!-- Audio Controls Panel -->
+        <Group id="audioPanel" translation="[1280,770]">
+            <Rectangle id="audioBg"
+                width="580"
+                height="180"
+                color="#bc13fe15" />
+            <Label id="audioTitle"
+                translation="[20,20]"
+                text="🎧 Audio Briefing"
+                font="font:SmallBoldSystemFont"
+                color="#bc13fe" />
+            <Label id="audioStatus"
+                translation="[20,60]"
+                text="Coming Soon"
+                font="font:MediumSystemFont"
+                color="#ffffff70" />
+            <Label id="audioHint"
+                translation="[20,100]"
+                text="Press PLAY to listen"
+                font="font:SmallSystemFont"
+                color="#ffffff30" />
+        </Group>
+
+        <!-- Exit Hint -->
+        <Label id="exitHint"
+            translation="[1600,1000]"
+            text="Press BACK to exit"
+            font="font:SmallSystemFont"
+            color="#ffffff30" />
+
+        <!-- Crypto Service -->
+        <CryptoService id="cryptoService" />
+    </children>
+</component>

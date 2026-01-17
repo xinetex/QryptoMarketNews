@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Prophet TV Prediction Scene - Community Polls -->
+<component name="PredictionScene" extends="Scene">
+    <interface>
+        <field id="exitRequested" type="boolean" value="false" />
+    </interface>
+
+    <script type="text/brightscript" uri="PredictionScene.brs" />
+
+    <children>
+        <!-- Background -->
+        <Rectangle id="backgroundRect"
+            width="1920"
+            height="1080"
+            color="#050510" />
+        
+        <!-- Animated Ambient -->
+        <Rectangle id="ambientGlow"
+            width="1920"
+            height="500"
+            color="#3b0764"
+            opacity="0.4" />
+
+        <!-- Header -->
+        <Group id="header" translation="[60,50]">
+            <Label id="headerIcon"
+                text="🎯"
+                font="font:LargestBoldSystemFont"
+                color="#f97316" />
+            <Label id="headerTitle"
+                translation="[80,10]"
+                text="Prediction Polls"
+                font="font:LargeBoldSystemFont"
+                color="#ffffff" />
+            <Label id="headerSubtitle"
+                translation="[80,60]"
+                text="Vote on market predictions!"
+                font="font:SmallSystemFont"
+                color="#ffffff50" />
+        </Group>
+
+        <!-- Current Poll Card -->
+        <Group id="pollCard" translation="[60,180]">
+            <Rectangle id="pollBg"
+                width="1200"
+                height="400"
+                color="#ffffff08" />
+            
+            <!-- Poll Question -->
+            <Label id="pollQuestion"
+                translation="[40,30]"
+                text="Will Bitcoin hit $100,000 this month?"
+                font="font:LargeBoldSystemFont"
+                color="#ffffff"
+                width="1120"
+                wrap="true" />
+            
+            <!-- Poll Options -->
+            <Group id="options" translation="[40,120]">
+                <!-- Option 1: Yes -->
+                <Group id="option1" translation="[0,0]">
+                    <Rectangle id="option1Bg"
+                        width="540"
+                        height="100"
+                        color="#10b98120" />
+                    <Rectangle id="option1Focus"
+                        width="548"
+                        height="108"
+                        translation="[-4,-4]"
+                        color="#10b981"
+                        opacity="0" />
+                    <Label id="option1Icon"
+                        translation="[20,25]"
+                        text="👍"
+                        font="font:LargeBoldSystemFont" />
+                    <Label id="option1Text"
+                        translation="[80,35]"
+                        text="YES - BULLISH"
+                        font="font:MediumBoldSystemFont"
+                        color="#10b981" />
+                    <Label id="option1Pct"
+                        translation="[420,35]"
+                        text="67%"
+                        font="font:MediumBoldSystemFont"
+                        color="#ffffff50" />
+                </Group>
+                
+                <!-- Option 2: No -->
+                <Group id="option2" translation="[580,0]">
+                    <Rectangle id="option2Bg"
+                        width="540"
+                        height="100"
+                        color="#ef444420" />
+                    <Rectangle id="option2Focus"
+                        width="548"
+                        height="108"
+                        translation="[-4,-4]"
+                        color="#ef4444"
+                        opacity="0" />
+                    <Label id="option2Icon"
+                        translation="[20,25]"
+                        text="👎"
+                        font="font:LargeBoldSystemFont" />
+                    <Label id="option2Text"
+                        translation="[80,35]"
+                        text="NO - BEARISH"
+                        font="font:MediumBoldSystemFont"
+                        color="#ef4444" />
+                    <Label id="option2Pct"
+                        translation="[420,35]"
+                        text="33%"
+                        font="font:MediumBoldSystemFont"
+                        color="#ffffff50" />
+                </Group>
+            </Group>
+            
+            <!-- Results Bar -->
+            <Group id="resultsBar" translation="[40,250]">
+                <Rectangle id="resultsBg"
+                    width="1120"
+                    height="20"
+                    color="#ffffff10" />
+                <Rectangle id="yesBar"
+                    width="750"
+                    height="20"
+                    color="#10b981" />
+            </Group>
+            
+            <!-- Vote Count -->
+            <Label id="voteCount"
+                translation="[40,290]"
+                text="1,234 votes • Ends in 2 days"
+                font="font:SmallSystemFont"
+                color="#ffffff50" />
+            
+            <!-- Your Vote Status -->
+            <Label id="voteStatus"
+                translation="[40,330]"
+                text="Press LEFT for YES, RIGHT for NO"
+                font="font:SmallBoldSystemFont"
+                color="#bc13fe" />
+        </Group>
+
+        <!-- Leaderboard -->
+        <Group id="leaderboard" translation="[1300,180]">
+            <Rectangle id="leaderboardBg"
+                width="560"
+                height="400"
+                color="#ffffff05" />
+            <Label id="leaderboardTitle"
+                translation="[20,20]"
+                text="🏆 Top Predictors"
+                font="font:MediumBoldSystemFont"
+                color="#f59e0b" />
+            
+            <Group id="leaders" translation="[20,70]">
+                <Label id="leader1"
+                    text="1. CryptoWizard - 85% accuracy"
+                    font="font:SmallSystemFont"
+                    color="#ffffff" />
+                <Label id="leader2"
+                    translation="[0,35]"
+                    text="2. MoonHunter - 82% accuracy"
+                    font="font:SmallSystemFont"
+                    color="#ffffff90" />
+                <Label id="leader3"
+                    translation="[0,70]"
+                    text="3. DiamondHands - 79% accuracy"
+                    font="font:SmallSystemFont"
+                    color="#ffffff80" />
+                <Label id="leader4"
+                    translation="[0,105]"
+                    text="4. BTCMaxi - 77% accuracy"
+                    font="font:SmallSystemFont"
+                    color="#ffffff70" />
+                <Label id="leader5"
+                    translation="[0,140]"
+                    text="5. SolanaKing - 75% accuracy"
+                    font="font:SmallSystemFont"
+                    color="#ffffff60" />
+            </Group>
+            
+            <!-- Your Stats -->
+            <Group id="yourStats" translation="[20,280]">
+                <Rectangle id="statsBg"
+                    width="520"
+                    height="100"
+                    color="#bc13fe10" />
+                <Label id="statsTitle"
+                    translation="[20,15]"
+                    text="Your Stats"
+                    font="font:SmallBoldSystemFont"
+                    color="#bc13fe" />
+                <Label id="statsAccuracy"
+                    translation="[20,50]"
+                    text="Accuracy: 72% • Rank: #42"
+                    font="font:SmallSystemFont"
+                    color="#ffffff70" />
+                <Label id="statsStreak"
+                    translation="[20,75]"
+                    text="🔥 3-day winning streak!"
+                    font="font:SmallSystemFont"
+                    color="#f97316" />
+            </Group>
+        </Group>
+
+        <!-- Past Predictions -->
+        <Group id="pastPolls" translation="[60,620]">
+            <Label id="pastTitle"
+                text="Recent Results"
+                font="font:SmallBoldSystemFont"
+                color="#ffffff50" />
+            
+            <Group id="pastList" translation="[0,40]">
+                <Rectangle id="past1Bg" width="580" height="70" color="#ffffff05" />
+                <Label id="past1Q" translation="[20,10]" text="ETH to $4,000 by Jan 15?" font="font:SmallSystemFont" color="#ffffff70" />
+                <Label id="past1R" translation="[20,35]" text="✅ YES won (58%) - You were RIGHT!" font="font:SmallBoldSystemFont" color="#10b981" />
+                
+                <Rectangle id="past2Bg" translation="[610,0]" width="580" height="70" color="#ffffff05" />
+                <Label id="past2Q" translation="[630,10]" text="SOL to flip XRP market cap?" font="font:SmallSystemFont" color="#ffffff70" />
+                <Label id="past2R" translation="[630,35]" text="❌ NO won (71%) - You were WRONG" font="font:SmallBoldSystemFont" color="#ef4444" />
+                
+                <Rectangle id="past3Bg" translation="[1220,0]" width="580" height="70" color="#ffffff05" />
+                <Label id="past3Q" translation="[1240,10]" text="AI tokens +20% this week?" font="font:SmallSystemFont" color="#ffffff70" />
+                <Label id="past3R" translation="[1240,35]" text="⏳ Pending - Ends tomorrow" font="font:SmallBoldSystemFont" color="#f59e0b" />
+            </Group>
+        </Group>
+
+        <!-- Navigation Hints -->
+        <Group id="navHints" translation="[60,750]">
+            <Label id="navLeft"
+                text="← YES"
+                font="font:SmallBoldSystemFont"
+                color="#10b981" />
+            <Label id="navRight"
+                translation="[100,0]"
+                text="NO →"
+                font="font:SmallBoldSystemFont"
+                color="#ef4444" />
+            <Label id="navBack"
+                translation="[1600,0]"
+                text="BACK to exit"
+                font="font:SmallSystemFont"
+                color="#ffffff30" />
+        </Group>
+
+        <!-- Crypto Service -->
+        <CryptoService id="cryptoService" />
+    </children>
+</component>

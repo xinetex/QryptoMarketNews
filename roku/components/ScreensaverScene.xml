@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Prophet TV Screensaver - Portfolio Value Display -->
+<component name="ScreensaverScene" extends="Scene">
+    <interface>
+        <field id="exitRequested" type="boolean" value="false" />
+    </interface>
+
+    <script type="text/brightscript" uri="ScreensaverScene.brs" />
+
+    <children>
+        <!-- Deep Space Background -->
+        <Rectangle id="backgroundRect"
+            width="1920"
+            height="1080"
+            color="#020208" />
+        
+        <!-- Slow Moving Gradient -->
+        <Rectangle id="gradientOverlay"
+            width="1920"
+            height="1080"
+            color="#0a0a2e"
+            opacity="0.5" />
+
+        <!-- Center Content Group (Movable for burn-in prevention) -->
+        <Group id="contentGroup" translation="[480,270]">
+            <!-- Large Price Display -->
+            <Group id="mainDisplay">
+                <Label id="brandLabel"
+                    text="PROPHET TV"
+                    font="font:SmallBoldSystemFont"
+                    color="#bc13fe" />
+                
+                <!-- Main Coin -->
+                <Label id="mainSymbol"
+                    translation="[0,50]"
+                    text="₿"
+                    font="font:LargestBoldSystemFont"
+                    color="#f7931a" />
+                
+                <Label id="mainPrice"
+                    translation="[100,30]"
+                    text="$94,521"
+                    font="font:HugeBoldSystemFont"
+                    color="#ffffff" />
+                
+                <Label id="mainChange"
+                    translation="[100,100]"
+                    text="+2.34%"
+                    font="font:LargeBoldSystemFont"
+                    color="#10b981" />
+            </Group>
+            
+            <!-- Secondary Prices -->
+            <Group id="secondaryDisplay" translation="[0,200]">
+                <Label id="eth"
+                    text="ETH $3,421 +1.8%"
+                    font="font:MediumSystemFont"
+                    color="#627eea" />
+                <Label id="sol"
+                    translation="[0,45]"
+                    text="SOL $198 +5.2%"
+                    font="font:MediumSystemFont"
+                    color="#9945ff" />
+                <Label id="xrp"
+                    translation="[0,90]"
+                    text="XRP $2.41 +3.1%"
+                    font="font:MediumSystemFont"
+                    color="#00aae4" />
+            </Group>
+            
+            <!-- Market Sentiment -->
+            <Group id="sentimentDisplay" translation="[0,350]">
+                <Label id="sentimentTitle"
+                    text="Market Sentiment"
+                    font="font:SmallSystemFont"
+                    color="#ffffff50" />
+                <Rectangle id="sentimentBar"
+                    translation="[0,30]"
+                    width="400"
+                    height="8"
+                    color="#ffffff20" />
+                <Rectangle id="sentimentFill"
+                    translation="[0,30]"
+                    width="268"
+                    height="8"
+                    color="#10b981" />
+                <Label id="sentimentValue"
+                    translation="[0,50]"
+                    text="67% Bullish"
+                    font="font:SmallBoldSystemFont"
+                    color="#10b981" />
+            </Group>
+            
+            <!-- Clock -->
+            <Label id="clockLabel"
+                translation="[0,440]"
+                text="11:30 PM"
+                font="font:LargeBoldSystemFont"
+                color="#ffffff30" />
+            
+            <!-- Date -->
+            <Label id="dateLabel"
+                translation="[0,500]"
+                text="Thursday, January 16"
+                font="font:SmallSystemFont"
+                color="#ffffff20" />
+        </Group>
+
+        <!-- Floating Particles (Subtle) -->
+        <Group id="particleContainer" />
+
+        <!-- Exit Hint (Faded) -->
+        <Label id="exitHint"
+            translation="[850,1040]"
+            text="Press any key to exit"
+            font="font:SmallSystemFont"
+            color="#ffffff10" />
+
+        <!-- Timers -->
+        <Timer id="updateTimer" repeat="true" duration="60" />
+        <Timer id="moveTimer" repeat="true" duration="30" />
+        <Timer id="particleTimer" repeat="true" duration="0.05" />
+
+        <!-- Crypto Service -->
+        <CryptoService id="cryptoService" />
+    </children>
+</component>

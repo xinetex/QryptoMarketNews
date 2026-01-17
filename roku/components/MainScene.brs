@@ -496,3 +496,56 @@ sub showCoinDetail(coinId as string)
     m.cryptoService.coinRequest = coinId
 end sub
 
+sub launchBriefingMode()
+    if m.briefingScene = invalid
+        m.briefingScene = m.top.createChild("BriefingScene")
+        m.briefingScene.observeField("exitRequested", "onBriefingExitRequested")
+    end if
+    
+    m.briefingScene.visible = true
+    m.briefingScene.setFocus(true)
+end sub
+
+sub onBriefingExitRequested()
+    if m.briefingScene <> invalid
+        m.briefingScene.visible = false
+        m.zoneGrid.setFocus(true)
+    end if
+end sub
+
+sub launchPredictionMode()
+    if m.predictionScene = invalid
+        m.predictionScene = m.top.createChild("PredictionScene")
+        m.predictionScene.observeField("exitRequested", "onPredictionExitRequested")
+    end if
+    
+    m.predictionScene.visible = true
+    m.predictionScene.setFocus(true)
+end sub
+
+sub onPredictionExitRequested()
+    if m.predictionScene <> invalid
+        m.predictionScene.visible = false
+        m.zoneGrid.setFocus(true)
+    end if
+end sub
+
+sub launchScreensaverMode()
+    if m.screensaverScene = invalid
+        m.screensaverScene = m.top.createChild("ScreensaverScene")
+        m.screensaverScene.observeField("exitRequested", "onScreensaverExitRequested")
+    end if
+    
+    m.screensaverScene.visible = true
+    m.screensaverScene.setFocus(true)
+end sub
+
+sub onScreensaverExitRequested()
+    if m.screensaverScene <> invalid
+        m.screensaverScene.visible = false
+        m.zoneGrid.setFocus(true)
+        m.idleSeconds = 0
+    end if
+end sub
+
+
