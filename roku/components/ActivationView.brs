@@ -32,8 +32,9 @@ sub onCodeReceived()
         ' Generate QR URL - using a public QR API as fallback
         activateUrl = "https://qchannel.app/activate?code=" + m.deviceCode
         
-        ' Use QR Server API for QR code generation
-        qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=" + activateUrl
+        ' Use QR Server API for QR code generation (URL Encoded)
+        transfer = CreateObject("roUrlTransfer")
+        qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=" + transfer.Escape(activateUrl)
         m.qrPoster.uri = qrUrl
         
         ' Start Polling for activation

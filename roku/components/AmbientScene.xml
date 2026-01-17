@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Prophet TV Ambient Mode - Living Market Visualization -->
-<component name="AmbientScene" extends="Scene">
+<!-- Prophet TV Ambient Mode - Full Featured -->
+<component name="AmbientScene" extends="Group">
     <interface>
         <field id="exitRequested" type="boolean" value="false" />
     </interface>
@@ -8,151 +8,117 @@
     <script type="text/brightscript" uri="AmbientScene.brs" />
 
     <children>
-        <!-- Base Layer: Deep Space Background -->
-        <Rectangle id="bgLayer1"
-            width="1920"
-            height="1080"
-            color="#050510" />
+        <!-- Full Screen Background -->
+        <!-- Full Screen Deep Background -->
+        <!-- Full Screen Background -->
+        <!-- Dynamic Visuals Layer -->
+        <Poster id="bgImage" width="1920" height="1080" loadDisplayMode="scaleToFill" uri="" />
+        <Rectangle id="bgOverlay" width="1920" height="1080" color="#030014" opacity="0.6" />
         
-        <!-- Gradient Overlay Layer (Animated) -->
-        <Rectangle id="gradientLayer"
-            width="1920"
-            height="1080"
-            color="#0a0a2e"
-            opacity="0.6" />
+        <!-- Timer for Visuals Rotation -->
+        <Timer id="visualsTimer" repeat="true" duration="20" />
         
-        <!-- Ambient Glow (Top - Animated Position) -->
-        <Rectangle id="glowTop"
-            translation="[0,0]"
-            width="1920"
-            height="600"
-            color="#1a0a3e"
-            opacity="0.4" />
+        <!-- Ambient Gradients (Cyberpunk/Prophet Theme) -->
+        <Rectangle width="1920" height="600" translation="[0,0]" color="#1a0b2e" opacity="0.4" />
+        <Rectangle width="1920" height="400" translation="[0,0]" color="#4c1d95" opacity="0.1" />
+        <Rectangle width="1920" height="500" translation="[0,580]" color="#0f172a" opacity="0.5" />
         
-        <!-- Ambient Glow (Bottom - Animated) -->
-        <Rectangle id="glowBottom"
-            translation="[0,600]"
-            width="1920"
-            height="480"
-            color="#0a1a2e"
-            opacity="0.3" />
+        <!-- Glow effects (Rectangles only, safer than Posters) -->
+        <Rectangle width="1920" height="400" translation="[0,0]" color="#1a0a3e" opacity="0.3" />
+        <Rectangle width="1920" height="400" translation="[0,680]" color="#0a1a2e" opacity="0.2" />
 
-        <!-- Particle Container -->
-        <Group id="particleContainer" />
+        <!-- Top Bar: Brand + Time -->
+        <Group id="topBar" translation="[60,40]">
+            <Label id="brandLabel" text="PROPHET TV" font="font:SmallBoldSystemFont" color="#bc13fe" />
+            <Label id="liveIndicator" translation="[240,0]" text="LIVE" font="font:SmallBoldSystemFont" color="#ef4444" />
+            <Label id="timeLabel" translation="[1680,0]" text="12:00 AM" font="font:SmallBoldSystemFont" color="#ffffff50" />
+        </Group>
 
-        <!-- Center Content: Large Price Display -->
-        <Group id="priceDisplay" translation="[960,400]">
-            <!-- Main Coin Symbol -->
-            <Label id="mainSymbol"
-                translation="[-200,-100]"
-                text="₿"
-                font="font:LargestBoldSystemFont"
-                color="#f7931a"
-                horizAlign="center"
-                width="400" />
+        <!-- Main Price Display: Centered -->
+        <Group id="mainDisplay" translation="[200,280]">
+            <!-- BTC Price Block -->
+            <Label id="mainSymbol" text="BTC" font="font:LargeBoldSystemFont" color="#f7931a" />
+            <Label id="mainPrice" translation="[140,-20]" text="$94,521" font="font:LargestSystemFont" color="#ffffff" />
+            <Label id="mainChange" translation="[140,75]" text="+2.34%" font="font:LargeBoldSystemFont" color="#10b981" />
             
-            <!-- Main Price -->
-            <Label id="mainPrice"
-                translation="[-300,50]"
-                text="$94,521"
-                font="font:LargestBoldSystemFont"
-                color="#ffffff"
-                horizAlign="center"
-                width="600" />
+            <!-- Extra Data (Moved far right to avoid overlap) -->
+            <Group translation="[800,15]">
+                <Label text="VOL (24H)" font="font:SmallSystemFont" color="#ffffff40" />
+                <Label id="mainVol" translation="[0,25]" text="$45.2B" font="font:MediumBoldSystemFont" color="#ffffff" />
+            </Group>
+            <Group translation="[1100,15]">
+                <Label text="MKT CAP" font="font:SmallSystemFont" color="#ffffff40" />
+                <Label id="mainCap" translation="[0,25]" text="$1.84M" font="font:MediumBoldSystemFont" color="#ffffff" />
+            </Group>
+        </Group>
+
+        <!-- Secondary Prices: Row below main -->
+        <Group id="secondaryRow" translation="[60,500]">
+            <!-- ETH -->
+            <Group translation="[0,0]">
+                <Label text="ETH" font="font:MediumBoldSystemFont" color="#627eea" />
+                <Label id="ethPrice" translation="[90,0]" text="$3,421" font="font:MediumBoldSystemFont" color="#ffffff" />
+                <Label id="ethChange" translation="[240,0]" text="+1.8%" font="font:SmallBoldSystemFont" color="#10b981" />
+            </Group>
+            <!-- SOL -->
+            <Group translation="[450,0]">
+                <Label text="SOL" font="font:MediumBoldSystemFont" color="#9945ff" />
+                <Label id="solPrice" translation="[90,0]" text="$198" font="font:MediumBoldSystemFont" color="#ffffff" />
+                <Label id="solChange" translation="[240,0]" text="+5.2%" font="font:SmallBoldSystemFont" color="#10b981" />
+            </Group>
+            <!-- XRP -->
+            <Group translation="[900,0]">
+                <Label text="XRP" font="font:MediumBoldSystemFont" color="#00aae4" />
+                <Label id="xrpPrice" translation="[90,0]" text="$2.41" font="font:MediumBoldSystemFont" color="#ffffff" />
+                <Label id="xrpChange" translation="[240,0]" text="+3.1%" font="font:SmallBoldSystemFont" color="#10b981" />
+            </Group>
+            <!-- DOGE -->
+            <Group translation="[1350,0]">
+                <Label text="DOGE" font="font:MediumBoldSystemFont" color="#c3a634" />
+                <Label id="dogePrice" translation="[110,0]" text="$0.38" font="font:MediumBoldSystemFont" color="#ffffff" />
+                <Label id="dogeChange" translation="[260,0]" text="-0.4%" font="font:SmallBoldSystemFont" color="#ef4444" />
+            </Group>
+        </Group>
+
+        <!-- Market Sentiment Bar -->
+        <Group id="sentimentGroup" translation="[660,650]">
+            <Label text="MARKET SENTIMENT" font="font:SmallBoldSystemFont" color="#ffffff40" />
+            <Rectangle translation="[0,35]" width="600" height="8" color="#ffffff15" />
+            <Rectangle id="sentimentFill" translation="[0,35]" width="400" height="8" color="#10b981" />
+            <Label id="sentimentValue" translation="[0,55]" text="67% Bullish" font="font:SmallBoldSystemFont" color="#10b981" />
+        </Group>
+
+        <!-- Bottom: News + Date -->
+        <Group id="bottomBar" translation="[0,950]">
+            <!-- News Bar Background -->
+            <Rectangle width="1920" height="60" color="#ffffff10" />
             
-            <!-- Price Change -->
-            <Label id="priceChange"
-                translation="[-150,150]"
-                text="+2.34%"
-                font="font:LargeBoldSystemFont"
-                color="#10b981"
-                horizAlign="center"
-                width="300" />
+            <!-- Scrolling Ticker -->
+            <Label id="newsTicker" 
+                   translation="[1920,15]" 
+                   text="LOADING PROPHET INTELLIGENCE..." 
+                   font="font:MediumSystemFont" 
+                   color="#ffffff" />
+                   
+            <!-- Date Overlay (Bottom Right) -->
+            <Group translation="[1500,80]">
+                <Label id="dateLabel" text="Friday, January 17, 2026" font="font:SmallSystemFont" color="#ffffff50" />
+            </Group>
+            
+            <!-- Exit Hint -->
+            <Label translation="[60,80]" text="Press OK or BACK to exit" font="font:SmallSystemFont" color="#ffffff30" />
         </Group>
-
-        <!-- Secondary Prices Row -->
-        <Group id="secondaryPrices" translation="[0,750]">
-            <Group id="ethPrice" translation="[200,0]">
-                <Label id="ethSymbol" text="ETH" font="font:MediumBoldSystemFont" color="#627eea" />
-                <Label id="ethValue" translation="[80,0]" text="$3,421" font="font:MediumBoldSystemFont" color="#ffffff" />
-                <Label id="ethChange" translation="[200,0]" text="+1.8%" font="font:SmallBoldSystemFont" color="#10b981" />
-            </Group>
-            <Group id="solPrice" translation="[600,0]">
-                <Label id="solSymbol" text="SOL" font="font:MediumBoldSystemFont" color="#9945ff" />
-                <Label id="solValue" translation="[80,0]" text="$198" font="font:MediumBoldSystemFont" color="#ffffff" />
-                <Label id="solChange" translation="[180,0]" text="+5.2%" font="font:SmallBoldSystemFont" color="#10b981" />
-            </Group>
-            <Group id="xrpPrice" translation="[1000,0]">
-                <Label id="xrpSymbol" text="XRP" font="font:MediumBoldSystemFont" color="#00aae4" />
-                <Label id="xrpValue" translation="[80,0]" text="$2.41" font="font:MediumBoldSystemFont" color="#ffffff" />
-                <Label id="xrpChange" translation="[180,0]" text="+3.1%" font="font:SmallBoldSystemFont" color="#10b981" />
-            </Group>
-            <Group id="dogePrice" translation="[1400,0]">
-                <Label id="dogeSymbol" text="DOGE" font="font:MediumBoldSystemFont" color="#c3a634" />
-                <Label id="dogeValue" translation="[100,0]" text="$0.38" font="font:MediumBoldSystemFont" color="#ffffff" />
-                <Label id="dogeChange" translation="[200,0]" text="-0.4%" font="font:SmallBoldSystemFont" color="#ef4444" />
-            </Group>
-        </Group>
-
-        <!-- Market Sentiment Indicator -->
-        <Group id="sentimentBar" translation="[660,900]">
-            <Label id="sentimentLabel"
-                text="MARKET SENTIMENT"
-                font="font:SmallBoldSystemFont"
-                color="#ffffff50"
-                horizAlign="center"
-                width="600" />
-            <Rectangle id="sentimentBg"
-                translation="[0,30]"
-                width="600"
-                height="8"
-                color="#ffffff20" />
-            <Rectangle id="sentimentFill"
-                translation="[0,30]"
-                width="400"
-                height="8"
-                color="#10b981" />
-            <Label id="sentimentValue"
-                translation="[0,50]"
-                text="67% Bullish"
-                font="font:SmallBoldSystemFont"
-                color="#10b981"
-                horizAlign="center"
-                width="600" />
-        </Group>
-
-        <!-- Exit Hint -->
-        <Label id="exitHint"
-            translation="[810,1020]"
-            text="Press OK or BACK to exit"
-            font="font:SmallSystemFont"
-            color="#ffffff30"
-            horizAlign="center"
-            width="300" />
-
-        <!-- Brand -->
-        <Label id="brandLabel"
-            translation="[60,40]"
-            text="PROPHET TV"
-            font="font:SmallBoldSystemFont"
-            color="#00f3ff50" />
-
-        <!-- Time Display -->
-        <Label id="timeLabel"
-            translation="[1700,40]"
-            text="12:00 AM"
-            font="font:SmallBoldSystemFont"
-            color="#ffffff50"
-            horizAlign="right"
-            width="150" />
+        
+        <!-- Ticker Animation -->
+        <Animation id="tickerAnim" duration="20" repeat="true" easeFunction="linear">
+            <Vector2DFieldInterpolator fieldToInterp="newsTicker.translation" key="[0.0, 1.0]" keyValue="[[1920, 15], [-2000, 15]]" />
+        </Animation>
 
         <!-- Timers -->
-        <Timer id="colorTimer" repeat="true" duration="5" />
-        <Timer id="particleTimer" repeat="true" duration="0.1" />
-        <Timer id="priceTimer" repeat="true" duration="30" />
         <Timer id="clockTimer" repeat="true" duration="60" />
+        <Timer id="priceTimer" repeat="true" duration="30" />
 
-        <!-- Crypto Service for live data -->
+        <!-- Crypto Service -->
         <CryptoService id="cryptoService" />
     </children>
 </component>

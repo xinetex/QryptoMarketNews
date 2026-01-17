@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Prophet TV Settings Scene -->
-<component name="SettingsScene" extends="Scene">
+<!-- Prophet TV Settings Scene - Simplified -->
+<component name="SettingsScene" extends="Group">
     <interface>
         <field id="exitRequested" type="boolean" value="false" />
         <field id="launchMode" type="string" value="" />
-        <field id="pairingToken" type="string" />
     </interface>
 
     <script type="text/brightscript" uri="SettingsScene.brs" />
@@ -18,158 +17,81 @@
 
         <!-- Header -->
         <Group id="header" translation="[60,50]">
-            <Label id="headerIcon"
-                text="⚙️"
-                font="font:LargestBoldSystemFont"
-                color="#bc13fe" />
             <Label id="headerTitle"
-                translation="[80,10]"
-                text="Settings"
+                text="⚙️ Settings"
                 font="font:LargeBoldSystemFont"
                 color="#ffffff" />
         </Group>
 
-        <!-- Settings Menu -->
-        <LabelList id="settingsMenu"
-            translation="[60,150]"
-            itemSize="[600,70]"
-            focusable="true"
-            drawFocusFeedback="true"
-            focusBitmapBlendColor="#bc13fe"
-            color="#ffffff"
-            focusedColor="#ffffff"
-            font="font:MediumBoldSystemFont" />
+        <!-- Simple Menu using RowList alternative: Manual buttons -->
+        <Group id="menuGroup" translation="[60,150]">
+            <!-- Menu Items -->
+            <Group id="menuItem0" translation="[0,0]">
+                <Rectangle id="menuBg0" width="600" height="70" color="#bc13fe" />
+                <Label id="menuLabel0" translation="[20,20]" text="💎 Launch Screensaver" font="font:MediumBoldSystemFont" color="#ffffff" />
+            </Group>
+            
+            <Group id="menuItem1" translation="[0,90]">
+                <Rectangle id="menuBg1" width="600" height="70" color="#ffffff10" />
+                <Label id="menuLabel1" translation="[20,20]" text="🌊 Launch Ambient Mode" font="font:MediumBoldSystemFont" color="#ffffff" />
+            </Group>
+            
+            <Group id="menuItem2" translation="[0,180]">
+                <Rectangle id="menuBg2" width="600" height="70" color="#ffffff10" />
+                <Label id="menuLabel2" translation="[20,20]" text="🖼️ Launch NFT Gallery" font="font:MediumBoldSystemFont" color="#ffffff" />
+            </Group>
+            
+            <Group id="menuItem3" translation="[0,270]">
+                <Rectangle id="menuBg3" width="600" height="70" color="#ffffff10" />
+                <Label id="menuLabel3" translation="[20,20]" text="🎯 Launch Predictions" font="font:MediumBoldSystemFont" color="#ffffff" />
+            </Group>
+            
+            <Group id="menuItem4" translation="[0,360]">
+                <Rectangle id="menuBg4" width="600" height="70" color="#ffffff10" />
+                <Label id="menuLabel4" translation="[20,20]" text="🔊 Launch Briefing" font="font:MediumBoldSystemFont" color="#ffffff" />
+            </Group>
 
-        <!-- Setting Detail Panel -->
-        <Group id="detailPanel" translation="[700,150]">
-            <Rectangle id="detailBg"
+            <Group id="menuItem5" translation="[0,450]">
+                <Rectangle id="menuBg5" width="600" height="70" color="#ffffff10" />
+                <Label id="menuLabel5" translation="[20,20]" text="📱 Pair Device" font="font:MediumBoldSystemFont" color="#ffffff" />
+            </Group>
+
+            <Group id="menuItem6" translation="[0,540]">
+                <Rectangle id="menuBg6" width="600" height="70" color="#ffffff10" />
+                <Label id="menuLabel6" translation="[20,20]" text="✨ Launch New UI (Beta)" font="font:MediumBoldSystemFont" color="#ffffff" />
+            </Group>
+        </Group>
+
+        <!-- Info Panel -->
+        <Group id="infoPanel" translation="[700,150]">
+            <Rectangle id="infoBg"
                 width="1160"
-                height="800"
+                height="500"
                 color="#ffffff08" />
             
-            <!-- Display Settings -->
-            <Group id="displaySettings" translation="[40,40]">
-                <Label id="sectionTitle"
-                    text="Display & Screensaver"
-                    font="font:MediumBoldSystemFont"
-                    color="#bc13fe" />
+            <Label id="infoTitle"
+                translation="[40,40]"
+                text="Prophet TV"
+                font="font:LargeBoldSystemFont"
+                color="#bc13fe" />
+            
+            <Label id="infoText"
+                translation="[40,100]"
+                text="Use UP/DOWN to navigate, OK to select"
+                font="font:MediumSystemFont"
+                color="#ffffff70" />
                 
-                <Group id="screensaverSetting" translation="[0,60]">
-                    <Label text="Screensaver Timeout"
-                        font="font:SmallBoldSystemFont"
-                        color="#ffffff" />
-                    <Label id="screensaverValue"
-                        translation="[0,30]"
-                        text="5 minutes"
-                        font="font:SmallSystemFont"
-                        color="#ffffff70" />
-                </Group>
+            <Label id="infoText2"
+                translation="[40,150]"
+                text="PLAY button: Ambient Mode"
+                font="font:SmallSystemFont"
+                color="#ffffff50" />
                 
-                <Group id="ambientSetting" translation="[0,130]">
-                    <Label text="Ambient Mode Auto-Start"
-                        font="font:SmallBoldSystemFont"
-                        color="#ffffff" />
-                    <Label id="ambientValue"
-                        translation="[0,30]"
-                        text="After 90 seconds idle"
-                        font="font:SmallSystemFont"
-                        color="#ffffff70" />
-                </Group>
-            </Group>
-
-            <!-- Second Screen Settings -->
-            <Group id="secondScreenSettings" translation="[40,250]" visible="false">
-                <Label id="section2Title"
-                    text="📱 Second Screen"
-                    font="font:MediumBoldSystemFont"
-                    color="#bc13fe" />
-                
-                <Group id="pairingSetting" translation="[0,60]">
-                    <Label text="Device Pairing"
-                        font="font:SmallBoldSystemFont"
-                        color="#ffffff" />
-                    <Label id="pairingStatus"
-                        translation="[0,30]"
-                        text="Not paired"
-                        font="font:SmallSystemFont"
-                        color="#f97316" />
-                    <Label id="pairingCode"
-                        translation="[0,60]"
-                        text="Pairing Code: ABC123"
-                        font="font:SmallBoldSystemFont"
-                        color="#10b981" />
-                </Group>
-                
-                <Group id="qrCode" translation="[0,150]">
-                    <Label text="Scan QR or visit:"
-                        font="font:SmallSystemFont"
-                        color="#ffffff50" />
-                    <Label id="pairUrl"
-                        translation="[0,25]"
-                        text="prophettv.app/pair"
-                        font="font:SmallBoldSystemFont"
-                        color="#bc13fe" />
-                </Group>
-            </Group>
-
-            <!-- Audio Settings -->
-            <Group id="audioSettings" translation="[40,250]" visible="false">
-                <Label id="section3Title"
-                    text="🎵 Audio & Music"
-                    font="font:MediumBoldSystemFont"
-                    color="#bc13fe" />
-                
-                <Group id="musicSetting" translation="[0,60]">
-                    <Label text="Background Music"
-                        font="font:SmallBoldSystemFont"
-                        color="#ffffff" />
-                    <Label id="musicValue"
-                        translation="[0,30]"
-                        text="Off"
-                        font="font:SmallSystemFont"
-                        color="#ffffff70" />
-                </Group>
-                
-                <Group id="musicSource" translation="[0,130]">
-                    <Label text="Music Source"
-                        font="font:SmallBoldSystemFont"
-                        color="#ffffff" />
-                    <Label id="sourceValue"
-                        translation="[0,30]"
-                        text="Audio1.TV (Music Videos)"
-                        font="font:SmallSystemFont"
-                        color="#bc13fe" />
-                </Group>
-                
-                <Group id="briefingSetting" translation="[0,200]">
-                    <Label text="Audio Briefings"
-                        font="font:SmallBoldSystemFont"
-                        color="#ffffff" />
-                    <Label id="briefingValue"
-                        translation="[0,30]"
-                        text="Enabled"
-                        font="font:SmallSystemFont"
-                        color="#10b981" />
-                </Group>
-            </Group>
-
-            <!-- Quick Actions -->
-            <Group id="quickActions" translation="[40,550]">
-                <Label text="Quick Actions"
-                    font="font:SmallBoldSystemFont"
-                    color="#ffffff50" />
-                
-                <Group id="actionButtons" translation="[0,40]">
-                    <Rectangle id="screensaverBtn" width="250" height="60" color="#ffffff10" />
-                    <Label translation="[20,18]" text="💎 Screensaver" font="font:SmallBoldSystemFont" color="#ffffff" />
-                    
-                    <Rectangle id="ambientBtn" translation="[280,0]" width="250" height="60" color="#ffffff10" />
-                    <Label translation="[300,18]" text="🌊 Ambient Mode" font="font:SmallBoldSystemFont" color="#ffffff" />
-                    
-                    <Rectangle id="nftBtn" translation="[560,0]" width="250" height="60" color="#ffffff10" />
-                    <Label translation="[580,18]" text="🖼️ NFT Gallery" font="font:SmallBoldSystemFont" color="#ffffff" />
-                </Group>
-            </Group>
+            <Label id="infoText3"
+                translation="[40,180]"
+                text="OPTIONS button: This menu"
+                font="font:SmallSystemFont"
+                color="#ffffff50" />
         </Group>
 
         <!-- Navigation Hint -->

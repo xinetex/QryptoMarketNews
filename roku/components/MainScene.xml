@@ -9,6 +9,7 @@
         <field id="pairingToken" type="string" />
         <field id="deepLink" type="assocarray" onChange="onDeepLink" />
         <field id="ecpAction" type="string" onChange="onEcpAction" />
+        <field id="launchMode" type="string" onChange="onLaunchModeChanged" />
     </interface>
 
     <script type="text/brightscript" uri="MainScene.brs" />
@@ -174,5 +175,8 @@
 
         <!-- Crypto Data Service -->
         <CryptoService id="cryptoService" />
+
+        <!-- NEW: Watchlist Style UI Layer (Phase 4) -->
+        <WatchlistLayer id="watchlistLayer" visible="false" />
     </children>
 </component>

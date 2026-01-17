@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Watchlist Style Layout Container -->
+<component name="WatchlistLayer" extends="Group">
+    <interface>
+        <field id="content" type="node" />
+        <field id="section" type="string" />
+    </interface>
+
+    <script type="text/brightscript" uri="WatchlistLayer.brs" />
+
+    <children>
+        <Timer id="loaderTimer" duration="0.5" repeat="false" />
+
+        <!-- Background Hero Manager handled by parent or here? -->
+        <!-- We'll keep it simple: Translucent overlay over the main scene background -->
+        
+        <Rectangle id="layerBg" 
+            width="1920" 
+            height="1080" 
+            color="#000000AA"
+        />
+
+        <!-- Left Navigation Panel -->
+        <Group id="navPanel" translation="[60, 150]">
+            <LabelList id="navMenu" 
+                translation="[0,0]" 
+                itemSize="[350, 60]" 
+                itemSpacing="[0,20]"
+                color="#888888"
+                focusedColor="#bc13fe"
+            />
+        </Group>
+
+        <!-- Right Content Panel -->
+        <Group id="contentPanel" translation="[500, 150]">
+            <Label id="sectionTitle" 
+                text="Trending Now" 
+                font="font:LargeBoldSystemFont" 
+                color="#ffffff" 
+                translation="[0, -60]"
+            />
+            
+            <!-- Rows of content -->
+            <RowList id="contentRows" 
+                translation="[0,0]" 
+                itemComponentName="ZoneCard" 
+                numRows="3"
+                rowItemSize="[[300, 200]]" 
+                rowItemSpacing="[[20, 0]]"
+                itemSize="[1300, 300]" 
+                rowLabelOffset="[[0, 15]]"
+                showRowLabel="true"
+                rowFocusAnimationStyle="floatingFocus"
+            />
+        </Group>
+    </children>
+</component>

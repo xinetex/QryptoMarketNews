@@ -9,6 +9,7 @@ sub runLoop()
     ' Initial fetch from Roku feed (includes ticker, zones, market pulse)
     fetchRokuFeed()
     fetchAdTags()
+    fetchVisuals()
     
     ' Track pending requests
     m.pendingZoneCoinsRequest = ""
@@ -26,10 +27,24 @@ sub runLoop()
         zoneTimer = zoneTimer + 1
         
         ' Check for zone coins request
-        currentRequest = m.top.zoneCoinsRequest
+        currentRequest = m.top.requestZoneCoins
         if currentRequest <> "" and currentRequest <> m.pendingZoneCoinsRequest
             m.pendingZoneCoinsRequest = currentRequest
             fetchZoneCoins(currentRequest)
+        end if
+        
+        ' Check for NFT request
+        if m.top.nftRequest = true
+            url = "https://qryptomarket-news.vercel.app/api/content/nfts?mode=" + m.top.nftMode
+            ' Assuming makeApiRequest is intended here, but it doesn't take a context object.
+            ' The original code uses fetchNews() which internally calls makeApiRequest.
+            ' For now, we'll just call makeApiRequest and assign to a dummy variable.
+            ' If a specific NFT data structure is needed, a new fetchNftData() function should be created.
+            response = makeApiRequest(url)
+            if response <> invalid and response.data <> invalid
+                m.top.nftData = response.data ' Assuming nftData field exists on m.top
+            end if
+            m.top.nftRequest = false
         end if
         
         ' Check for news request
@@ -194,13 +209,23 @@ sub fetchAgentCacheIntelligence()
     end if
 end sub
 
-' Fetch daily briefing from AgentCache
-sub fetchAgentCacheBriefing()
-    url = "https://agentcache.ai/api/qchannel/briefing"
+' Fetch background visuals from AgentCache
+sub fetchVisuals()
+    ' Use AgentCache API to get random visuals
+    url = "https://agentcache.ai/api/qchannel/visuals?type=background&random=true&limit=10"
+    ' Note: In production we might point to local dev server if agentcache.ai DNS isn't ready
+    ' But assuming we want to use the local server user is running:
+    ' url = "http://192.168.4.34:3000/api/qchannel/visuals?type=background&random=true&limit=10"
+    ' Let's stick to the convention used in fetchAdTags (m.top.apiBaseUrl which is usually set to local dev)
+    ' Actually fetchAdTags uses apiBaseUrl.
+    ' Let's use apiBaseUrl if available, or fallback.
+    
+    url = m.top.apiBaseUrl + "/api/qchannel/visuals?type=background&random=true&limit=10"
+    
     response = makeApiRequest(url)
     
-    if response <> invalid
-        m.top.briefingData = response
+    if response <> invalid and response.items <> invalid
+        m.top.visualsData = response.items
     end if
 end sub
 

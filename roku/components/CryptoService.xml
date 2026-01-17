@@ -4,7 +4,16 @@
     <interface>
         <field id="tickerData" type="array" />
         <field id="zoneData" type="array" />
-        <field id="newsRequest" type="boolean" value="false" />
+        
+        <!-- Zone detail requests - Task polls these -->
+        <field id="requestZoneCoins" type="string" alwaysNotify="true" />
+        <field id="zoneCoins" type="array" />
+        
+        <field id="nftRequest" type="boolean" alwaysNotify="true" />
+        <field id="nftMode" type="string" value="trending" />
+        <field id="nftData" type="assocarray" />
+        
+        <field id="newsRequest" type="boolean" alwaysNotify="true" />
         <field id="newsData" type="array" />
         
         <field id="coinRequest" type="string" />
@@ -22,12 +31,11 @@
         <!-- AgentCache Intelligence Data -->
         <field id="intelligenceData" type="assocarray" />
         <field id="briefingData" type="assocarray" />
+        <field id="visualsData" type="array" />
         
         <field id="prerollVastUrl" type="string" />
         <field id="apiBaseUrl" type="string" value="https://qryptomarket-news.vercel.app" />
-        <!-- Zone detail requests - Task polls these -->
-        <field id="zoneCoinsRequest" type="string" />
-        <field id="zoneCoins" type="array" />
+
     </interface>
     
     <script type="text/brightscript" uri="CryptoService.brs" />

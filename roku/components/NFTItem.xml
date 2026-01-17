@@ -14,7 +14,7 @@
             <Poster id="nftImage"
                 width="260"
                 height="220"
-                loadDisplayMode="scaleToFit"
+                loadDisplayMode="scaleToZoom"
                 loadingBitmapUri=""
                 failedBitmapUri="" />
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Prophet TV NFT Gallery - AI-Curated Digital Art Experience -->
-<component name="NFTGalleryScene" extends="Scene">
+<component name="NFTGalleryScene" extends="Group">
     <interface>
         <field id="exitRequested" type="boolean" value="false" />
         <field id="curationType" type="string" value="trending" />
@@ -13,14 +13,18 @@
         <Rectangle id="backgroundRect"
             width="1920"
             height="1080"
-            color="#030308" />
+            color="#030014" />
+            
+        <!-- Ambient Gradients -->
+        <Rectangle width="1920" height="600" translation="[0,0]" color="#1a0b2e" opacity="0.4" />
+        <Rectangle width="1920" height="500" translation="[0,580]" color="#0f172a" opacity="0.6" />
         
         <!-- Dynamic Background Glow (changes per collection) -->
         <Rectangle id="dynamicGlow"
             width="1920"
-            height="600"
+            height="800"
             color="#6366f1"
-            opacity="0.15" />
+            opacity="0.1" />
 
         <!-- Header -->
         <Group id="header" translation="[60,40]">
@@ -70,7 +74,7 @@
                 translation="[10,10]"
                 width="680"
                 height="550"
-                loadDisplayMode="scaleToFit" />
+                loadDisplayMode="scaleToZoom" />
             
             <!-- Featured Info Overlay -->
             <Rectangle id="featuredOverlay"
@@ -177,6 +181,7 @@
         <!-- Timers -->
         <Timer id="autoScrollTimer" repeat="true" duration="5" />
         <Timer id="tickerScrollTimer" repeat="true" duration="0.05" />
+        <Timer id="safetyTimer" repeat="false" duration="3" />
 
         <!-- Crypto Service -->
         <CryptoService id="cryptoService" />

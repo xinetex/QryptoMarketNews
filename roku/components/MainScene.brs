@@ -152,6 +152,16 @@ sub loadZoneData()
             tvl: "$1.2B",
             change: "+0.8%",
             coingeckoId: "tokenized-gold"
+        },
+        {
+            id: "special-modes",
+            name: "✨ Special Modes",
+            description: "Screensaver, Ambient, NFT Gallery",
+            icon: "pkg:/images/zones/ai-hero.png",
+            color: "#bc13fe",
+            tvl: "MODES",
+            change: "→ OK",
+            coingeckoId: ""
         }
     ]
     
@@ -215,8 +225,21 @@ sub onZoneSelected(event as object)
     if m.zones <> invalid and itemIndex < m.zones.count()
         zone = m.zones[itemIndex]
         print "Selected zone: " + zone.name
-        showZoneDetail(zone)
+        
+        ' Handle special modes zone
+        if zone.id = "special-modes"
+            handleSpecialModes()
+        else
+            showZoneDetail(zone)
+        end if
     end if
+end sub
+
+sub handleSpecialModes()
+    print "[MainScene] handleSpecialModes called"
+    print "[MainScene] Launching Ambient Mode..."
+    launchAmbientMode()
+    print "[MainScene] Ambient Mode launched"
 end sub
 
 ' Navigate to zone detail screen
@@ -350,19 +373,22 @@ function onKeyEvent(key as string, press as boolean) as boolean
     if m.zoneDetailScene <> invalid and m.zoneDetailScene.visible
         return false
     end if
-    if m.settingsScene <> invalid and m.settingsScene.visible
-        return false
+    
+    ' PLAY button launches Ambient Mode
+    if key = "play"
+        launchAmbientMode()
+        return true
     end if
     
-    ' OPTIONS button opens Settings
+    ' OPTIONS button launches Settings
     if key = "options"
         launchSettingsMode()
         return true
     end if
     
-    ' PLAY button launches Ambient Mode
-    if key = "play"
-        launchAmbientMode()
+    ' Rewind button launches NFT Gallery
+    if key = "rewind"
+        launchNFTGalleryMode()
         return true
     end if
     
@@ -394,14 +420,18 @@ sub onIdleTimerFired()
 end sub
 
 sub launchAmbientMode()
+    print "[MainScene] launchAmbientMode called"
     if m.ambientScene = invalid
+        print "[MainScene] Creating AmbientScene..."
         m.ambientScene = m.top.createChild("AmbientScene")
         m.ambientScene.observeField("exitRequested", "onAmbientExitRequested")
     end if
     
+    print "[MainScene] Setting ambient visible and focused"
     m.ambientScene.visible = true
     m.ambientScene.setFocus(true)
     m.idleSeconds = 0
+    print "[MainScene] Ambient scene set up complete"
 end sub
 
 sub onAmbientExitRequested()
@@ -416,7 +446,6 @@ sub launchSettingsMode()
     if m.settingsScene = invalid
         m.settingsScene = m.top.createChild("SettingsScene")
         m.settingsScene.observeField("exitRequested", "onSettingsExitRequested")
-        m.settingsScene.pairingToken = m.top.pairingToken
     end if
     
     m.settingsScene.visible = true
@@ -440,10 +469,47 @@ sub onSettingsExitRequested()
             launchPredictionMode()
         else if launchMode = "briefing"
             launchBriefingMode()
+        else if launchMode = "pair"
+            launchActivationView()
+        else if launchMode = "watchlist"
+            launchWatchlistMode()
         else
             m.zoneGrid.setFocus(true)
         end if
     end if
+end sub
+
+sub onLaunchModeChanged()
+    mode = m.top.launchMode
+    if mode = invalid or mode = "" then return
+    
+    print "[MainScene] Launch Mode Triggered: " + mode
+    
+    ' Reset mode so it can be triggered again later if needed
+    ' But careful not to infinite loop if we set it to "" immediately inside here?
+    ' Typically we handle the action then clear it, or just leave it.
+    ' Let's handle it.
+    
+    if mode = "screensaver"
+        launchScreensaverMode()
+    else if mode = "ambient"
+        launchAmbientMode()
+    else if mode = "nft"
+        launchNFTGalleryMode()
+    else if mode = "predictions"
+        launchPredictionMode()
+    else if mode = "briefing"
+        launchBriefingMode()
+    else if mode = "pair"
+        launchActivationView()
+    else if mode = "watchlist"
+        launchWatchlistMode()
+    else if mode = "settings"
+        launchSettingsMode()
+    end if
+    
+    ' Clear it so we can re-trigger same mode if needed
+    m.top.launchMode = ""
 end sub
 
 ' ===== VOICE & SECOND SCREEN =====
@@ -607,3 +673,42 @@ sub onScreensaverExitRequested()
 end sub
 
 
+sub launchActivationView()
+    if m.activationView = invalid
+        print "[MainScene] Creating ActivationView..."
+        m.activationView = m.top.createChild("ActivationView")
+        m.activationView.observeField("visible", "onActivationVisibleChanged")
+        m.activationView.observeField("activationComplete", "onActivationComplete")
+    end if
+    
+    print "[MainScene] Launching Activation View..."
+    m.activationView.visible = true
+    m.activationView.setFocus(true)
+end sub
+
+sub onActivationVisibleChanged()
+    if m.activationView <> invalid and not m.activationView.visible
+        ' Returned from activation logic
+        m.settingsScene.visible = true
+        m.settingsScene.setFocus(true)
+    end if
+end sub
+
+sub onActivationComplete()
+    if m.activationView.activationComplete
+        print "[MainScene] Device paired successfully"
+        ' Could show a success toast here
+        m.activationView.visible = false
+    end if
+end sub
+
+
+sub launchWatchlistMode()
+    if m.watchlistLayer = invalid
+        m.watchlistLayer = m.top.findNode("watchlistLayer")
+        ' Pass crypto service reference if needed
+    end if
+    
+    m.watchlistLayer.visible = true
+    m.watchlistLayer.setFocus(true)
+end sub

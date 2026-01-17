@@ -84,6 +84,19 @@ export async function initDatabase() {
             )
         `;
 
+        // Device Activations table (Roku Linking)
+        await sql`
+            CREATE TABLE IF NOT EXISTS device_activations (
+                code VARCHAR(6) PRIMARY KEY,
+                roku_serial VARCHAR(255) NOT NULL,
+                status VARCHAR(50) DEFAULT 'pending',
+                user_id UUID,
+                device_name VARCHAR(255),
+                created_at TIMESTAMP DEFAULT NOW(),
+                expires_at TIMESTAMP NOT NULL
+            )
+        `;
+
         console.log('Database tables initialized');
         return true;
     } catch (error) {

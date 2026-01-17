@@ -46,6 +46,9 @@ sub init()
     
     ' Initialize crypto service
     m.cryptoService = m.top.findNode("cryptoService")
+    if m.cryptoService <> invalid
+        m.cryptoService.observeField("nftData", "onNftDataReceived")
+    end if
     
     ' Timers
     m.autoScrollTimer = m.top.findNode("autoScrollTimer")
@@ -56,6 +59,13 @@ sub init()
     m.tickerScrollTimer.control = "start"
     m.tickerOffset = 0
     
+    ' API Timeout Safety
+    m.safetyTimer = m.top.findNode("safetyTimer")
+    if m.safetyTimer = invalid 
+         ' Create it dynamically if not in XML (or assume I will add to XML)
+         ' Easier to add to XML
+    end if
+    
     ' Load curated NFTs
     loadCuratedCollections("trending")
 end sub
@@ -65,26 +75,67 @@ end sub
 sub loadCuratedCollections(mode as string)
     m.top.curationType = mode
     
-    ' Curated collection data (would come from API)
-    ' Each collection is scored by the AI Curation Engine
+    ' Request data from CryptoService
+    if m.cryptoService <> invalid
+        m.cryptoService.nftMode = mode
+        m.cryptoService.nftRequest = true
+        ' Show loading state
+        m.featuredTitle.text = "Loading " + ucase(mode) + " Collections..."
+        
+        ' Start safety fallback timer (3s)
+        m.safetyTimer = m.top.findNode("safetyTimer")
+        if m.safetyTimer <> invalid
+            m.safetyTimer.observeField("fire", "onSafetyTimerFired")
+            m.safetyTimer.control = "start"
+        end if
+    else
+        ' Fallback to mock if service unavailable
+        loadMockCollections(mode)
+    end if
     
+    ' Update glow stats based on mode
     if mode = "trending"
-        m.collections = getTrendingCollections()
         m.dynamicGlow.color = "#f97316"
     else if mode = "bluechip"
-        m.collections = getBlueChipCollections()
         m.dynamicGlow.color = "#6366f1"
     else if mode = "aesthetic"
-        m.collections = getAestheticCollections()
         m.dynamicGlow.color = "#ec4899"
     else if mode = "generative"
-        m.collections = getGenerativeCollections()
         m.dynamicGlow.color = "#10b981"
+    end if
+end sub
+
+sub onNftDataReceived()
+    data = m.cryptoService.nftData
+    if data <> invalid and data.collections <> invalid
+        m.collections = data.collections
+        
+        if m.collections.count() > 0
+            m.currentCollectionIndex = 0
+            displayCollection(m.collections[0])
+            m.autoScrollTimer.control = "start"
+        else
+            m.featuredTitle.text = "No Collections Found"
+        end if
+    end if
+end sub
+
+sub loadMockCollections(mode as string)
+    if mode = "trending"
+        m.collections = getTrendingCollections()
+    else if mode = "bluechip"
+        m.collections = getBlueChipCollections()
+    else if mode = "aesthetic"
+        m.collections = getAestheticCollections()
+    else if mode = "generative"
+        m.collections = getGenerativeCollections()
     end if
     
     if m.collections.count() > 0
         displayCollection(m.collections[0])
         m.autoScrollTimer.control = "start"
+    else
+        m.featuredTitle.text = "No Collections Found"
     end if
 end sub
 
@@ -94,7 +145,7 @@ function getTrendingCollections() as object
         {
             name: "Bored Ape Yacht Club",
             slug: "boredapeyachtclub",
-            image: "https://i.seadn.io/gae/Ju9CkWtV-1Okvf45wo8UctR-M9He2PjILP0oOvxE89AyiPPGtrR3gysu1Zgy0hjd2xKIgjJJtWIc0ybj4Vd7wv8t3pxDGHoJBzDB",
+            image: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=800&q=80",
             floor: 42.5,
             floorUSD: 145320,
             volume24h: 1234,
@@ -102,16 +153,16 @@ function getTrendingCollections() as object
             listed: 12,
             reason: "🔥 +340% volume spike this week",
             items: [
-                { title: "BAYC #8442", image: "https://i.seadn.io/gae/example1", rarity: 142, price: 68 },
-                { title: "BAYC #1234", image: "https://i.seadn.io/gae/example2", rarity: 891, price: 45 },
-                { title: "BAYC #5678", image: "https://i.seadn.io/gae/example3", rarity: 2341, price: 43 },
-                { title: "BAYC #9999", image: "https://i.seadn.io/gae/example4", rarity: 567, price: 52 }
+                { title: "BAYC #8442", image: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=400&q=80", rarity: 142, price: 68 },
+                { title: "BAYC #1234", image: "https://images.unsplash.com/photo-1535378437341-a62502c37582?w=400&q=80", rarity: 891, price: 45 },
+                { title: "BAYC #5678", image: "https://images.unsplash.com/photo-1528026112993-a55e34747209?w=400&q=80", rarity: 2341, price: 43 },
+                { title: "BAYC #9999", image: "https://images.unsplash.com/photo-1622547748225-3fc4abd2cca0?w=400&q=80", rarity: 567, price: 52 }
             ]
         },
         {
             name: "Azuki",
             slug: "azuki",
-            image: "https://i.seadn.io/gcs/files/azuki-example.png",
+            image: "https://images.unsplash.com/photo-1622547748225-3fc4abd2cca0?w=800&q=80",
             floor: 11.2,
             floorUSD: 38304,
             volume24h: 567,
@@ -123,7 +174,7 @@ function getTrendingCollections() as object
         {
             name: "Pudgy Penguins",
             slug: "pudgypenguins",
-            image: "https://i.seadn.io/gcs/files/pudgy-example.png",
+            image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80",
             floor: 8.5,
             floorUSD: 29070,
             volume24h: 892,
@@ -141,7 +192,7 @@ function getBlueChipCollections() as object
         {
             name: "CryptoPunks",
             slug: "cryptopunks",
-            image: "https://i.seadn.io/gae/cryptopunks",
+            image: "https://images.unsplash.com/photo-1642104704074-907c0698cbd9?w=800&q=80",
             floor: 52.0,
             floorUSD: 177840,
             volume24h: 456,
@@ -159,7 +210,7 @@ function getAestheticCollections() as object
         {
             name: "Art Blocks Curated",
             slug: "art-blocks-curated",
-            image: "https://i.seadn.io/gae/artblocks",
+            image: "https://images.unsplash.com/photo-1634986666676-ec8fd927c23d?w=800&q=80",
             floor: 2.5,
             floorUSD: 8550,
             volume24h: 123,
@@ -177,7 +228,7 @@ function getGenerativeCollections() as object
         {
             name: "Chromie Squiggle",
             slug: "chromie-squiggle",
-            image: "https://i.seadn.io/gae/chromie",
+            image: "https://images.unsplash.com/photo-1618172193763-c511deb635ca?w=800&q=80",
             floor: 15.0,
             floorUSD: 51300,
             volume24h: 89,
@@ -209,11 +260,22 @@ sub displayCollection(collection as object)
         content = CreateObject("roSGNode", "ContentNode")
         for each item in collection.items
             node = content.createChild("ContentNode")
+            
+            ' Handle API vs Mock data differences
+            itemTitle = ""
+            if item.title <> invalid then itemTitle = item.title
+            if item.name <> invalid then itemTitle = item.name
+            
+            itemPrice = 0
+            if item.price <> invalid then itemPrice = item.price
+            if item.floor_price <> invalid then itemPrice = item.floor_price
+            
             node.addFields({
                 image: item.image,
-                title: item.title,
-                name: item.title,
-                floor_price: item.price
+                title: itemTitle,
+                name: itemTitle,
+                price: itemPrice,
+                floor_price: itemPrice
             })
         end for
         m.nftGrid.content = content

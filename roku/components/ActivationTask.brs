@@ -16,8 +16,8 @@ sub getCode()
     serial = m.top.rokuSerial
     if serial = invalid or serial = "" then serial = "UNKNOWN_SERIAL"
     
-    ' QChannel Activation API
-    url = "https://qchannel.app/api/activate/code"
+    ' QChannel Activation API - Production
+    url = "https://qryptomarket-news.vercel.app/api/activate/code"
     
     request = CreateObject("roUrlTransfer")
     request.SetCertificatesFile("common:/certs/ca-bundle.crt")
@@ -25,22 +25,34 @@ sub getCode()
     request.SetUrl(url)
     request.AddHeader("Content-Type", "application/json")
     
+    port = CreateObject("roMessagePort")
+    request.SetMessagePort(port)
+    
     json = FormatJson({roku_serial: serial, app: "qchannel"})
     
-    response = request.PostFromString(json)
+    ' Use Async with Timeout
+    sent = request.AsyncPostFromString(json)
     
-    if response <> ""
-        jsonObj = ParseJson(response)
-        if jsonObj <> invalid
-            m.top.codeResult = jsonObj
-        else
-            ' Fallback: Generate local code if API unavailable
-            m.top.codeResult = {code: generateLocalCode(), local: true}
+    if sent
+        msg = wait(4000, port) ' 4 second timeout
+        
+        if type(msg) = "roUrlEvent"
+            code = msg.GetResponseCode()
+            response = msg.GetString()
+            
+            if code = 200
+                jsonObj = ParseJson(response)
+                if jsonObj <> invalid
+                    m.top.codeResult = jsonObj
+                    return
+                end if
+            end if
         end if
-    else
-        ' Fallback for offline testing
-        m.top.codeResult = {code: generateLocalCode(), local: true}
     end if
+    
+    ' Fallback if timeout, error, or invalid JSON
+    print "API Call Failed or Timed Out for Production. Using Local Fallback."
+    m.top.codeResult = {code: generateLocalCode(), local: true}
 end sub
 
 sub pollStatus()
@@ -50,7 +62,7 @@ sub pollStatus()
         return
     end if
     
-    url = "https://qchannel.app/api/activate/poll"
+    url = "https://qryptomarket-news.vercel.app/api/activate/poll"
     
     request = CreateObject("roUrlTransfer")
     request.SetCertificatesFile("common:/certs/ca-bundle.crt")

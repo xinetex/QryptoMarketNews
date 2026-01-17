@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="ContentTask" extends="Task">
+    <interface>
+        <field id="requestType" type="string" />
+        <field id="contentResult" type="node" />
+        <field id="httpParams" type="assocarray" />
+    </interface>
+    <script type="text/brightscript" uri="ContentTask.brs" />
+</component>

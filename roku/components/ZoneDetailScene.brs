@@ -76,7 +76,7 @@ sub onZoneSet()
         
         ' Request coins
         if zoneId <> ""
-            m.cryptoService.zoneCoinsRequest = zoneId
+            m.cryptoService.requestZoneCoins = zoneId
         end if
         
         ' Request news
