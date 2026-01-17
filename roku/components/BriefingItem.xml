@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="BriefingItem" extends="Group">
+    <interface>
+        <field id="itemContent" type="node" onChange="onContentSet" />
+        <field id="focusPercent" type="float" onChange="onFocusPercentChanged" />
+        <!-- Custom data fields passed from ContentNode -->
+        <field id="shortDescriptionLine1" type="string" />
+        <field id="shortDescriptionLine2" type="string" />
+        <field id="releaseDate" type="string" />
+        <field id="description" type="string" />
+    </interface>
+
+    <script type="text/brightscript" uri="BriefingItem.brs" />
+
+    <children>
+        <!-- Background -->
+        <Rectangle id="bg"
+            width="900"
+            height="120"
+            color="#ffffff10"
+            radius="10" />
+
+        <!-- Thumbnail -->
+        <Poster id="thumbnail"
+            width="100"
+            height="100"
+            translation="[10,10]"
+            loadDisplayMode="scaleToFill" />
+
+        <!-- Info Group -->
+        <Group translation="[130,15]">
+            <!-- Podcast Name & Date -->
+            <Label id="metaLabel"
+                text=""
+                font="font:SmallSystemFont"
+                color="#bc13fe" />
+            
+            <!-- Episode Title -->
+            <Label id="titleLabel"
+                translation="[0,30]"
+                text=""
+                font="font:MediumSystemFont"
+                color="#ffffff"
+                width="700"
+                maxLines="1"
+                ellipsizeOnBoundary="true" />
+                
+            <!-- Duration -->
+            <Label id="durationLabel"
+                translation="[0,65]"
+                text=""
+                font="font:SmallSystemFont"
+                color="#ffffff60" />
+        </Group>
+        
+        <!-- Focus Ring -->
+        <Rectangle id="focusRing"
+            width="900"
+            height="120"
+            color="#ffffff"
+            filled="false"
+            opacity="0"
+            radius="10" />
+    </children>
+</component>

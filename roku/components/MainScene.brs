@@ -392,8 +392,15 @@ function onKeyEvent(key as string, press as boolean) as boolean
         return true
     end if
     
-    if key = "back"
-        return false ' Exit channel
+    ' Debug focus state
+    if not m.zoneGrid.hasFocus()
+        print "[MainScene] Key received but Grid lost focus. Forcing focus to zoneGrid."
+        m.zoneGrid.setFocus(true)
+        ' We return true to consume this press, user needs to press again? 
+        ' Or we let it slide. Ideally we just fix focus.
+        ' If we return false, the grid won't get *this* event because it bubbled up.
+        ' So we must manually dispatch or just accept one "dead" click.
+        return true
     end if
     
     return false
@@ -427,6 +434,19 @@ sub launchAmbientMode()
         m.ambientScene.observeField("exitRequested", "onAmbientExitRequested")
     end if
     
+    ' Hide Main Content to prevent overlap
+    m.headerBar = m.top.findNode("headerBar")
+    m.tickerSection = m.top.findNode("tickerSection")
+    m.heroSection = m.top.findNode("heroSection")
+    m.zonesSection = m.top.findNode("zonesSection")
+    m.newsSection = m.top.findNode("newsSection")
+    
+    if m.headerBar <> invalid then m.headerBar.visible = false
+    if m.tickerSection <> invalid then m.tickerSection.visible = false
+    if m.heroSection <> invalid then m.heroSection.visible = false
+    if m.zonesSection <> invalid then m.zonesSection.visible = false
+    if m.newsSection <> invalid then m.newsSection.visible = false
+    
     print "[MainScene] Setting ambient visible and focused"
     m.ambientScene.visible = true
     m.ambientScene.setFocus(true)
@@ -437,6 +457,14 @@ end sub
 sub onAmbientExitRequested()
     if m.ambientScene <> invalid
         m.ambientScene.visible = false
+        
+        ' Restore Main Content
+        if m.headerBar <> invalid then m.headerBar.visible = true
+        if m.tickerSection <> invalid then m.tickerSection.visible = true
+        if m.heroSection <> invalid then m.heroSection.visible = true
+        if m.zonesSection <> invalid then m.zonesSection.visible = true
+        if m.newsSection <> invalid then m.newsSection.visible = true
+        
         m.zoneGrid.setFocus(true)
         m.idleSeconds = 0
     end if

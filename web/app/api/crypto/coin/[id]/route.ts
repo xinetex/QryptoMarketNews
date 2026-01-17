@@ -17,11 +17,11 @@ export async function GET(
             );
         }
 
-        // Fetch coin from CoinGecko markets endpoint with sparkline
+        // Fetch FULL coin details (includes description, links, detailed market data)
         const response = await fetch(
-            `${COINGECKO_API_BASE}/coins/markets?vs_currency=usd&ids=${coinId}&sparkline=true`,
+            `${COINGECKO_API_BASE}/coins/${coinId}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=true`,
             {
-                next: { revalidate: 60 },
+                next: { revalidate: 300 }, // Cache deeper details for 5 minutes
                 headers: {
                     'Accept': 'application/json',
                 }
@@ -29,19 +29,55 @@ export async function GET(
         );
 
         if (!response.ok) {
-            throw new Error(`CoinGecko API error: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        if (!data || data.length === 0) {
+            // Fallback to searching if ID not found directly (sometimes happens with variations)
+            // But for now, just error out cleanly
             return NextResponse.json(
-                { error: "Coin not found" },
-                { status: 404 }
+                { error: `CoinGecko API error: ${response.status}` },
+                { status: response.status }
             );
         }
 
-        return NextResponse.json({ data: data[0] });
+        const raw = await response.json();
+
+        // Transform & Flatten data for Roku
+        const data = {
+            id: raw.id,
+            symbol: raw.symbol,
+            name: raw.name,
+            image: raw.image?.large || raw.image?.small,
+            description: raw.description?.en || "", // Extract English description
+
+            // Market Data (Flattened)
+            current_price: raw.market_data?.current_price?.usd,
+            market_cap: raw.market_data?.market_cap?.usd,
+            total_volume: raw.market_data?.total_volume?.usd,
+            fully_diluted_valuation: raw.market_data?.fully_diluted_valuation?.usd,
+
+            high_24h: raw.market_data?.high_24h?.usd,
+            low_24h: raw.market_data?.low_24h?.usd,
+            ath: raw.market_data?.ath?.usd,
+            atl: raw.market_data?.atl?.usd,
+
+            price_change_percentage_24h: raw.market_data?.price_change_percentage_24h,
+            circulating_supply: raw.market_data?.circulating_supply,
+            total_supply: raw.market_data?.total_supply,
+            max_supply: raw.market_data?.max_supply,
+            market_cap_rank: raw.market_cap_rank,
+
+            // Sparkline
+            sparkline_in_7d: {
+                price: raw.market_data?.sparkline_7d?.price || []
+            },
+
+            // Links
+            links: {
+                homepage: raw.links?.homepage?.[0] || "",
+                twitter_screen_name: raw.links?.twitter_screen_name || "",
+                subreddit_url: raw.links?.subreddit_url || ""
+            }
+        };
+
+        return NextResponse.json({ data });
     } catch (error) {
         console.error("Failed to fetch coin:", error);
         return NextResponse.json(

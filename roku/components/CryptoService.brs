@@ -191,7 +191,7 @@ end sub
 
 ' Fetch news from AgentCache
 sub fetchAgentCacheNews()
-    url = "https://agentcache.ai/api/qchannel/news?format=roku&limit=5"
+    url = m.top.apiBaseUrl + "/api/qchannel/news?format=roku&limit=5"
     response = makeApiRequest(url)
     
     if response <> invalid and response.headlines <> invalid
@@ -201,7 +201,7 @@ end sub
 
 ' Fetch market intelligence from AgentCache
 sub fetchAgentCacheIntelligence()
-    url = "https://agentcache.ai/api/qchannel/intelligence?type=movers&limit=10"
+    url = m.top.apiBaseUrl + "/api/qchannel/intelligence?type=movers&limit=10"
     response = makeApiRequest(url)
     
     if response <> invalid

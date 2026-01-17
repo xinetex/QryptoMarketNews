@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Prophet TV Settings Scene - Simplified -->
+<!-- Prophet TV Settings Hub - Master/Detail Design -->
 <component name="SettingsScene" extends="Group">
     <interface>
         <field id="exitRequested" type="boolean" value="false" />
@@ -9,96 +9,95 @@
     <script type="text/brightscript" uri="SettingsScene.brs" />
 
     <children>
-        <!-- Background -->
-        <Rectangle id="backgroundRect"
-            width="1920"
-            height="1080"
-            color="#050510" />
+        <!-- Deep Background -->
+        <Rectangle id="backgroundRect" width="1920" height="1080" color="#050510" />
+        <Rectangle id="bgGradient" width="1920" height="1080" color="#1a1a2e" opacity="0.4" />
+        
+        <!-- Animated Background Blob (Subtle) -->
+        <Poster id="bgVisual" width="1920" height="1080" uri="pkg:/images/zones/ai-hero.png" opacity="0.1" loadDisplayMode="scaleToFill" />
 
-        <!-- Header -->
-        <Group id="header" translation="[60,50]">
-            <Label id="headerTitle"
-                text="⚙️ Settings"
-                font="font:LargeBoldSystemFont"
-                color="#ffffff" />
+        <!-- HEADER -->
+        <Group id="header" translation="[120,80]">
+            <Label id="headerTitle" text="CONTROL CENTER" font="font:LargeBoldSystemFont" color="#ffffff" />
+            <Label id="headerSubtitle" translation="[0,50]" text="Select a mode to launch" font="font:SmallSystemFont" color="#ffffff50" />
         </Group>
 
-        <!-- Simple Menu using RowList alternative: Manual buttons -->
-        <Group id="menuGroup" translation="[60,150]">
-            <!-- Menu Items -->
-            <Group id="menuItem0" translation="[0,0]">
-                <Rectangle id="menuBg0" width="600" height="70" color="#bc13fe" />
-                <Label id="menuLabel0" translation="[20,20]" text="💎 Launch Screensaver" font="font:MediumBoldSystemFont" color="#ffffff" />
-            </Group>
+        <!-- MAIN LAYOUT CONTAINER -->
+        <LayoutGroup translation="[120,250]" layoutDirection="horiz" itemSpacings="[100]">
             
-            <Group id="menuItem1" translation="[0,90]">
-                <Rectangle id="menuBg1" width="600" height="70" color="#ffffff10" />
-                <Label id="menuLabel1" translation="[20,20]" text="🌊 Launch Ambient Mode" font="font:MediumBoldSystemFont" color="#ffffff" />
-            </Group>
-            
-            <Group id="menuItem2" translation="[0,180]">
-                <Rectangle id="menuBg2" width="600" height="70" color="#ffffff10" />
-                <Label id="menuLabel2" translation="[20,20]" text="🖼️ Launch NFT Gallery" font="font:MediumBoldSystemFont" color="#ffffff" />
-            </Group>
-            
-            <Group id="menuItem3" translation="[0,270]">
-                <Rectangle id="menuBg3" width="600" height="70" color="#ffffff10" />
-                <Label id="menuLabel3" translation="[20,20]" text="🎯 Launch Predictions" font="font:MediumBoldSystemFont" color="#ffffff" />
-            </Group>
-            
-            <Group id="menuItem4" translation="[0,360]">
-                <Rectangle id="menuBg4" width="600" height="70" color="#ffffff10" />
-                <Label id="menuLabel4" translation="[20,20]" text="🔊 Launch Briefing" font="font:MediumBoldSystemFont" color="#ffffff" />
-            </Group>
+            <!-- LEFT PANEL: NAVIGATION MENU -->
+            <LayoutGroup id="menuList" layoutDirection="vert" itemSpacings="[20]">
+                <!-- Item 0: Watchlist (Hero Item) -->
+                <Group id="menuItem0" focusable="true">
+                    <Rectangle id="bg0" width="600" height="80" color="#bc13fe" opacity="1.0" />
+                    <Label id="lbl0" translation="[30,25]" text="📺 My Watchlist (New)" font="font:MediumBoldSystemFont" color="#ffffff" />
+                </Group>
 
-            <Group id="menuItem5" translation="[0,450]">
-                <Rectangle id="menuBg5" width="600" height="70" color="#ffffff10" />
-                <Label id="menuLabel5" translation="[20,20]" text="📱 Pair Device" font="font:MediumBoldSystemFont" color="#ffffff" />
-            </Group>
+                <!-- Item 1: Ambient Mode -->
+                <Group id="menuItem1" focusable="true">
+                    <Rectangle id="bg1" width="600" height="80" color="#ffffff10" opacity="0.1" />
+                    <Label id="lbl1" translation="[30,25]" text="🌊 Ambient Mode" font="font:MediumSystemFont" color="#ffffff" />
+                </Group>
 
-            <Group id="menuItem6" translation="[0,540]">
-                <Rectangle id="menuBg6" width="600" height="70" color="#ffffff10" />
-                <Label id="menuLabel6" translation="[20,20]" text="✨ Launch New UI (Beta)" font="font:MediumBoldSystemFont" color="#ffffff" />
-            </Group>
-        </Group>
+                <!-- Item 2: NFT Gallery -->
+                <Group id="menuItem2" focusable="true">
+                    <Rectangle id="bg2" width="600" height="80" color="#ffffff10" opacity="0.1" />
+                    <Label id="lbl2" translation="[30,25]" text="🖼️ NFT Gallery" font="font:MediumSystemFont" color="#ffffff" />
+                </Group>
 
-        <!-- Info Panel -->
-        <Group id="infoPanel" translation="[700,150]">
-            <Rectangle id="infoBg"
-                width="1160"
-                height="500"
-                color="#ffffff08" />
-            
-            <Label id="infoTitle"
-                translation="[40,40]"
-                text="Prophet TV"
-                font="font:LargeBoldSystemFont"
-                color="#bc13fe" />
-            
-            <Label id="infoText"
-                translation="[40,100]"
-                text="Use UP/DOWN to navigate, OK to select"
-                font="font:MediumSystemFont"
-                color="#ffffff70" />
+                <!-- Item 3: Predictions -->
+                <Group id="menuItem3" focusable="true">
+                    <Rectangle id="bg3" width="600" height="80" color="#ffffff10" opacity="0.1" />
+                    <Label id="lbl3" translation="[30,25]" text="🎯 Predictions Market" font="font:MediumSystemFont" color="#ffffff" />
+                </Group>
+
+                <!-- Item 4: Business Briefing -->
+                <Group id="menuItem4" focusable="true">
+                    <Rectangle id="bg4" width="600" height="80" color="#ffffff10" opacity="0.1" />
+                    <Label id="lbl4" translation="[30,25]" text="🔊 Business Briefing" font="font:MediumSystemFont" color="#ffffff" />
+                </Group>
+
+                <!-- Item 5: Screensaver -->
+                <Group id="menuItem5" focusable="true">
+                    <Rectangle id="bg5" width="600" height="80" color="#ffffff10" opacity="0.1" />
+                    <Label id="lbl5" translation="[30,25]" text="💤 Screensaver" font="font:MediumSystemFont" color="#ffffff" />
+                </Group>
                 
-            <Label id="infoText2"
-                translation="[40,150]"
-                text="PLAY button: Ambient Mode"
-                font="font:SmallSystemFont"
-                color="#ffffff50" />
-                
-            <Label id="infoText3"
-                translation="[40,180]"
-                text="OPTIONS button: This menu"
-                font="font:SmallSystemFont"
-                color="#ffffff50" />
-        </Group>
+                <!-- Item 6: Pair Device -->
+                <Group id="menuItem6" focusable="true">
+                    <Rectangle id="bg6" width="600" height="80" color="#ffffff10" opacity="0.1" />
+                    <Label id="lbl6" translation="[30,25]" text="📱 Pair Mobile Device" font="font:MediumSystemFont" color="#ffffff" />
+                </Group>
+            </LayoutGroup>
 
-        <!-- Navigation Hint -->
-        <Label id="navHint"
-            translation="[60,980]"
-            text="↑↓ Navigate  •  OK Select  •  BACK Exit"
-            font="font:SmallSystemFont"
-            color="#ffffff30" />
+            <!-- RIGHT PANEL: PREVIEW CARD -->
+            <Group id="previewPanel">
+                <!-- Glass Card Background -->
+                <Rectangle id="previewBg" width="800" height="600" color="#000000" opacity="0.5" />
+                <Rectangle id="previewBorder" width="800" height="600" color="#ffffff" opacity="0.1" />
+                
+                <!-- Preview Image -->
+                <Poster id="previewImage" translation="[0,0]" width="800" height="300" loadDisplayMode="scaleToFill" uri="pkg:/images/zones/solana-hero.png" />
+                <Rectangle id="imageOverlay" width="800" height="300" color="#000000" opacity="0.3" />
+
+                <!-- Content -->
+                <Group translation="[50,340]">
+                    <Label id="previewIcon" text="📺" font="font:LargestBoldSystemFont" />
+                    <Label id="previewTitle" translation="[90,10]" text="My Watchlist" font="font:LargeBoldSystemFont" color="#ffffff" />
+                    <Label id="previewDesc" translation="[0,80]" text="Experience the new Netflix-style browsing interface for your crypto zones." 
+                           font="font:MediumSystemFont" color="#ffffff80" width="700" wrap="true" lineSpacing="5" />
+                    
+                    <!-- Action Button Hint -->
+                    <Group translation="[0,180]">
+                         <Rectangle width="200" height="50" color="#ffffff" opacity="0.2" />
+                         <Label text="PRESS OK TO LAUNCH" translation="[0,12]" width="200" horizAlign="center" font="font:SmallBoldSystemFont" color="#ffffff" />
+                    </Group>
+                </Group>
+            </Group>
+
+        </LayoutGroup>
+
+        <!-- Footer -->
+        <Label id="footerText" translation="[120,950]" text="Prophet TV v1.2" font="font:SmallSystemFont" color="#ffffff30" />
     </children>
 </component>

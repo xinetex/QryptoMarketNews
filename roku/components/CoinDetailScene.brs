@@ -251,10 +251,50 @@ sub updateUI(coin as object)
 end sub
 
 sub loadNFTGallery()
-    ' Placeholder - would fetch NFT collection images from API
-    ' For now, just show empty gallery
-    content = CreateObject("roSGNode", "ContentNode")
-    m.nftGrid.content = content
+    ' Fetch NFT data from our API
+    m.nftGrid.visible = true
+    
+    ' Only fetch if we haven't already
+    if m.nftGrid.content <> invalid and m.nftGrid.content.getChildCount() > 0 then return
+
+    url = m.cryptoService.apiBaseUrl + "/api/content/nfts?mode=trending"
+    
+    ' Perform synchronous fetch for simplicity in this specific scene (could be async)
+    request = CreateObject("roUrlTransfer")
+    request.setUrl(url)
+    request.setCertificatesFile("common:/certs/ca-bundle.crt")
+    request.initClientCertificates()
+    request.addHeader("Accept", "application/json")
+    
+    response = request.getToString()
+    
+    if response <> invalid and response <> ""
+        json = ParseJson(response)
+        
+        if json <> invalid and json.collections <> invalid
+            content = CreateObject("roSGNode", "ContentNode")
+            
+            ' Flatten items from the first few collections for the grid
+            for each collection in json.collections
+                if collection.items <> invalid
+                    for each item in collection.items
+                        node = content.createChild("ContentNode")
+                        node.title = item.title
+                        node.hdPosterUrl = item.image
+                        node.description = "Price: " + str(item.price).trim() + " ETH"
+                        
+                        ' Metadata for NFTItem component
+                        node.addFields({
+                            collectionName: collection.name,
+                            floorPrice: str(collection.floor).trim() + " ETH"
+                        })
+                    end for
+                end if
+            end for
+            
+            m.nftGrid.content = content
+        end if
+    end if
 end sub
 
 function formatPrice(price as dynamic) as string

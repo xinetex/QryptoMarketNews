@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Prophet TV Briefing Scene - Daily Market Summary -->
+<!-- Prophet TV Briefing Scene - Daily Market Summary & Podcasts -->
 <component name="BriefingScene" extends="Scene">
     <interface>
         <field id="exitRequested" type="boolean" value="false" />
@@ -29,156 +29,102 @@
                 color="#bc13fe" />
             <Label id="headerTitle"
                 translation="[80,10]"
-                text="Daily Market Briefing"
+                text="Daily Briefing &amp; Podcasts"
                 font="font:LargeBoldSystemFont"
                 color="#ffffff" />
             <Label id="headerDate"
                 translation="[80,60]"
-                text="January 16, 2026"
+                text=""
                 font="font:SmallSystemFont"
                 color="#ffffff50" />
         </Group>
 
-        <!-- Main Content Card -->
-        <Group id="mainCard" translation="[60,180]">
-            <Rectangle id="cardBg"
-                width="1800"
-                height="550"
-                color="#ffffff08" />
-            
-            <!-- Greeting -->
-            <Label id="greetingLabel"
-                translation="[40,30]"
-                text="Good Evening"
-                font="font:LargeBoldSystemFont"
-                color="#10b981" />
-            
-            <!-- Summary Text -->
-            <Label id="summaryText"
-                translation="[40,100]"
-                text="Loading market briefing..."
-                font="font:MediumSystemFont"
-                color="#ffffff"
-                width="1720"
-                maxLines="6"
-                wrap="true" />
-            
-            <!-- Highlights Section -->
-            <Group id="highlights" translation="[40,350]">
-                <Label id="highlightsTitle"
-                    text="📌 Key Highlights"
+        <!-- Main Content Area with 2 Columns -->
+        
+        <!-- Left Column: Audio Player & Current Episode (800px) -->
+        <Group id="playerSection" translation="[60,180]">
+            <Rectangle id="playerBg"
+                width="800"
+                height="800"
+                color="#ffffff05" />
+                
+            <!-- Podcast Artwork -->
+            <Poster id="podcastImage"
+                translation="[200,80]"
+                width="400"
+                height="400"
+                loadDisplayMode="scaleToFit" />
+                
+            <!-- Now Playing Details -->
+            <Group id="nowPlayingInfo" translation="[40,520]">
+                <Label id="podcastName"
+                    text="Select an episode"
+                    font="font:MediumSystemFont"
+                    color="#bc13fe"
+                    width="720"
+                    horizAlign="center" />
+                    
+                <Label id="episodeTitle"
+                    translation="[0,40]"
+                    text=""
+                    font="font:MediumBoldSystemFont"
+                    color="#ffffff"
+                    width="720"
+                    horizAlign="center"
+                    maxLines="2"
+                    wrap="true" />
+                    
+                <Label id="playStatus"
+                    translation="[0,120]"
+                    text=""
                     font="font:SmallBoldSystemFont"
-                    color="#bc13fe" />
-                <Label id="highlight1"
-                    translation="[0,35]"
-                    text="• BTC holding strong above $94,000"
-                    font="font:SmallSystemFont"
-                    color="#ffffff90" />
-                <Label id="highlight2"
-                    translation="[0,65]"
-                    text="• SOL DeFi TVL hits new all-time high"
-                    font="font:SmallSystemFont"
-                    color="#ffffff90" />
-                <Label id="highlight3"
-                    translation="[0,95]"
-                    text="• AI tokens outperform broader market"
-                    font="font:SmallSystemFont"
-                    color="#ffffff90" />
-                <Label id="highlight4"
-                    translation="[0,125]"
-                    text="• RWA sector crosses $30B market cap"
-                    font="font:SmallSystemFont"
-                    color="#ffffff90" />
+                    color="#ffffff70"
+                    width="720"
+                    horizAlign="center" />
             </Group>
+            
+            <!-- Playback Progress -->
+            <Group id="progressBar" translation="[100,680]" visible="false">
+                <Rectangle width="600" height="4" color="#333333" />
+                <Rectangle id="progressFill" width="0" height="4" color="#10b981" />
+            </Group>
+            
+            <!-- Controls Hint -->
+            <Label id="controlsHint"
+                translation="[0,740]"
+                text="[OK] Play/Pause   [BACK] Exit"
+                font="font:SmallSystemFont"
+                color="#ffffff30"
+                width="800"
+                horizAlign="center" />
         </Group>
 
-        <!-- Market Status Panel -->
-        <Group id="statusPanel" translation="[60,770]">
-            <Rectangle id="statusBg"
-                width="580"
-                height="180"
-                color="#ffffff05" />
-            <Label id="statusTitle"
-                translation="[20,20]"
-                text="Market Status"
-                font="font:SmallBoldSystemFont"
-                color="#ffffff50" />
-            <Label id="sentimentLabel"
-                translation="[20,60]"
-                text="Sentiment: Bullish (67%)"
+        <!-- Right Column: Episode List (900px) -->
+        <Group id="listSection" translation="[920,180]">
+            <Label id="listTitle"
+                text="Latest Episodes"
                 font="font:MediumBoldSystemFont"
-                color="#10b981" />
-            <Label id="volumeLabel"
-                translation="[20,100]"
-                text="Volume: Above Average"
-                font="font:SmallSystemFont"
-                color="#ffffff70" />
-            <Label id="volatilityLabel"
-                translation="[20,130]"
-                text="Volatility: Moderate"
-                font="font:SmallSystemFont"
-                color="#ffffff70" />
+                color="#ffffff" />
+            
+            <!-- Using MarkupGrid as vertical list -->
+            <MarkupGrid id="episodeList"
+                translation="[0,60]"
+                itemComponentName="BriefingItem"
+                numColumns="1"
+                numRows="5"
+                itemSize="[900,120]"
+                itemSpacing="[0,20]"
+                focusable="true"
+                drawFocusFeedback="true" />
         </Group>
 
-        <!-- Top Movers Panel -->
-        <Group id="moversPanel" translation="[670,770]">
-            <Rectangle id="moversBg"
-                width="580"
-                height="180"
-                color="#ffffff05" />
-            <Label id="moversTitle"
-                translation="[20,20]"
-                text="Top Movers"
-                font="font:SmallBoldSystemFont"
-                color="#ffffff50" />
-            <Label id="mover1"
-                translation="[20,60]"
-                text="🥇 SOL +5.2%"
-                font="font:MediumBoldSystemFont"
-                color="#10b981" />
-            <Label id="mover2"
-                translation="[20,100]"
-                text="🥈 AI16Z +12.5%"
-                font="font:SmallSystemFont"
-                color="#10b981" />
-            <Label id="mover3"
-                translation="[20,130]"
-                text="🥉 BTC +2.3%"
-                font="font:SmallSystemFont"
-                color="#10b981" />
-        </Group>
-
-        <!-- Audio Controls Panel -->
-        <Group id="audioPanel" translation="[1280,770]">
-            <Rectangle id="audioBg"
-                width="580"
-                height="180"
-                color="#bc13fe15" />
-            <Label id="audioTitle"
-                translation="[20,20]"
-                text="🎧 Audio Briefing"
-                font="font:SmallBoldSystemFont"
-                color="#bc13fe" />
-            <Label id="audioStatus"
-                translation="[20,60]"
-                text="Coming Soon"
-                font="font:MediumSystemFont"
-                color="#ffffff70" />
-            <Label id="audioHint"
-                translation="[20,100]"
-                text="Press PLAY to listen"
-                font="font:SmallSystemFont"
-                color="#ffffff30" />
-        </Group>
-
-        <!-- Exit Hint -->
-        <Label id="exitHint"
-            translation="[1600,1000]"
-            text="Press BACK to exit"
-            font="font:SmallSystemFont"
-            color="#ffffff30" />
-
+        <!-- Audio Node -->
+        <Audio id="audioPlayer" />
+        
         <!-- Crypto Service -->
         <CryptoService id="cryptoService" />
+        
+        <!-- Refresh Timer for Progress Bar -->
+        <Timer id="progressTimer" repeat="true" duration="1" />
     </children>
 </component>
