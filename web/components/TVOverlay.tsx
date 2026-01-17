@@ -81,11 +81,7 @@ export default function TVOverlay() {
     return (
         <div ref={overlayRef} className="relative w-full min-h-screen text-foreground overflow-y-auto">
             {/* Breaking News Banner */}
-            <BreakingNews
-                message="Market Update: Crypto markets show strong momentum heading into 2025"
-                type="positive"
-                autoHide={15}
-            />
+            {/* Breaking News Banner Removed */}
 
             {/* Video Background */}
             <VideoBackground showControls={true} />
@@ -95,8 +91,12 @@ export default function TVOverlay() {
             <div className="absolute top-0 left-0 w-full p-3 lg:p-8 flex flex-col lg:flex-row justify-between items-start lg:items-center z-20 tv-element opacity-0 pointer-events-none">
                 <div className="flex flex-col lg:flex-row items-start lg:items-center gap-2 lg:gap-16 w-full lg:w-auto pointer-events-auto">
                     <div className="flex items-center gap-2 lg:gap-4">
-                        <div className="p-1.5 lg:p-3 bg-neon-purple/20 border border-neon-purple rounded-lg backdrop-blur-md text-neon-purple shadow-[0_0_15px_rgba(188,19,254,0.3)] icon-pulse">
-                            <Tv size={24} className="lg:w-8 lg:h-8" />
+                        <div className="p-1.5 lg:p-3 bg-neon-purple/20 border border-neon-purple rounded-lg backdrop-blur-md shadow-[0_0_15px_rgba(188,19,254,0.3)] icon-pulse">
+                            <img
+                                src="/prophet-logo.png"
+                                alt="Prophet TV"
+                                className="w-6 h-6 lg:w-8 lg:h-8 object-contain"
+                            />
                         </div>
                         <div>
                             <h1 className="text-2xl lg:text-4xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple drop-shadow-[0_0_10px_rgba(0,243,255,0.5)]">
