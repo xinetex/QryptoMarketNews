@@ -12,10 +12,28 @@ const missions = [
 
 export default function IntelligencePage() {
     const [mission, setMission] = useState('sentiment');
-    const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
+    const [input, setInput] = useState('');
+
+    // @ts-ignore - useChat types might be missing proper return type inference for input helpers
+    const { messages, append, isLoading } = useChat({
         api: '/api/intelligence',
         body: { mission }
     });
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInput(e.target.value);
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!input.trim()) return;
+
+        // append or sendMessage depending on version, append is safer for array updates
+        if (append) {
+            await append({ role: 'user', content: input });
+        }
+        setInput('');
+    };
 
     return (
         <div className="min-h-screen bg-black text-white p-8 font-sans">
