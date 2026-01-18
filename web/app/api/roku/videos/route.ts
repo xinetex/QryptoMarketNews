@@ -30,7 +30,7 @@ export async function GET() {
             try {
                 const feed = await parser.parseURL(`https://www.youtube.com/feeds/videos.xml?channel_id=${channel.id}`);
 
-                const videos = feed.items.slice(0, 4).map(item => {
+                const videos = feed.items.slice(0, 4).map((item: any) => {
                     const group = item['media:group']; // RSS parser custom field access
                     const thumb = group ? group['media:thumbnail'][0]?.$.url : "";
                     const desc = group ? group['media:description'][0] : "";
