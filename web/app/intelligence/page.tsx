@@ -18,7 +18,7 @@ export default function IntelligencePage() {
     const { messages, append, isLoading } = useChat({
         api: '/api/intelligence',
         body: { mission }
-    });
+    } as any);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInput(e.target.value);
@@ -72,7 +72,7 @@ export default function IntelligencePage() {
                             </div>
                         )}
 
-                        {messages.map(m => (
+                        {messages.map((m: any) => (
                             <div key={m.id} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                                 <div className={`max-w-[80%] rounded-lg p-4 ${m.role === 'user'
                                     ? 'bg-purple-600 text-white'
