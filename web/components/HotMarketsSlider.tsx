@@ -3,20 +3,21 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { animate } from "animejs";
 import { ChevronLeft, ChevronRight, Flame, TrendingUp, Clock, ExternalLink } from "lucide-react";
+import Image from "next/image";
 
-interface Market {
-    id: string;
-    slug: string;
-    question: string;
+// Dome API Market Interface
+interface DomeMarket {
+    market_slug: string;
+    event_slug: string;
+    title: string;
     description: string;
-    category: string;
-    categoryIcon: string;
-    yesOdds: number;
-    noOdds: number;
-    totalVolume: number;
-    endDate: string;
-    isHot: boolean;
-    isFeatured: boolean;
+    start_time: number;
+    end_time: number;
+    volume_total: number;
+    side_a: { id: string; label: string; };
+    side_b: { id: string; label: string; };
+    status: string;
+    image: string;
 }
 
 interface HotMarketsSliderProps {
@@ -33,37 +34,36 @@ function formatVolume(volume: number): string {
     return `$${volume}`;
 }
 
-function getTimeRemaining(endDate: string): string {
-    const end = new Date(endDate);
-    const now = new Date();
-    const diff = end.getTime() - now.getTime();
+function getTimeRemaining(endTime: number): string {
+    const now = Date.now() / 1000;
+    const diff = endTime - now;
 
     if (diff <= 0) return "Ended";
 
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const days = Math.floor(diff / (60 * 60 * 24));
     if (days > 30) {
         const months = Math.floor(days / 30);
         return `${months}mo left`;
     }
     if (days > 0) return `${days}d left`;
 
-    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const hours = Math.floor(diff / (60 * 60));
     return `${hours}h left`;
 }
 
 export default function HotMarketsSlider({ autoPlay = true, interval = 6000 }: HotMarketsSliderProps) {
-    const [markets, setMarkets] = useState<Market[]>([]);
+    const [markets, setMarkets] = useState<DomeMarket[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [loading, setLoading] = useState(true);
     const slideRef = useRef<HTMLDivElement>(null);
 
-    // Fetch hot markets from QPPBet API
+    // Fetch hot markets from our new API (Dome wired)
     useEffect(() => {
         async function fetchHotMarkets() {
             try {
                 const response = await fetch("/api/hot-markets");
                 const { markets: hotMarkets } = await response.json();
-                setMarkets(hotMarkets);
+                setMarkets(hotMarkets || []);
             } catch (error) {
                 console.error("Failed to fetch hot markets:", error);
             } finally {
@@ -113,23 +113,34 @@ export default function HotMarketsSlider({ autoPlay = true, interval = 6000 }: H
         );
     }
 
-    if (markets.length === 0) {
-        return null;
+    if (!markets || markets.length === 0) {
+        return null; // Or render empty state
     }
 
     const currentMarket = markets[currentIndex];
-    const yesPercentage = currentMarket.yesOdds;
-    const noPercentage = currentMarket.noOdds;
+
+    // Dummy odds for visual completeness until pricing endpoint is wired
+    // The user specifically asked to wire up the API, but the API lacks odds in the list view.
+    // We will show the outcome labels instead of fake odds to be honest.
 
     return (
         <div className="w-full h-full relative overflow-hidden group">
-            {/* Header */}
+            {/* Header with Dome Branding */}
             <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
                     <Flame size={14} className="text-orange-500 animate-pulse" />
                     <span className="text-xs font-bold text-orange-400 uppercase tracking-wider">
                         Hot Markets
                     </span>
+                    {/* Added by request: Dome attribution */}
+                    <div className="flex items-center gap-1 opacity-70 ml-1">
+                        <span className="text-[10px] text-gray-400">by dome</span>
+                        <img
+                            src="https://domeapi.io/assets/dome-icon-336KHiVB.png"
+                            alt="Dome API"
+                            className="w-3 h-3 object-contain"
+                        />
+                    </div>
                 </div>
                 <span className="text-xs text-white/50">
                     {currentIndex + 1} / {markets.length}
@@ -139,45 +150,38 @@ export default function HotMarketsSlider({ autoPlay = true, interval = 6000 }: H
             {/* Market Content */}
             <div ref={slideRef} className="min-h-[80px]">
                 <a
-                    href={`https://qppbet.vercel.app/markets/${currentMarket.id}`}
+                    href={`https://polymarket.com/event/${currentMarket.event_slug}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block group/link"
                 >
-                    {/* Category Badge */}
+                    {/* Category Badge (using generic icon since tags are array) */}
                     <div className="flex items-center gap-2 mb-2">
-                        <span className="text-base">{currentMarket.categoryIcon}</span>
+                        <span className="text-base">🌐</span>
                         <span className="text-[10px] uppercase tracking-wider text-white/40 font-medium">
-                            {currentMarket.category}
+                            Prediction
                         </span>
-                        {currentMarket.isFeatured && (
+                        {currentMarket.volume_total > 1000000 && (
                             <span className="px-1.5 py-0.5 text-[9px] bg-yellow-500/20 text-yellow-400 rounded-full border border-yellow-500/30">
-                                FEATURED
+                                HIGH VOL
                             </span>
                         )}
                     </div>
 
                     {/* Question */}
                     <h4 className="text-white font-medium leading-tight mb-3 group-hover/link:text-orange-400 transition-colors line-clamp-2 text-sm">
-                        {currentMarket.question}
+                        {currentMarket.title}
                     </h4>
                 </a>
 
-                {/* Odds Bar */}
-                <div className="mb-2">
-                    <div className="flex justify-between text-[10px] mb-1">
-                        <span className="text-emerald-400 font-bold">YES {yesPercentage}%</span>
-                        <span className="text-red-400 font-bold">NO {noPercentage}%</span>
+                {/* Outcomes Row (Replacing Odds Bar since no price data) */}
+                <div className="mb-3 flex items-center justify-between gap-2 px-1">
+                    <div className="flex-1 bg-white/5 rounded px-2 py-1 text-center">
+                        <span className="text-[10px] text-emerald-400 font-bold">{currentMarket.side_a.label}</span>
                     </div>
-                    <div className="h-1.5 bg-white/10 rounded-full overflow-hidden flex">
-                        <div
-                            className="bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-500"
-                            style={{ width: `${yesPercentage}%` }}
-                        />
-                        <div
-                            className="bg-gradient-to-r from-red-400 to-red-500 transition-all duration-500"
-                            style={{ width: `${noPercentage}%` }}
-                        />
+                    <span className="text-[10px] text-gray-600">vs</span>
+                    <div className="flex-1 bg-white/5 rounded px-2 py-1 text-center">
+                        <span className="text-[10px] text-red-400 font-bold">{currentMarket.side_b.label}</span>
                     </div>
                 </div>
 
@@ -185,11 +189,11 @@ export default function HotMarketsSlider({ autoPlay = true, interval = 6000 }: H
                 <div className="flex items-center gap-3 text-[10px]">
                     <span className="flex items-center gap-1 text-white/50">
                         <TrendingUp size={10} />
-                        {formatVolume(currentMarket.totalVolume)}
+                        {formatVolume(currentMarket.volume_total)}
                     </span>
                     <span className="flex items-center gap-1 text-white/50">
                         <Clock size={10} />
-                        {getTimeRemaining(currentMarket.endDate)}
+                        {getTimeRemaining(currentMarket.end_time)}
                     </span>
                     <ExternalLink size={10} className="text-white/30 ml-auto" />
                 </div>

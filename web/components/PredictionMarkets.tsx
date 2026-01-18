@@ -10,6 +10,7 @@ interface Market {
     volume_total: number;
     end_time: number;
     market_slug: string;
+    event_slug: string;
     side_a: { label: string };
     side_b: { label: string };
 }
@@ -57,7 +58,7 @@ export default function PredictionMarkets() {
                 {markets.map((market, idx) => (
                     <motion.a
                         key={idx}
-                        href={`https://polymarket.com/event/${market.market_slug}`}
+                        href={`https://polymarket.com/event/${market.event_slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         initial={{ opacity: 0, y: 20 }}
