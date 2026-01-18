@@ -2,7 +2,7 @@ import { openai } from '@ai-sdk/openai';
 import { streamText, tool } from 'ai';
 import { z } from 'zod';
 import { getCollectionData } from '@/lib/alchemy';
-import { getCoin, getCoinMarkets } from '@/lib/agentcache';
+import { getCoin } from '@/lib/agentcache';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -32,13 +32,13 @@ export async function POST(req: Request) {
                 parameters: z.object({
                     symbol: z.string().describe('The token symbol (e.g., BTC, SOL, PEPE)'),
                 }),
-                execute: async ({ symbol }) => {
+                execute: async ({ symbol }: any) => {
                     // Mapping common symbols to IDs for CoinGecko (simple stub for now)
                     const map: Record<string, string> = {
                         'BTC': 'bitcoin', 'ETH': 'ethereum', 'SOL': 'solana', 'PEPE': 'pepe'
                     };
                     const id = map[symbol.toUpperCase()] || symbol.toLowerCase();
-                    const data = await getCoin(id);
+                    const data: any = await getCoin(id);
                     return {
                         price: data?.market_data?.current_price?.usd,
                         change24h: data?.market_data?.price_change_percentage_24h,
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
                         athDrawdown: data?.market_data?.ath_change_percentage?.usd
                     };
                 },
-            }),
+            } as any),
 
             // Tool 2: Check NFT Stats (Alchemy)
             getNFTStats: tool({
@@ -55,10 +55,10 @@ export async function POST(req: Request) {
                 parameters: z.object({
                     contractAddress: z.string().describe('The contract address of the NFT collection'),
                 }),
-                execute: async ({ contractAddress }) => {
+                execute: async ({ contractAddress }: any) => {
                     return await getCollectionData(contractAddress, "Analyst Request");
                 }
-            }),
+            } as any),
 
             // Tool 3: Web Search (Stub for now - requires API key)
             webSearch: tool({
@@ -66,7 +66,7 @@ export async function POST(req: Request) {
                 parameters: z.object({
                     query: z.string(),
                 }),
-                execute: async ({ query }) => {
+                execute: async ({ query }: any) => {
                     return {
                         results: [
                             { title: `Latest news on ${query}`, snippet: "Market sentiment is mixed with heavy volatility..." },
@@ -74,9 +74,9 @@ export async function POST(req: Request) {
                         ]
                     };
                 }
-            }),
+            } as any),
         },
     });
 
-    return result.toDataStreamResponse();
+    return result.toTextStreamResponse();
 }
