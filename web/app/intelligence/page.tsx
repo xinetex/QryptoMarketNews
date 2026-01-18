@@ -1,6 +1,6 @@
 'use client';
 
-import { useChat } from 'ai/react';
+import { useChat } from '@ai-sdk/react';
 import { useState } from 'react';
 
 const missions = [
@@ -57,8 +57,8 @@ export default function IntelligencePage() {
                         {messages.map(m => (
                             <div key={m.id} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                                 <div className={`max-w-[80%] rounded-lg p-4 ${m.role === 'user'
-                                        ? 'bg-purple-600 text-white'
-                                        : 'bg-gray-800 text-gray-200 border border-gray-700'
+                                    ? 'bg-purple-600 text-white'
+                                    : 'bg-gray-800 text-gray-200 border border-gray-700'
                                     }`}>
                                     <div className="whitespace-pre-wrap font-mono text-sm">
                                         {m.content}
