@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { cache } from "@/lib/cache";
 
 const COINGECKO_API_BASE = "https://api.coingecko.com/api/v3";
 
