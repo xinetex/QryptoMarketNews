@@ -10,6 +10,27 @@ export const maxDuration = 30;
 export async function POST(req: Request) {
     const { messages, mission } = await req.json();
 
+    // Security: Basic IP-based Rate Limiting (10 requests per minute)
+    const ip = req.headers.get('x-forwarded-for') || 'anonymous';
+    const limitKey = `ratelimit:intelligence:${ip}`;
+
+    // Check limit (using our cache wrapper or direct redis if exposed, here assumption using cache wrapper for simplicity)
+    // Note: detailed rate limiting ideally needs an atomic increment, assuming cache sets/gets for now or a simple memory fallback
+    try {
+        const currentUsage = await getCoin(limitKey) as any || 0; // abuse getCoin generic getter wrapper if needed or import cache directly
+        // Utilizing the 'cache' export from lib/cache for direct access if available
+    } catch (e) { /* ignore cache errors */ }
+
+    // Let's use a simpler in-memory/cache approach compatible with existing imports
+    // Re-importing cache correctly
+    const { cache } = await import('@/lib/cache');
+    const usage = await cache.get(limitKey) as number || 0;
+
+    if (usage > 10) {
+        return new Response("Too Many Requests", { status: 429 });
+    }
+    await cache.set(limitKey, usage + 1, 60);
+
     // Define system prompt based on mission
     let systemPrompt = "You are Prophet AI, an elite crypto market analyst. Be data-driven, concise, and brutally honest.";
 

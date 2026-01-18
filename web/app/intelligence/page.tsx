@@ -2,6 +2,7 @@
 
 import { useChat } from '@ai-sdk/react';
 import { useState } from 'react';
+import PredictionMarkets from '@/components/PredictionMarkets';
 
 const missions = [
     { id: 'sentiment', label: '📊 Market Sentiment', icon: '🐦', prompt: 'Analyze current sentiment on X (Twitter) for...' },
@@ -115,6 +116,9 @@ export default function IntelligencePage() {
                         </button>
                     </form>
                 </div>
+
+                {/* Prediction Markets Section */}
+                <PredictionMarkets />
             </main>
         </div>
     );
