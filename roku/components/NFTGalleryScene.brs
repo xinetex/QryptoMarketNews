@@ -147,7 +147,15 @@ sub displayCollection(collection as object)
              ' Standard PosterGrid fields
              node.HDPosterUrl = img
              node.ShortDescriptionLine1 = item.title
-             node.ShortDescriptionLine2 = str(item.price) + " ETH"
+             
+             ' Dynamic Price/Chain Label
+             priceLabel = "0.00"
+             if item.price <> invalid then priceLabel = str(item.price)
+             
+             chainLabel = "ETH"
+             if item.chain <> invalid then chainLabel = item.chain
+             
+             node.ShortDescriptionLine2 = priceLabel + " " + chainLabel
         end for
         
         m.nftGrid.content = content

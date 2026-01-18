@@ -34,10 +34,10 @@ export async function GET(request: Request) {
                     listed: 1.2,
                     reason: "🔥 Volume Spike",
                     items: [
-                        { title: "BAYC #8817", image: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=600&q=80", price: 68 },
-                        { title: "BAYC #3749", image: "https://images.unsplash.com/photo-1535378437341-a62502c37582?w=600&q=80", price: 45 },
-                        { title: "BAYC #1234", image: "https://images.unsplash.com/photo-1528026112993-a55e34747209?w=600&q=80", price: 43 },
-                        { title: "BAYC #5822", image: "https://images.unsplash.com/photo-1622547748225-3fc4abd2cca0?w=600&q=80", price: 52 }
+                        { title: "BAYC #8817", image: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=600&q=80", price: 68, chain: "ETH" },
+                        { title: "BAYC #3749", image: "https://images.unsplash.com/photo-1535378437341-a62502c37582?w=600&q=80", price: 45, chain: "ETH" },
+                        { title: "BAYC #1234", image: "https://images.unsplash.com/photo-1528026112993-a55e34747209?w=600&q=80", price: 43, chain: "ETH" },
+                        { title: "BAYC #5822", image: "https://images.unsplash.com/photo-1622547748225-3fc4abd2cca0?w=600&q=80", price: 52, chain: "ETH" }
                     ]
                 },
                 {
@@ -51,9 +51,9 @@ export async function GET(request: Request) {
                     listed: 0.5,
                     reason: "🐧 All-time High",
                     items: [
-                        { title: "Pudgy #1", image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&q=80", price: 20 },
-                        { title: "Pudgy #2", image: "https://images.unsplash.com/photo-1549480017-d76466a4b7e8?w=600&q=80", price: 19 },
-                        { title: "Pudgy #3", image: "https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=600&q=80", price: 18 }
+                        { title: "Pudgy #1", image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&q=80", price: 20, chain: "ETH" },
+                        { title: "Pudgy #2", image: "https://images.unsplash.com/photo-1549480017-d76466a4b7e8?w=600&q=80", price: 19, chain: "ETH" },
+                        { title: "Pudgy #3", image: "https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=600&q=80", price: 18, chain: "ETH" }
                     ]
                 },
                 {
@@ -67,8 +67,8 @@ export async function GET(request: Request) {
                     listed: 2.1,
                     reason: "⛩️ Anime Meta",
                     items: [
-                        { title: "Azuki #1", image: "https://images.unsplash.com/photo-1550948329-84724a735c02?w=600&q=80", price: 6 },
-                        { title: "Azuki #2", image: "https://images.unsplash.com/photo-1614850523060-8da1d56e37ad?w=600&q=80", price: 5.5 }
+                        { title: "Azuki #1", image: "https://images.unsplash.com/photo-1550948329-84724a735c02?w=600&q=80", price: 6, chain: "ETH" },
+                        { title: "Azuki #2", image: "https://images.unsplash.com/photo-1614850523060-8da1d56e37ad?w=600&q=80", price: 5.5, chain: "ETH" }
                     ]
                 }
             ],

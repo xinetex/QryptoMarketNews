@@ -170,3 +170,46 @@ export async function cachedCoinGeckoFetch<T>(
 export async function getCoin(coinId: string) {
     return cachedCoinGeckoFetch(`/coins/${coinId}`, { localization: 'false', tickers: 'false' }, TTL_COIN_DATA);
 }
+
+/**
+ * Fetch Trending NFT Collections (Dynamic Discovery)
+ * Uses CoinGecko to find top collections by volume
+ */
+export async function getTrendingNFTCollections(limit: number = 10): Promise<{ address: string; reason: string; chain: string }[]> {
+    const cacheKey = `agentcache:nfts:trending:v1`;
+
+    return getOrSetCache(cacheKey, async () => {
+        try {
+            // Fetch top NFTs by 24h volume on Ethereum
+            // Note: CoinGecko Free API has rate limits, be gentle
+            const params = {
+                asset_platform_id: 'ethereum',
+                order: 'h24_volume_native_desc',
+                per_page: String(limit + 5), // Fetch a few extra to filter
+                page: '1'
+            };
+
+            const data: any[] = await cachedCoinGeckoFetch('/nfts/markets', params, TTL_LONG);
+
+            if (!Array.isArray(data)) return [];
+
+            return data
+                .filter(c => c.contract_address) // Ensure contract address exists
+                .slice(0, limit)
+                .map(c => ({
+                    address: c.contract_address,
+                    reason: `🔥 Vol: ${Math.round(c.volume_24h_native || 0)} ETH`,
+                    chain: 'ETH_MAINNET' // Mapping to Alchemy Network enum key effectively
+                }));
+
+        } catch (error) {
+            console.error("Error fetching trending NFTs:", error);
+            // Fallback list if API fails
+            return [
+                { address: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D', reason: '🔥 Fallback Vol', chain: 'ETH_MAINNET' }, // BAYC
+                { address: '0x60E4d786628Fea6478F785A6d7e704777c86a7c6', reason: '🦍 Fallback Vol', chain: 'ETH_MAINNET' }, // MAYC
+                { address: '0xBd3531dA5CF5857e7CfAA92426877b022e612cf8', reason: '🐧 Fallback Vol', chain: 'ETH_MAINNET' }  // Pudgy
+            ];
+        }
+    }, 3600); // 1 hour cache
+}

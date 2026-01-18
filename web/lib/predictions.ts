@@ -1,3 +1,4 @@
+import { getPolymarketMarkets, DomeMarket } from "./dome";
 
 export interface PredictionMarket {
     id: string;
@@ -14,62 +15,30 @@ export interface PredictionMarket {
 
 export async function getPredictions(): Promise<PredictionMarket[]> {
     try {
-        // Fetch live events from PolyMarket Gamma API
-        // Added User-Agent to prevent 403s
-        const response = await fetch('https://gamma-api.polymarket.com/events?closed=false&limit=20&sort=volume', {
-            method: 'GET',
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'Accept': 'application/json'
-            },
-            next: { revalidate: 30 } // Cache for 30 seconds
-        });
+        const markets = await getPolymarketMarkets();
 
-        if (!response.ok) {
-            console.error(`PolyMarket API error: ${response.status} ${response.statusText}`);
-            throw new Error(`PolyMarket API error: ${response.statusText}`);
-        }
-
-        const events = await response.json();
-
-        // Transform PolyMarket events into our PredictionMarket format
-        return events.map((event: any) => {
-            // Find the main "Yes/No" market within the event
-            const market = event.markets?.[0];
-
-            if (!market) return null;
-
-            // Extract odds from outcomePrices (["0.12", "0.88"])
+        return markets.map((market: DomeMarket) => {
+            // Note: Dome API List endpoint currently doesn't return outcomePrices. 
+            // We would need to fetch prices separately. For now, we defaulting to 50/50 to avoid breaking UI.
             let yesPrice = 0.5;
             let noPrice = 0.5;
 
-            try {
-                if (market.outcomePrices) {
-                    // It comes as a JSON string like "[\"0.0395\",\"0.9605\"]"
-                    const prices = JSON.parse(market.outcomePrices);
-                    yesPrice = parseFloat(prices[0] || "0.5");
-                    noPrice = parseFloat(prices[1] || "0.5");
-                }
-            } catch (e) {
-                console.error("Error parsing outcome prices", e);
-            }
-
             return {
-                id: event.id,
-                question: event.title,
-                category: event.tags?.[0]?.label || "General",
-                endDate: event.endDate,
+                id: market.market_slug,
+                question: market.title,
+                category: "General", // Tags are available but strictly typed in our interface? Just use General or map from tags if needed
+                endDate: new Date(market.end_time * 1000).toISOString(),
                 yesPool: 0,
                 noPool: 0,
-                totalVolume: Math.floor(event.volume || 0),
-                yesOdds: Math.floor(yesPrice * 100),
-                noOdds: Math.floor(noPrice * 100),
-                isHot: (event.volume || 0) > 1000000
+                totalVolume: Math.floor(market.volume_total || 0),
+                yesOdds: 50,
+                noOdds: 50,
+                isHot: (market.volume_total || 0) > 1000000
             };
-        }).filter((m: any) => m !== null);
+        });
 
     } catch (error) {
-        console.error("Failed to fetch PolyMarket data, using fallback mocks:", error);
+        console.error("Failed to fetch predictions via Dome API, using fallback mocks:", error);
 
         // Fallback Mock Data
         return [
