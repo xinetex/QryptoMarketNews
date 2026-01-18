@@ -1,6 +1,6 @@
 // CoinGecko API Client with AgentCache.ai caching
 import type { CoinGeckoMarketResponse, CoinGeckoCategoryResponse, TickerData, ZoneData } from "./types/crypto";
-import { cachedCoinGeckoFetch, getCacheStats } from "./agentcache";
+import { cachedCoinGeckoFetch } from "./agentcache";
 
 const COINGECKO_API_BASE = "https://api.coingecko.com/api/v3";
 
