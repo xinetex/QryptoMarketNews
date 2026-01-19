@@ -115,7 +115,7 @@ export default function FlexFeaturesCard({ defaultTab = 'discovery', showHeader 
             {/* Content */}
             <div className="p-6">
                 {activeTab === 'discovery' ? (
-                    <MarketDiscoveryFeed />
+                    <MarketDiscoveryFeed compact={true} />
                 ) : (
                     <ProphetAgent />
                 )}

@@ -196,7 +196,7 @@ export default function ProphetAgent() {
     };
 
     return (
-        <div className="flex flex-col h-[600px] bg-zinc-900/50 border border-white/10 rounded-2xl overflow-hidden">
+        <div className="flex flex-col h-[380px] bg-zinc-900/50 border border-white/10 rounded-2xl overflow-hidden">
             {/* Header */}
             <div className="p-4 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 border-b border-white/10">
                 <div className="flex items-center gap-3">
@@ -244,8 +244,8 @@ export default function ProphetAgent() {
                             <div className={`max-w-[85%] ${msg.role === 'user' ? 'order-2' : ''}`}>
                                 {/* Message bubble */}
                                 <div className={`rounded-2xl px-4 py-3 ${msg.role === 'user'
-                                        ? 'bg-indigo-600 text-white'
-                                        : 'bg-zinc-800 text-zinc-100'
+                                    ? 'bg-indigo-600 text-white'
+                                    : 'bg-zinc-800 text-zinc-100'
                                     }`}>
                                     <p className="text-sm">{msg.content}</p>
                                 </div>
@@ -258,8 +258,8 @@ export default function ProphetAgent() {
                                                 <div className="flex items-start justify-between gap-2 mb-2">
                                                     <h4 className="text-white text-sm font-medium">{market.title}</h4>
                                                     <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${market.action === 'BUY_YES' ? 'bg-emerald-500/20 text-emerald-400' :
-                                                            market.action === 'BUY_NO' ? 'bg-red-500/20 text-red-400' :
-                                                                'bg-zinc-500/20 text-zinc-400'
+                                                        market.action === 'BUY_NO' ? 'bg-red-500/20 text-red-400' :
+                                                            'bg-zinc-500/20 text-zinc-400'
                                                         }`}>
                                                         {market.action.replace('_', ' ')}
                                                     </span>
@@ -324,8 +324,8 @@ export default function ProphetAgent() {
                         type="button"
                         onClick={toggleVoice}
                         className={`p-2 rounded-xl transition ${isListening
-                                ? 'bg-red-500/20 text-red-400'
-                                : 'bg-zinc-800 text-zinc-400 hover:text-white'
+                            ? 'bg-red-500/20 text-red-400'
+                            : 'bg-zinc-800 text-zinc-400 hover:text-white'
                             }`}
                     >
                         {isListening ? <MicOff size={18} /> : <Mic size={18} />}
