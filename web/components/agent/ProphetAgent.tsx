@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { RSVPViewport } from './RSVPViewport';
+import { StreamingViewport } from './StreamingViewport';
 import { Send, Eye, BrainCircuit } from 'lucide-react';
 import { useAccount } from 'wagmi';
 import { agentMemory } from '@/lib/agent-memory';
@@ -13,6 +14,7 @@ export default function ProphetAgent() {
     const [streamText, setStreamText] = useState<string | null>(null);
     const [isThinking, setIsThinking] = useState(false);
     const [wpm, setWpm] = useState(450);
+    const [displayMode, setDisplayMode] = useState<'rsvp' | 'stream'>('stream');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -32,7 +34,6 @@ export default function ProphetAgent() {
         }
 
         // 2. Real Prophecy Engine Logic
-        // Extract coin symbol from query (very naive regex for now)
         const coinMatch = query.match(/(bitcoin|ethereum|solana|dogecoin|btc|eth|sol|doge)/i);
         let coinId = 'bitcoin'; // Default fallback
         if (coinMatch) {
@@ -80,13 +81,20 @@ export default function ProphetAgent() {
             </div>
 
             {/* Display Area */}
-            <div className="min-h-[300px] flex items-center justify-center">
+            <div className="min-h-[300px] flex items-center justify-center w-full">
                 {streamText ? (
-                    <RSVPViewport
-                        text={streamText}
-                        wpm={wpm}
-                        onComplete={() => console.log('Message delivered')}
-                    />
+                    displayMode === 'rsvp' ? (
+                        <RSVPViewport
+                            text={streamText}
+                            wpm={wpm}
+                            onComplete={() => console.log('Message delivered')}
+                        />
+                    ) : (
+                        <StreamingViewport
+                            text={streamText}
+                            onComplete={() => console.log('Message delivered')}
+                        />
+                    )
                 ) : isThinking ? (
                     <div className="text-zinc-500 font-mono animate-pulse text-center">
                         <div className="mb-4 text-4xl">🔮</div>
@@ -122,12 +130,37 @@ export default function ProphetAgent() {
                     </button>
                 </div>
 
-                {/* WPM Control */}
-                <div className="absolute -bottom-8 right-0 text-[10px] text-zinc-500 font-mono flex gap-2">
-                    <span>SPEED:</span>
-                    <button onClick={() => setWpm(300)} className={`hover:text-white ${wpm === 300 ? 'text-indigo-400' : ''}`}>SLOW</button>
-                    <button onClick={() => setWpm(450)} className={`hover:text-white ${wpm === 450 ? 'text-indigo-400' : ''}`}>NORMAL</button>
-                    <button onClick={() => setWpm(700)} className={`hover:text-white ${wpm === 700 ? 'text-indigo-400' : ''}`}>HYPER</button>
+                {/* WPM & Display Mode Control */}
+                <div className="absolute -bottom-8 right-0 text-[10px] text-zinc-500 font-mono flex items-center gap-6">
+                    {/* Mode Toggle */}
+                    <div className="flex gap-2 items-center">
+                        <span>MODE:</span>
+                        <button
+                            type="button"
+                            onClick={() => setDisplayMode('rsvp')}
+                            className={`hover:text-white transition-colors ${displayMode === 'rsvp' ? 'text-indigo-400 font-bold' : ''}`}
+                        >
+                            RSVP
+                        </button>
+                        <span className="text-zinc-700">|</span>
+                        <button
+                            type="button"
+                            onClick={() => setDisplayMode('stream')}
+                            className={`hover:text-white transition-colors ${displayMode === 'stream' ? 'text-indigo-400 font-bold' : ''}`}
+                        >
+                            STREAM
+                        </button>
+                    </div>
+
+                    {/* Speed only for RSVP/Stream multiplier? Let's keep WPM for RSVP and just rely on that state for both roughly */}
+                    {displayMode === 'rsvp' && (
+                        <div className="flex gap-2 items-center">
+                            <span>SPEED:</span>
+                            <button type="button" onClick={() => setWpm(300)} className={`hover:text-white ${wpm === 300 ? 'text-indigo-400' : ''}`}>SLOW</button>
+                            <button type="button" onClick={() => setWpm(450)} className={`hover:text-white ${wpm === 450 ? 'text-indigo-400' : ''}`}>NORMAL</button>
+                            <button type="button" onClick={() => setWpm(700)} className={`hover:text-white ${wpm === 700 ? 'text-indigo-400' : ''}`}>HYPER</button>
+                        </div>
+                    )}
                 </div>
             </form>
 
