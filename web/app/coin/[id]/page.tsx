@@ -41,6 +41,7 @@ export default function CoinDetailPage() {
     const coinId = params.id as string;
     const [coin, setCoin] = useState<CoinGeckoMarketResponse | null>(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
     const [priceFlash, setPriceFlash] = useState<'up' | 'down' | null>(null);
     const prevPriceRef = useRef<number | null>(null);
@@ -48,7 +49,19 @@ export default function CoinDetailPage() {
     const fetchCoin = useCallback(async () => {
         try {
             const response = await fetch(`/api/crypto/coin/${coinId}`);
-            const { data } = await response.json();
+            const result = await response.json();
+
+            if (result.error) {
+                setError(result.error);
+                return;
+            }
+
+            const data = result.data;
+            if (!data) {
+                setError("Coin data not found");
+                return;
+            }
+            setError(null);
 
             // Detect price change for flash effect
             if (prevPriceRef.current !== null && data?.current_price) {
@@ -68,6 +81,7 @@ export default function CoinDetailPage() {
             setLastUpdate(new Date());
         } catch (error) {
             console.error("Failed to fetch coin:", error);
+            setError("Network error or API unavailable");
         } finally {
             setLoading(false);
         }
@@ -96,12 +110,29 @@ export default function CoinDetailPage() {
         );
     }
 
-    if (!coin) {
+    if (error || !coin) {
         return (
             <div className="min-h-screen bg-[#09090b] flex items-center justify-center">
                 <div className="text-center">
-                    <h1 className="text-2xl text-zinc-100 mb-4">Coin Not Found</h1>
-                    <Link href="/" className="text-indigo-400 hover:underline">← Back to Prophet TV</Link>
+                    <h1 className="text-2xl text-zinc-100 mb-2">
+                        {error || "Coin Not Found"}
+                    </h1>
+                    <p className="text-zinc-500 mb-6 max-w-md mx-auto">
+                        {error?.includes("429")
+                            ? "We are currently experiencing high traffic. Please try again in a moment."
+                            : `Could not retrieve data for ${coinId}.`}
+                    </p>
+                    <div className="flex gap-4 justify-center">
+                        <Link href="/" className="px-4 py-2 rounded bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition">
+                            Back to Markets
+                        </Link>
+                        <button
+                            onClick={() => { setLoading(true); fetchCoin(); }}
+                            className="px-4 py-2 rounded bg-indigo-600 text-white hover:bg-indigo-500 transition"
+                        >
+                            Retry
+                        </button>
+                    </div>
                 </div>
             </div>
         );
