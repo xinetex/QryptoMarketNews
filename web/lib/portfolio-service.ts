@@ -5,7 +5,7 @@ export interface PortfolioPosition {
     avgBuyPrice: number;
 }
 
-export async function getUserPortfolio(userId: string): Promise<PortfolioPosition[]> {
+export async function getUserPortfolio(_userId: string): Promise<PortfolioPosition[]> {
     // Mock data for demonstration
     // In production, this would query the 'wallet_holdings' table or an exchange API
     return [

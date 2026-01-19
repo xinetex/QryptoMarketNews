@@ -12,9 +12,18 @@ import { getHistoricalVolatility, formatChange } from "@/lib/coingecko";
   - Connected: Shows Targeted Ad (Whale/DeFi) + Portfolio Summary
 */
 
+interface Ad {
+    id: string;
+    title: string;
+    description: string;
+    cta: string;
+    image: string;
+    sponsor: string;
+}
+
 export default function DynamicWalletAd() {
     const [isConnected, setIsConnected] = useState(false);
-    const [ad, setAd] = useState<any>(null);
+    const [ad, setAd] = useState<Ad | null>(null);
     const [signals, setSignals] = useState<{ symbol: string; volatility: number }[]>([]);
     const [loading, setLoading] = useState(false);
 
