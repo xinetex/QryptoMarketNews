@@ -192,7 +192,11 @@ export async function getCoinsByCategory(categoryId: string): Promise<CoinGeckoM
 /**
  * Format price for display
  */
-export function formatPrice(price: number): string {
+/**
+ * Format price for display
+ */
+export function formatPrice(price: number | undefined | null): string {
+    if (price === undefined || price === null || isNaN(price)) return "N/A";
     if (price >= 1000) {
         return `$${price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     } else if (price >= 1) {
@@ -207,7 +211,8 @@ export function formatPrice(price: number): string {
 /**
  * Format percentage change for display
  */
-export function formatChange(change: number): string {
+export function formatChange(change: number | undefined | null): string {
+    if (change === undefined || change === null || isNaN(change)) return "0%";
     const sign = change >= 0 ? "+" : "";
     return `${sign}${change.toFixed(1)}%`;
 }
@@ -215,7 +220,8 @@ export function formatChange(change: number): string {
 /**
  * Format market cap
  */
-export function formatMarketCap(cap: number): string {
+export function formatMarketCap(cap: number | undefined | null): string {
+    if (cap === undefined || cap === null || isNaN(cap)) return "N/A";
     if (cap >= 1e12) {
         return `$${(cap / 1e12).toFixed(2)}T`;
     } else if (cap >= 1e9) {
