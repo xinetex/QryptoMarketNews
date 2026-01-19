@@ -5,7 +5,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Text, Html, Stars, Billboard, Line } from "@react-three/drei";
 import * as THREE from "three";
 import * as d3 from "d3";
-import { formatPrice, formatChange } from "@/lib/coingecko";
+import { formatPrice, formatChange, formatMarketCap } from "@/lib/coingecko";
 import { useRouter } from "next/navigation";
 import type { ExtendedCoinData } from "@/app/galaxy/page";
 
@@ -176,13 +176,13 @@ function ScatterPoint({ point, position, radiusScale, opacityScale, onClick, sho
                                 </span>
 
                                 <span className="text-white/50">MCap:</span>
-                                <span className="text-right font-mono">${(point.marketCap / 1e9).toFixed(1)}B</span>
+                                <span className="text-right font-mono">{formatMarketCap(point.marketCap)}</span>
 
                                 <span className="text-white/50">Volume:</span>
-                                <span className="text-right font-mono">${(point.volume24h / 1e6).toFixed(1)}M</span>
+                                <span className="text-right font-mono">{formatMarketCap(point.volume24h)}</span>
 
                                 <span className="text-white/50">Volat:</span>
-                                <span className="text-right font-mono">{(point.volatility * 100).toFixed(1)}%</span>
+                                <span className="text-right font-mono">{((point.volatility || 0) * 100).toFixed(1)}%</span>
                             </div>
                         </div>
                     </Html>

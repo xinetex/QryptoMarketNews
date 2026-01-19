@@ -6,6 +6,7 @@ import {
     Activity, Globe, RefreshCw
 } from "lucide-react";
 import Image from "next/image";
+import { formatPrice, formatMarketCap } from "@/lib/coingecko";
 
 interface CoinData {
     id: string;
@@ -86,20 +87,6 @@ export default function CoinDetailPanel({ coinId }: CoinDetailPanelProps) {
 
     const isPositive = (md.price_change_percentage_24h || 0) >= 0;
 
-    const formatPrice = (n: number | undefined | null) => {
-        if (n === undefined || n === null) return 'N/A';
-        if (n >= 1) return `$${n.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
-        return `$${n.toPrecision(4)}`;
-    };
-
-    const formatLarge = (n: number | undefined | null) => {
-        if (n === undefined || n === null) return 'N/A';
-        if (n >= 1e12) return `$${(n / 1e12).toFixed(2)}T`;
-        if (n >= 1e9) return `$${(n / 1e9).toFixed(2)}B`;
-        if (n >= 1e6) return `$${(n / 1e6).toFixed(2)}M`;
-        return `$${n.toLocaleString()}`;
-    };
-
     return (
         <div className="space-y-6">
             {/* Header */}
@@ -133,8 +120,8 @@ export default function CoinDetailPanel({ coinId }: CoinDetailPanelProps) {
             {/* Stats Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                    { label: "Market Cap", value: formatLarge(md.market_cap?.usd), icon: DollarSign },
-                    { label: "24h Volume", value: formatLarge(md.total_volume?.usd), icon: BarChart3 },
+                    { label: "Market Cap", value: formatMarketCap(md.market_cap?.usd), icon: DollarSign },
+                    { label: "24h Volume", value: formatMarketCap(md.total_volume?.usd), icon: BarChart3 },
                     { label: "24h High", value: formatPrice(md.high_24h?.usd), icon: TrendingUp },
                     { label: "24h Low", value: formatPrice(md.low_24h?.usd), icon: TrendingDown },
                 ].map((stat) => (

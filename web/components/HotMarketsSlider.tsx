@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { animate } from "animejs";
 import { ChevronLeft, ChevronRight, Flame, TrendingUp, Clock, ExternalLink } from "lucide-react";
 import Image from "next/image";
+import { formatMarketCap } from "@/lib/coingecko";
 
 // Dome API Market Interface
 interface DomeMarket {
@@ -25,14 +26,7 @@ interface HotMarketsSliderProps {
     interval?: number;
 }
 
-function formatVolume(volume: number): string {
-    if (volume >= 1_000_000) {
-        return `$${(volume / 1_000_000).toFixed(1)}M`;
-    } else if (volume >= 1_000) {
-        return `$${(volume / 1_000).toFixed(0)}K`;
-    }
-    return `$${volume}`;
-}
+
 
 function getTimeRemaining(endTime: number): string {
     const now = Date.now() / 1000;
@@ -189,7 +183,7 @@ export default function HotMarketsSlider({ autoPlay = true, interval = 6000 }: H
                 <div className="flex items-center gap-3 text-[10px]">
                     <span className="flex items-center gap-1 text-white/50">
                         <TrendingUp size={10} />
-                        {formatVolume(currentMarket.volume_total)}
+                        {formatMarketCap(currentMarket.volume_total)}
                     </span>
                     <span className="flex items-center gap-1 text-white/50">
                         <Clock size={10} />

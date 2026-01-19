@@ -4,7 +4,7 @@ import { useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Text, Stars, Float, Html } from "@react-three/drei";
 import * as THREE from "three";
-import { formatPrice, formatChange } from "@/lib/coingecko";
+import { formatPrice, formatChange, formatMarketCap } from "@/lib/coingecko";
 
 // --- Types ---
 
@@ -204,7 +204,7 @@ export default function CoinUniverse({ coin, relatedCoins }: CoinUniverseProps) 
                     {/* Data Planets */}
                     <MetricPlanet
                         label="Market Cap"
-                        value={`$${(coin.marketCap / 1e9).toFixed(1)}B`}
+                        value={formatMarketCap(coin.marketCap)}
                         color="#3b82f6"
                         orbitRadius={6}
                         orbitSpeed={0.2}
@@ -213,7 +213,7 @@ export default function CoinUniverse({ coin, relatedCoins }: CoinUniverseProps) 
 
                     <MetricPlanet
                         label="24h Volume"
-                        value={`$${(coin.volume24h / 1e6).toFixed(0)}M`}
+                        value={formatMarketCap(coin.volume24h)}
                         color="#a855f7"
                         orbitRadius={9}
                         orbitSpeed={0.15}

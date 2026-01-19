@@ -189,7 +189,8 @@ function calculateAvgChange(protocols: DeFiProtocol[]): number | null {
 /**
  * Format TVL for display
  */
-export function formatTVL(tvl: number): string {
+export function formatTVL(tvl: number | undefined | null): string {
+    if (tvl === undefined || tvl === null || isNaN(tvl)) return "N/A";
     if (tvl >= 1e12) {
         return `$${(tvl / 1e12).toFixed(2)}T`;
     } else if (tvl >= 1e9) {
