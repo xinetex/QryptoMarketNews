@@ -12,6 +12,7 @@ export const POINT_VALUES = {
     DAILY_LOGIN: 5,
     SHARE_SOCIAL: 15,
     STREAK_BONUS: 10, // per day, max 7
+    TV_WATCH_MINS: 1, // Proof of Attention (1 pt/min)
 } as const;
 
 // Levels based on total points
