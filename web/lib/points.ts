@@ -168,6 +168,75 @@ export function earnPoints(
 }
 
 /**
+ * Sync points with backend (Neon DB)
+ */
+export async function syncPoints(walletAddress: string): Promise<UserPoints> {
+    try {
+        const res = await fetch(`/api/points?wallet=${walletAddress}`);
+        if (!res.ok) throw new Error('Failed to sync points');
+
+        const data = await res.json();
+
+        // Update local storage with remote truth
+        const merged: UserPoints = {
+            totalPoints: data.totalPoints,
+            level: data.level,
+            levelColor: calculateLevel(data.totalPoints).color,
+            predictions: { // DB doesn't store this detail yet, persist local or default
+                total: 0,
+                correct: 0,
+                accuracy: 0
+            },
+            streak: { // DB doesn't store streak, persist local
+                current: 0,
+                lastActive: new Date().toISOString()
+            },
+            history: data.history || []
+        };
+
+        // Preserve local streak/predictions if valid, merging logic can be improved
+        // For now, remote trust is authoritative for Total Points & History
+        const currentLocal = getPoints();
+        merged.streak = currentLocal.streak;
+        merged.predictions = currentLocal.predictions;
+
+        if (typeof window !== 'undefined') {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+        }
+
+        return merged;
+    } catch (e) {
+        console.error("Sync failed, using offline points", e);
+        return getPoints();
+    }
+}
+
+/**
+ * Earn points and persist to backend
+ */
+export async function earnPointsRemote(
+    walletAddress: string,
+    eventType: PointEventType
+): Promise<{ newTotal: number; pointsAwarded: number; level: LevelName }> {
+    // 1. Optimistic local update
+    const localResult = earnPoints(eventType);
+
+    // 2. Remote update
+    try {
+        fetch('/api/points', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ walletAddress, eventType })
+        });
+    } catch (e) {
+        console.error('Failed to push points to remote', e);
+        // Queue for retry? For now, we rely on next sync.
+    }
+
+    return localResult;
+}
+
+/**
  * Get leaderboard (mock for MVP - would come from API)
  */
 export function getLeaderboard(): Array<{

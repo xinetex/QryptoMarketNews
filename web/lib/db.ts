@@ -97,6 +97,17 @@ export async function initDatabase() {
             )
         `;
 
+        // User Points table (Wallet-based identity)
+        await sql`
+            CREATE TABLE IF NOT EXISTS user_points (
+                wallet_address VARCHAR(255) PRIMARY KEY,
+                total_points INTEGER DEFAULT 0,
+                level VARCHAR(50) DEFAULT 'Bronze',
+                history JSONB DEFAULT '[]'::jsonb,
+                last_updated TIMESTAMP DEFAULT NOW()
+            )
+        `;
+
         console.log('Database tables initialized');
         return true;
     } catch (error) {

@@ -50,3 +50,12 @@ CREATE TABLE IF NOT EXISTS market_cache (
   value JSONB NOT NULL,
   expires_at TIMESTAMP WITH TIME ZONE
 );
+
+-- PROPHET POINTS
+CREATE TABLE IF NOT EXISTS user_points (
+  wallet_address VARCHAR(255) PRIMARY KEY,
+  total_points INTEGER DEFAULT 0,
+  level VARCHAR(50) DEFAULT 'Bronze',
+  history JSONB DEFAULT '[]'::jsonb,
+  last_updated TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
