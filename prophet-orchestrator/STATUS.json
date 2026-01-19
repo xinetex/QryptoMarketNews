@@ -90,10 +90,12 @@
         "Prophet Markets Rebrand (QExchange)",
         "Prophet Oracle AI Engine",
         "Strategic Vision with Flex Capital Synergies",
-        "Wallet-Targeted CTV Ads for Verdoni"
+        "Wallet-Targeted CTV Ads for Verdoni",
+        "Flex Innovation Features (Discovery Feed + Agent)"
     ],
     "nextPriorities": [
         "Prophet Risk Engine MVP (VaR, stress testing)",
-        "Prophet TV ↔ Verdoni ad integration"
+        "Deploy Verdoni Wallet Targeting",
+        "Wire Agent to Live Data"
     ]
 }

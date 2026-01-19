@@ -9,6 +9,7 @@ import Link from "next/link";
 import NewsSlider from "./NewsSlider";
 import HotMarketsSlider from "./HotMarketsSlider";
 import ProphetOracleCard from "./ProphetOracleCard";
+import FlexFeaturesCard from "./FlexFeaturesCard";
 
 import { useAdminSettings } from "@/hooks/useAdminSettings";
 
@@ -129,6 +130,11 @@ export default function ZoneGrid() {
 
             {/* Prophet Oracle - Market Intelligence Card */}
             <ProphetOracleCard />
+
+            {/* Flex Innovation: Market Discovery & Agent */}
+            <div className="zone-card break-inside-avoid mb-6">
+                <FlexFeaturesCard showHeader={true} />
+            </div>
 
             {zones.map((zone) => {
                 const IconComponent = ICON_MAP[zone.icon] || Zap;
