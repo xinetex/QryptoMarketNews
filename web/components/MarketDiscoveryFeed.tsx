@@ -188,8 +188,27 @@ interface MarketDiscoveryFeedProps {
 }
 
 export default function MarketDiscoveryFeed({ onPredict, compact = false }: MarketDiscoveryFeedProps) {
+    // State
     const [selectedCategory, setSelectedCategory] = useState('for-you');
-    const [markets, setMarkets] = useState<DiscoveryMarket[]>(MOCK_MARKETS);
+    const [markets, setMarkets] = useState<DiscoveryMarket[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    // Fetch Real Polymarket Data
+    useEffect(() => {
+        async function fetchMarkets() {
+            try {
+                const res = await fetch('/api/markets/real'); // New route wrapper
+                const data = await res.json();
+                if (data.markets) setMarkets(data.markets);
+            } catch (e) {
+                console.error("Failed to load real markets", e);
+                setMarkets(MOCK_MARKETS); // Fallback
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchMarkets();
+    }, []);
 
     // Filter markets by category
     const filteredMarkets = selectedCategory === 'for-you'
