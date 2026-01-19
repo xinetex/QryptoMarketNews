@@ -222,42 +222,45 @@ export default function GalaxyPage() {
             {/* Main View */}
             <main className="relative z-10 p-8">
                 <div className="max-w-6xl mx-auto relative">
-                    {/* Controls Overlay (only for Scatter mode) */}
-                    {viewMode === "scatter" && !loading && (
-                        <GalaxyControls
-                            onTimeChange={setTimeOffset}
-                            timeOffset={timeOffset}
-                            onToggleLayer={(layer: string, active: boolean) => setLayers(prev => ({ ...prev, [layer]: active }))}
-                            activeLayers={layers}
-                            isPlaying={isPlaying}
-                            onTogglePlay={() => setIsPlaying(!isPlaying)}
-                            axes={axes}
-                            onAxisChange={(axis: "x" | "y" | "z", value: string) => setAxes(prev => ({ ...prev, [axis]: value }))}
-                            colorMode={colorMode}
-                            onColorModeChange={setColorMode}
-                            scenario={scenario}
-                            onScenarioChange={setScenario}
-                        />
-                    )}
-
-                    {loading ? (
-                        <LoadingPlaceholder />
-                    ) : (
-                        viewMode === "galaxy" ? (
-                            <CryptoGalaxy zones={zones} />
-                        ) : (
-                            <CryptoScatter3D
-                                data={scatterData}
+                    {/* Visualization Area */}
+                    <div className="relative group">
+                        {/* Controls Overlay (only for Scatter mode) */}
+                        {viewMode === "scatter" && !loading && (
+                            <GalaxyControls
+                                onTimeChange={setTimeOffset}
                                 timeOffset={timeOffset}
-                                showTrails={layers.trails}
-                                showGhost={layers.ghost}
-                                showHalos={layers.halo}
+                                onToggleLayer={(layer: string, active: boolean) => setLayers(prev => ({ ...prev, [layer]: active }))}
+                                activeLayers={layers}
+                                isPlaying={isPlaying}
+                                onTogglePlay={() => setIsPlaying(!isPlaying)}
                                 axes={axes}
+                                onAxisChange={(axis: "x" | "y" | "z", value: string) => setAxes(prev => ({ ...prev, [axis]: value }))}
                                 colorMode={colorMode}
+                                onColorModeChange={setColorMode}
                                 scenario={scenario}
+                                onScenarioChange={setScenario}
                             />
-                        )
-                    )}
+                        )}
+
+                        {loading ? (
+                            <LoadingPlaceholder />
+                        ) : (
+                            viewMode === "galaxy" ? (
+                                <CryptoGalaxy zones={zones} />
+                            ) : (
+                                <CryptoScatter3D
+                                    data={scatterData}
+                                    timeOffset={timeOffset}
+                                    showTrails={layers.trails}
+                                    showGhost={layers.ghost}
+                                    showHalos={layers.halo}
+                                    axes={axes}
+                                    colorMode={colorMode}
+                                    scenario={scenario}
+                                />
+                            )
+                        )}
+                    </div>
 
                     {/* Zone Stats / Legend */}
                     <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
