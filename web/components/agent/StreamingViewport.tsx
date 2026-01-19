@@ -39,30 +39,47 @@ export function StreamingViewport({
             return;
         }
 
+        const word = allWords[currentIndex];
+        let dynamicDelay = baseDelay;
+
+        // RHYTHM LOGIC: Pause for gravitas
+        if (word.endsWith('.') || word.endsWith('!') || word.endsWith('?')) dynamicDelay += 500;
+        else if (word.endsWith(',') || word.endsWith(':')) dynamicDelay += 200;
+        else if (word.length > 8) dynamicDelay += 30;
+
         const timeout = setTimeout(() => {
             setDisplayedWords(prev => [...prev, allWords[currentIndex]]);
             setCurrentIndex(prev => prev + 1);
-        }, baseDelay);
+        }, dynamicDelay);
 
         return () => clearTimeout(timeout);
     }, [currentIndex, allWords, isPaused, baseDelay, onComplete]);
 
     const progress = allWords.length > 0 ? (currentIndex / allWords.length) * 100 : 0;
 
+    // SEMANTIC HIGHLIGHTING
+    const getWordStyle = (w: string) => {
+        if (/[\d$£€%]/.test(w)) return "text-cyan-400 font-bold drop-shadow-sm"; // Data
+        if (/warning|critical|crash|collapse/i.test(w)) return "text-orange-500 font-bold"; // Danger
+        if (/surge|moon|bullish|accumulate/i.test(w)) return "text-emerald-400 font-bold"; // Growth
+        if (/analysis|verdict|metrics|target/i.test(w)) return "text-indigo-400 font-bold tracking-wider"; // Headers
+        return "text-zinc-200"; // Default
+    };
+
     return (
-        <div className="relative w-full max-w-2xl mx-auto rounded-xl overflow-hidden bg-black/80 border border-zinc-800 shadow-2xl backdrop-blur-xl p-8 min-h-[300px] flex flex-col">
+        <div className="relative w-full max-w-2xl mx-auto rounded-xl overflow-hidden bg-black/90 border border-zinc-800 shadow-2xl backdrop-blur-xl p-8 min-h-[300px] flex flex-col">
             {/* Focal Glow */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-1 bg-indigo-500/50 blur-lg" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-cyan-500 to-transparent blur-sm" />
 
             {/* Content Area */}
             <div
-                className="flex-1 font-mono text-lg md:text-xl leading-relaxed text-zinc-200"
-                style={{ textShadow: "0 0 15px rgba(165, 180, 252, 0.25)" }}
+                className="flex-1 font-mono text-lg md:text-xl leading-relaxed"
+                style={{ textShadow: "0 0 10px rgba(6, 182, 212, 0.1)" }}
             >
                 {displayedWords.map((word, i) => (
                     <span
                         key={i}
-                        className="inline-block opacity-0 animate-[fadeIn_0.5s_ease-out_forwards]"
+                        className={`inline-block opacity-0 animate-[fadeIn_0.5s_ease-out_forwards] ${getWordStyle(word)}`}
                         style={{ animationDelay: '0ms' }}
                     >
                         {word}&nbsp;
