@@ -78,7 +78,7 @@ const DEFAULT_SETTINGS: AppSettings = {
     },
     sponsor: {
         enabled: true,
-        imageUrl: "/powered_by_dome.png",
+        imageUrl: "https://domeapi.io/assets/dome-icon-336KHiVB.png",
         linkUrl: "https://domeapi.io",
     },
 };
