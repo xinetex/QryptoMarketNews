@@ -32,6 +32,7 @@ import {
 import type { CoinGeckoMarketResponse } from "@/lib/types/crypto";
 import Sparkline from "@/components/Sparkline";
 import PriceHeatmap from "@/components/PriceHeatmap";
+import PointsDisplay from "@/components/PointsDisplay";
 import { formatPrice, formatMarketCap, formatChange } from "@/lib/coingecko";
 
 const REFRESH_INTERVAL = 30000; // 30 seconds
@@ -178,6 +179,9 @@ export default function CoinDetailPage() {
                         />
                         <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] bg-zinc-800 border border-white/5 px-1.5 rounded text-zinc-500">⌘K</span>
                     </div>
+
+                    {/* Points Display */}
+                    <PointsDisplay />
                 </div>
             </nav>
 
