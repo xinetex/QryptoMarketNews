@@ -16,17 +16,7 @@ type ScatterDataPoint = ExtendedCoinData & {
     zoneColor: string;
 };
 
-interface CryptoScatter3DProps {
-    data: ScatterDataPoint[];
-    timeOffset: number; // Hours ago (0-24)
-    showTrails: boolean;
-    showGhost: boolean;
-    showHalos: boolean;
-    axes: { x: string; y: string; z: string };
-    colorMode: "category" | "volatility";
-}
 
-// Helper to get value based on axis metric
 const getMetricValue = (point: ScatterDataPoint, metric: string): number => {
     switch (metric) {
         case "mcap": return point.marketCap;
@@ -229,17 +219,6 @@ function AxisLines({ axes }: { axes: { x: string, y: string, z: string } }) {
     );
 }
 
-interface CryptoScatter3DProps {
-    data: ScatterDataPoint[];
-    timeOffset?: number;
-    showTrails?: boolean;
-    showGhost?: boolean;
-    showHalos?: boolean;
-    axes: { x: string, y: string, z: string };
-    colorMode: "category" | "volatility";
-    scenario: "normal" | "btc_crash" | "eth_surge" | "liquidations";
-}
-
 // Helper to simulate price impact based on scenario
 function getScenarioImpact(point: any, scenario: string) {
     if (scenario === "normal") return { color: null, impact: 0 };
@@ -267,6 +246,17 @@ function getScenarioImpact(point: any, scenario: string) {
     // Simple Approximation
     const color = impact < -0.05 ? "#ff3333" : impact > 0.05 ? "#33ff33" : null;
     return { color, impact };
+}
+
+interface CryptoScatter3DProps {
+    data: ScatterDataPoint[];
+    timeOffset?: number;
+    showTrails?: boolean;
+    showGhost?: boolean;
+    showHalos?: boolean;
+    axes: { x: string, y: string, z: string };
+    colorMode: "category" | "volatility";
+    scenario: "normal" | "btc_crash" | "eth_surge" | "liquidations";
 }
 
 export default function CryptoScatter3D({
@@ -373,7 +363,6 @@ export default function CryptoScatter3D({
                                     onClick={() => { }}
                                     showHalo={showHalos && point.volatility > 0.7}
                                     showTrail={showTrails}
-                                    timeOffset={timeOffset}
                                 />
 
                                 {/* Ghost Point */}
