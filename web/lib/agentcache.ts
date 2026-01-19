@@ -15,10 +15,10 @@ const CACHE_PREFIX = 'agentcache:v1:';
 const COINGECKO_BASE = 'https://api.coingecko.com/api/v3';
 
 // Cache TTLs (in seconds)
-export const TTL_COIN_DATA = 60;          // 1 minute for price data
-export const TTL_COIN_LIST = 60 * 60;     // 1 hour for coin list
-export const TTL_MARKET_DATA = 30;        // 30 seconds for market data
-export const TTL_LONG = 3600 * 4;         // 4 hours for static data (NFTs)
+export const TTL_COIN_DATA = 300;         // 5 minutes (Conservatively cache price data)
+export const TTL_COIN_LIST = 86400;       // 24 hours (Coin list rarely changes)
+export const TTL_MARKET_DATA = 120;       // 2 minutes (Market data)
+export const TTL_LONG = 3600 * 24;        // 24 hours for static data (NFTs)
 
 // In-memory fallback cache
 const memoryCache = new Map<string, { data: any; expires: number }>();
