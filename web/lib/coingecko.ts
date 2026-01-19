@@ -190,6 +190,57 @@ export async function getCoinsByCategory(categoryId: string): Promise<CoinGeckoM
 }
 
 /**
+ * Fetch market chart data (prices, market_caps, total_volumes)
+ */
+export async function getMarketChart(coinId: string, days: number = 7): Promise<{ prices: [number, number][], total_volumes: [number, number][] } | null> {
+    try {
+        const data = await cachedCoinGeckoFetch<{ prices: [number, number][], total_volumes: [number, number][] }>(
+            `/coins/${coinId}/market_chart`,
+            {
+                vs_currency: 'usd',
+                days: days.toString(),
+            },
+            300 // 5 minute TTL
+        );
+        return data;
+    } catch (error) {
+        console.error(`Failed to fetch market chart for ${coinId}:`, error);
+        return null;
+    }
+}
+
+/**
+ * Calculate historical volatility (Standard Deviation of daily returns)
+ * Returns a percentage value (e.g., 5.2 for 5.2%)
+ */
+export async function getHistoricalVolatility(coinId: string, days: number = 30): Promise<number> {
+    const chart = await getMarketChart(coinId, days);
+    if (!chart || chart.prices.length < 2) return 0;
+
+    // Extract prices (index 1 os value, index 0 is timestamp)
+    const prices = chart.prices.map(p => p[1]);
+
+    // Calculate daily returns: ln(P_t / P_t-1)
+    const returns: number[] = [];
+    for (let i = 1; i < prices.length; i++) {
+        const r = Math.log(prices[i] / prices[i - 1]);
+        returns.push(r);
+    }
+
+    // Calculate Standard Deviation of returns
+    const mean = returns.reduce((a, b) => a + b, 0) / returns.length;
+    const variance = returns.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / returns.length;
+    const stdDev = Math.sqrt(variance);
+
+    // Annualize (Optional, currently returning daily Volatility * sqrt(365) ~ Annualized or just scalar)
+    // For Signal purposes, a simple scalar of the stdDev is fine.
+    // Let's return annualized volatility percentage.
+    const annualizedVol = stdDev * Math.sqrt(365) * 100;
+
+    return parseFloat(annualizedVol.toFixed(2));
+}
+
+/**
  * Format price for display
  */
 /**

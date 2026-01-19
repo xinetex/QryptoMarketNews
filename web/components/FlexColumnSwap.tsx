@@ -12,6 +12,7 @@ import {
 import Image from 'next/image';
 import FlexFeaturesCard from './FlexFeaturesCard';
 import HotMarketsSlider from './HotMarketsSlider';
+import DynamicWalletAd from './DynamicWalletAd';
 
 export default function FlexColumnSwap() {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -84,10 +85,9 @@ export default function FlexColumnSwap() {
                         </div>
 
                         {/* Marketing / Placeholder for more content */}
-                        <div className="rounded-xl bg-zinc-900/50 border border-white/5 p-4 flex-1 min-h-[100px] flex items-center justify-center text-center">
-                            <div className="text-zinc-500 text-xs">
-                                <p>More live signals coming soon.</p>
-                            </div>
+                        {/* Dynamic Wallet / Ad Space */}
+                        <div className="flex-1 min-h-[180px]">
+                            <DynamicWalletAd />
                         </div>
                     </motion.div>
                 ) : (
