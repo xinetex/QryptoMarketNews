@@ -9,7 +9,8 @@ import Link from "next/link";
 import NewsSlider from "./NewsSlider";
 import HotMarketsSlider from "./HotMarketsSlider";
 import ProphetOracleCard from "./ProphetOracleCard";
-import FlexInnovationWidget from "./FlexInnovationWidget";
+// Import FlexColumnSwap
+import FlexColumnSwap from "./FlexColumnSwap";
 
 import { useAdminSettings } from "@/hooks/useAdminSettings";
 
@@ -64,15 +65,12 @@ export default function ZoneGrid() {
             .filter(z => z.enabled)
             .sort((a, b) => a.order - b.order)
             .map(adminZone => {
-                // Find market data if available
                 const marketData = categories.find(c => c.id === adminZone.coingeckoCategory || c.id === adminZone.id);
-
                 return {
-                    id: adminZone.id, // Use admin ID for routing
+                    id: adminZone.id,
                     name: adminZone.name,
                     icon: adminZone.icon,
                     color: adminZone.color,
-                    // Use live data if available, else placeholders
                     change: marketData?.change || "...",
                     isPositive: marketData ? marketData.isPositive : true
                 };
@@ -90,7 +88,7 @@ export default function ZoneGrid() {
                 duration: 800
             });
         }
-    }, [zones.length]); // Re-run when zones are populated
+    }, [zones.length]);
 
     useEffect(() => {
         if (!loading && zones.length > 0) {
@@ -109,81 +107,79 @@ export default function ZoneGrid() {
     return (
         <div
             ref={gridRef}
-            className="relative z-10 px-4 md:px-8 pt-44 md:pt-56 lg:pt-20 pb-24 columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-4 md:gap-6 pointer-events-auto [&>*]:mb-4 md:[&>*]:mb-6"
+            className="relative z-10 px-4 md:px-8 pt-44 md:pt-56 lg:pt-20 pb-24 grid grid-cols-1 lg:grid-cols-12 gap-6 pointer-events-auto h-[calc(100vh-100px)] lg:overflow-hidden"
         >
-            {/* YouTube Live Radio Card */}
-            {settings?.youtube?.enabled && (
-                <YouTubeCard
-                    videoId={settings.youtube.videoId || "9ASXINLKuNE"}
-                    title={settings.youtube.title || "QCrypto Radio"}
-                />
-            )}
+            {/* COLUMN 1: Essentials (Video, News, Oracle) - Span 3 */}
+            <div className="lg:col-span-3 flex flex-col gap-6 lg:overflow-y-auto no-scrollbar lg:pr-2">
+                {/* YouTube */}
+                {settings?.youtube?.enabled && (
+                    <YouTubeCard
+                        videoId={settings.youtube.videoId || "9ASXINLKuNE"}
+                        title={settings.youtube.title || "QCrypto Radio"}
+                    />
+                )}
 
-            {/* Market News Card */}
-            {settings?.features?.newsEnabled && (
-                <div className="zone-card group relative h-52 rounded-xl bg-[#12121A] border border-white/5 p-5 overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:border-neon-blue/50 hover:shadow-xl hover:shadow-neon-blue/10">
-                    <div className="w-full h-full">
-                        <NewsSlider autoPlay={true} interval={6000} />
+                {/* News */}
+                {settings?.features?.newsEnabled && (
+                    <div className="zone-card group relative h-52 rounded-xl bg-[#12121A] border border-white/5 p-5 overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:border-neon-blue/50 hover:shadow-xl hover:shadow-neon-blue/10 shrink-0">
+                        <div className="w-full h-full">
+                            <NewsSlider autoPlay={true} interval={6000} />
+                        </div>
                     </div>
+                )}
+
+                {/* Oracle */}
+                <div className="shrink-0">
+                    <ProphetOracleCard />
                 </div>
-            )}
-
-            {/* Prophet Oracle - Market Intelligence Card */}
-            <ProphetOracleCard />
-
-            {/* Flex Innovation: Market Discovery & Agent */}
-            <div className="zone-card break-inside-avoid mb-6">
-                <FlexInnovationWidget />
             </div>
 
-            {zones.map((zone) => {
-                const IconComponent = ICON_MAP[zone.icon] || Zap;
-                const gradientClass = ZONE_GRADIENTS[zone.id] || "from-white/10 to-white/5";
+            {/* COLUMN 2: Zones Grid - Span 6 */}
+            <div className="lg:col-span-6 lg:overflow-y-auto no-scrollbar lg:px-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-20 lg:pb-0">
+                    {zones.map((zone) => {
+                        const IconComponent = ICON_MAP[zone.icon] || Zap;
+                        const gradientClass = ZONE_GRADIENTS[zone.id] || "from-white/10 to-white/5";
 
-                return (
-                    <Link
-                        key={zone.id}
-                        href={`/zone/${zone.id}`}
-                        className="zone-card group relative h-52 rounded-xl bg-[#12121A] border border-white/5 p-5 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:border-indigo-500/50 hover:shadow-xl hover:shadow-indigo-500/10 break-inside-avoid"
-                    >
-                        {/* Gradient Overlay */}
-                        <div className={`absolute inset-0 bg-gradient-to-br ${gradientClass} opacity-50 group-hover:opacity-80 transition-opacity duration-500`} />
+                        return (
+                            <Link
+                                key={zone.id}
+                                href={`/zone/${zone.id}`}
+                                className="zone-card group relative h-40 rounded-xl bg-[#12121A] border border-white/5 p-5 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:border-indigo-500/50 hover:shadow-xl hover:shadow-indigo-500/10"
+                            >
+                                <div className={`absolute inset-0 bg-gradient-to-br ${gradientClass} opacity-50 group-hover:opacity-80 transition-opacity duration-500`} />
 
-                        {/* Header */}
-                        <div className="flex justify-between items-start z-10">
-                            <div className={`${zone.color} bg-zinc-900/80 p-2.5 rounded-lg border border-white/5 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
-                                <IconComponent size={24} strokeWidth={1.5} />
-                            </div>
-                            <div className="text-right">
-                                <div className="text-xs text-zinc-500 font-medium mb-0.5">24h</div>
-                                <div className={`font-bold tracking-tight ${zone.isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
-                                    {zone.change}
+                                <div className="flex justify-between items-start z-10">
+                                    <div className={`${zone.color} bg-zinc-900/80 p-2 rounded-lg border border-white/5 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                                        <IconComponent size={20} strokeWidth={1.5} />
+                                    </div>
+                                    <div className="text-right">
+                                        <div className="text-[10px] text-zinc-500 font-medium mb-0.5">24h</div>
+                                        <div className={`text-sm font-bold tracking-tight ${zone.isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
+                                            {zone.change}
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
 
-                        {/* Content */}
-                        <div className="z-10">
-                            <h3 className="text-zinc-100 text-lg font-medium tracking-tight mb-1 group-hover:text-white transition-colors">
-                                {zone.name}
-                            </h3>
-                            <p className="text-xs text-zinc-500 group-hover:text-zinc-400 transition-colors">
-                                Explore {zone.name.toLowerCase()} Prophets
-                            </p>
-                        </div>
+                                <div className="z-10">
+                                    <h3 className="text-zinc-100 text-lg font-medium tracking-tight mb-0.5 group-hover:text-white transition-colors">
+                                        {zone.name}
+                                    </h3>
+                                    <p className="text-[10px] text-zinc-500 group-hover:text-zinc-400 transition-colors">
+                                        Explore {zone.name.toLowerCase()} Prophets
+                                    </p>
+                                </div>
 
-                        {/* Selection Indicator */}
-                        <div className="absolute bottom-0 left-0 h-1 bg-indigo-500 transition-all duration-300 w-0 group-hover:w-1/3" />
-                    </Link>
-                );
-            })}
-
-            {/* Hot Markets Card - Lower Right */}
-            <div className="zone-card group relative h-52 rounded-xl bg-[#12121A] border border-orange-500/20 p-5 overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:border-orange-500/50 hover:shadow-xl hover:shadow-orange-500/10 break-inside-avoid">
-                <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-red-900/10 opacity-50 group-hover:opacity-80 transition-opacity duration-500" />
-                <div className="relative z-10 w-full h-full">
-                    <HotMarketsSlider autoPlay={true} interval={7000} />
+                                <div className="absolute bottom-0 left-0 h-1 bg-indigo-500 transition-all duration-300 w-0 group-hover:w-1/3" />
+                            </Link>
+                        );
+                    })}
                 </div>
+            </div>
+
+            {/* COLUMN 3: Flex Swap Column - Span 3 */}
+            <div className="lg:col-span-3 lg:overflow-y-auto no-scrollbar lg:pl-2 h-full">
+                <FlexColumnSwap />
             </div>
         </div>
     );
