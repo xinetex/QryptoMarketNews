@@ -214,18 +214,28 @@ export default function CoinDetailPage() {
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-4 text-sm flex-wrap">
-                                    <a href="#" className="flex items-center gap-1.5 text-zinc-400 hover:text-indigo-400 transition-colors">
-                                        <Globe size={14} />
-                                        <span>Website</span>
-                                    </a>
-                                    <a href="#" className="flex items-center gap-1.5 text-zinc-400 hover:text-indigo-400 transition-colors">
-                                        <FileText size={14} />
-                                        <span>Whitepaper</span>
-                                    </a>
+                                    {coin.links?.homepage && (
+                                        <a href={coin.links.homepage} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-zinc-400 hover:text-indigo-400 transition-colors">
+                                            <Globe size={14} />
+                                            <span>Website</span>
+                                        </a>
+                                    )}
+                                    {coin.links?.official_forum_url && (
+                                        <a href={coin.links.official_forum_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-zinc-400 hover:text-indigo-400 transition-colors">
+                                            <FileText size={14} />
+                                            <span>Forum</span>
+                                        </a>
+                                    )}
                                     <div className="flex gap-2 border-l border-white/10 pl-4 ml-1">
-                                        <a href="#" className="text-zinc-500 hover:text-zinc-300"><Twitter size={14} /></a>
-                                        <a href="#" className="text-zinc-500 hover:text-zinc-300"><MessageCircle size={14} /></a>
-                                        <a href="#" className="text-zinc-500 hover:text-zinc-300"><Github size={14} /></a>
+                                        {coin.links?.twitter_screen_name && (
+                                            <a href={`https://twitter.com/${coin.links.twitter_screen_name}`} target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-zinc-300"><Twitter size={14} /></a>
+                                        )}
+                                        {coin.links?.subreddit_url && (
+                                            <a href={coin.links.subreddit_url} target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-zinc-300"><MessageCircle size={14} /></a>
+                                        )}
+                                        {coin.links?.repos_url?.github?.[0] && (
+                                            <a href={coin.links.repos_url.github[0]} target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-zinc-300"><Github size={14} /></a>
+                                        )}
                                     </div>
                                 </div>
                             </div>

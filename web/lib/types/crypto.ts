@@ -69,6 +69,20 @@ export interface CoinGeckoMarketResponse {
     liquidity_score?: number;
     sentiment_votes_up_percentage?: number;
     sentiment_votes_down_percentage?: number;
+
+    // Extended Details from /coins/{id}
+    description?: string;
+    links?: {
+        homepage?: string;
+        twitter_screen_name?: string;
+        subreddit_url?: string;
+        whitepaper?: string;
+        official_forum_url?: string;
+        repos_url?: {
+            github?: string[];
+        };
+        blockchain_site?: string[];
+    };
 }
 
 export interface CoinGeckoCategoryResponse {

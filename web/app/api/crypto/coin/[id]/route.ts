@@ -86,7 +86,10 @@ export async function GET(
             links: {
                 homepage: raw.links?.homepage?.[0] || "",
                 twitter_screen_name: raw.links?.twitter_screen_name || "",
-                subreddit_url: raw.links?.subreddit_url || ""
+                subreddit_url: raw.links?.subreddit_url || "",
+                official_forum_url: raw.links?.official_forum_url?.[0] || "",
+                blockchain_site: raw.links?.blockchain_site || [],
+                repos_url: raw.links?.repos_url || {}
             }
         };
 

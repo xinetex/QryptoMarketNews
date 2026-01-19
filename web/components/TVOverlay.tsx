@@ -110,10 +110,16 @@ export default function TVOverlay() {
 
                     {/* Sponsor - Mobile: Small & below logo, Desktop: Beside logo */}
                     {sponsor.enabled && (
-                        <a href={sponsor.linkUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 lg:gap-3 px-3 py-1 lg:px-4 lg:py-1.5 bg-glass border border-white/5 rounded-full hover:bg-white/5 transition-colors group">
-                            <span className="text-[8px] lg:text-[10px] uppercase tracking-widest text-zinc-500 group-hover:text-zinc-400 transition-colors font-bold">Powered by</span>
+                        <a href={sponsor.linkUrl || "https://domeapi.io"} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 lg:gap-3 px-3 py-1 lg:px-4 lg:py-1.5 bg-glass border border-white/5 rounded-full hover:bg-white/5 transition-colors group">
+                            <span className="text-[8px] lg:text-[10px] uppercase tracking-widest text-zinc-500 group-hover:text-zinc-400 transition-colors font-bold">
+                                Powered by <span className="text-zinc-300">Dome</span>
+                            </span>
                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={sponsor.imageUrl} alt="Dome API" className="h-6 lg:h-8 w-auto object-contain" />
+                            <img
+                                src={sponsor.imageUrl || "https://domeapi.io/assets/dome-icon-336KHiVB.png"}
+                                alt="Dome API"
+                                className="h-5 lg:h-7 w-auto object-contain"
+                            />
                         </a>
                     )}
                 </div>
