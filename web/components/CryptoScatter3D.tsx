@@ -7,14 +7,7 @@ import * as THREE from "three";
 import * as d3 from "d3";
 import { formatPrice, formatChange, formatMarketCap } from "@/lib/coingecko";
 import { useRouter } from "next/navigation";
-import type { ExtendedCoinData } from "@/app/galaxy/page";
-
-// Extend the base data with visual helpers
-type ScatterDataPoint = ExtendedCoinData & {
-    change24h: number;
-    volume24h: number;
-    zoneColor: string;
-};
+import { ScatterDataPoint } from "@/lib/types/galaxy";
 
 
 const getMetricValue = (point: ScatterDataPoint, metric: string): number => {
@@ -220,7 +213,7 @@ function AxisLines({ axes }: { axes: { x: string, y: string, z: string } }) {
 }
 
 // Helper to simulate price impact based on scenario
-function getScenarioImpact(point: any, scenario: string) {
+function getScenarioImpact(point: any, scenario: string, severity: number = 0.2) {
     if (scenario === "normal") return { color: null, impact: 0 };
 
     let impact = 0; // 0 = no change, -1 = -100%, +1 = +100%
@@ -228,22 +221,24 @@ function getScenarioImpact(point: any, scenario: string) {
     if (scenario === "btc_crash") {
         // High correlation with BTC or High Volatility suffers more
         const volFactor = point.volatility || 0.5;
-        impact = -0.2 - (volFactor * 0.3); // -20% base, up to -50% for high vol
+        impact = -1 * severity - (volFactor * severity * 1.5);
         if (point.symbol === "USDT" || point.symbol === "USDC") impact = 0;
     } else if (scenario === "eth_surge") {
         // ETH beta
         const volFactor = point.volatility || 0.5;
-        impact = 0.15 + (volFactor * 0.2); // +15% base
+        impact = severity + (volFactor * severity); // +15% base
         if (point.symbol === "USDT" || point.symbol === "USDC") impact = 0;
     } else if (scenario === "liquidations") {
         // Exponential decay for high volatility
         const volFactor = point.volatility || 0;
-        if (volFactor > 0.7) impact = -0.6; // Nuke high vol
-        else impact = -0.1;
+        if (volFactor > 0.7) impact = -1 * severity * 3; // Nuke high vol
+        else impact = -1 * severity;
+    } else if (scenario === "stable_depeg") {
+        if (point.category === "stablecoins" || point.symbol?.includes("USD")) impact = -1 * severity;
+        else impact = -1 * severity * 0.5; // Panic contagion
     }
 
     // Color interpolation: Red (-50%) <-> White (0%) <-> Green (+50%)
-    // Simple Approximation
     const color = impact < -0.05 ? "#ff3333" : impact > 0.05 ? "#33ff33" : null;
     return { color, impact };
 }
@@ -256,7 +251,8 @@ interface CryptoScatter3DProps {
     showHalos?: boolean;
     axes: { x: string, y: string, z: string };
     colorMode: "category" | "volatility";
-    scenario: "normal" | "btc_crash" | "eth_surge" | "liquidations";
+    scenario: "normal" | "btc_crash" | "eth_surge" | "liquidations" | "stable_depeg";
+    severity: number;
 }
 
 export default function CryptoScatter3D({
@@ -267,7 +263,8 @@ export default function CryptoScatter3D({
     showHalos = true,
     axes,
     colorMode,
-    scenario
+    scenario,
+    severity
 }: CryptoScatter3DProps) {
     const router = useRouter();
 
@@ -345,7 +342,7 @@ export default function CryptoScatter3D({
                         const ghostY = y;
 
                         // Scenario Simulation
-                        const { color: scenarioColor, impact } = getScenarioImpact(point, scenario);
+                        const { color: scenarioColor, impact } = getScenarioImpact(point, scenario, severity);
                         const effectiveColor = scenarioColor || (colorMode === "volatility" ? getColor(point) : point.zoneColor); // Re-using getColor for volatility mode
 
                         // If scenario is active, jitter position to show instability? 

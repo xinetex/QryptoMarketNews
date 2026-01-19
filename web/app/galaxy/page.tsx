@@ -40,30 +40,11 @@ const ZONE_COLORS: Record<string, string> = {
     metals: "#d4af37",
 };
 
-// Enhanced data types
-export interface ExtendedCoinData {
-    id: string;
-    name: string;
-    symbol: string;
-    price: number;
-    marketCap: number;
-    fdv: number;               // Fully Diluted Valuation
-    change: number;
-    volume: number;
-    volatility: number;        // 0-1 score
-    history: {                 // For trails
-        price: number;
-        timestamp: number;
-    }[];
-    price7d: number;          // For ghost layer
-}
+import { getUserPortfolio, PortfolioPosition } from "@/lib/portfolio-service";
+import type { ZoneWithCoins, GalaxyCoinData } from "@/lib/types/galaxy";
 
-interface ZoneWithCoins {
-    id: string;
-    name: string;
-    color: string;
-    coins: ExtendedCoinData[];
-}
+// Alias for backward compatibility if needed, or just replace usage
+type ExtendedCoinData = GalaxyCoinData;
 
 // Simulation helper
 function generateMockHistory(currentPrice: number, volatility: number) {
@@ -99,7 +80,9 @@ export default function GalaxyPage() {
         z: "volume"
     });
     const [colorMode, setColorMode] = useState<"category" | "volatility">("category");
-    const [scenario, setScenario] = useState<"normal" | "btc_crash" | "eth_surge" | "liquidations">("normal");
+    const [scenario, setScenario] = useState<"normal" | "btc_crash" | "eth_surge" | "liquidations" | "stable_depeg">("normal");
+    const [severity, setSeverity] = useState(0.2);
+    const [portfolio, setPortfolio] = useState<PortfolioPosition[]>([]);
 
     // Time Travel Animation
     useEffect(() => {
@@ -142,6 +125,12 @@ export default function GalaxyPage() {
                                 volatility,
                                 history: generateMockHistory(coin.current_price, volatility),
                                 price7d: coin.current_price * (1 - (coin.price_change_percentage_24h || 0) / 100 * (1 + (Math.random() - 0.5))),
+
+                                // Defaults for types (will be overridden in flatten or used directly)
+                                category: zoneId,
+                                change24h: coin.price_change_percentage_24h || 0,
+                                volume24h: coin.total_volume,
+                                zoneColor: ZONE_COLORS[zoneId] || "#ffffff",
                             };
                         }),
                     };
@@ -157,6 +146,8 @@ export default function GalaxyPage() {
         }
 
         fetchAllZones();
+
+        getUserPortfolio('mock-user').then(setPortfolio);
     }, []);
 
     // Flatten data for scatter plot
@@ -170,6 +161,50 @@ export default function GalaxyPage() {
             }))
         );
     }, [zones]);
+
+    // Calculate Portfolio Risk
+    const portfolioStats = useMemo(() => {
+        if (portfolio.length === 0 || scatterData.length === 0) return null;
+
+        let currentVal = 0;
+        let projectedVal = 0;
+
+        portfolio.forEach(pos => {
+            const coin = scatterData.find(c => c.symbol === pos.symbol);
+            const price = coin ? coin.price : 0; // Fallback if not in galaxy (should ideally fetch all)
+            const vol = coin ? coin.volatility : 0.5;
+
+            // Calculate Value
+            const val = pos.amount * price;
+            currentVal += val;
+
+            // Calculate Impact (Duplicated logic from CryptoScatter3D to be DRY later, hardcoded for consistency now)
+            let impact = 0;
+            if (scenario === "btc_crash") {
+                impact = -1 * severity - (vol * severity * 1.5);
+                if (pos.symbol.includes("USD")) impact = 0;
+            } else if (scenario === "eth_surge") {
+                impact = severity + (vol * severity);
+                if (pos.symbol.includes("USD")) impact = 0;
+            } else if (scenario === "liquidations") {
+                if (vol > 0.7) impact = -1 * severity * 3;
+                else impact = -1 * severity;
+            } else if (scenario === "stable_depeg") {
+                if (pos.symbol.includes("USD")) impact = -1 * severity;
+                else impact = -1 * severity * 0.5;
+            }
+
+            const projectedPrice = price * (1 + impact);
+            projectedVal += pos.amount * projectedPrice;
+        });
+
+        return {
+            currentVal,
+            projectedVal,
+            pnl: projectedVal - currentVal,
+            pnlPercent: currentVal > 0 ? (projectedVal - currentVal) / currentVal : 0
+        };
+    }, [portfolio, scatterData, scenario, severity]);
 
     return (
         <div className="min-h-screen bg-deep-space text-white">
@@ -239,6 +274,10 @@ export default function GalaxyPage() {
                                 onColorModeChange={setColorMode}
                                 scenario={scenario}
                                 onScenarioChange={setScenario}
+                                severity={severity}
+
+                                onSeverityChange={setSeverity}
+                                portfolioStats={portfolioStats}
                             />
                         )}
 
@@ -256,7 +295,9 @@ export default function GalaxyPage() {
                                     showHalos={layers.halo}
                                     axes={axes}
                                     colorMode={colorMode}
+
                                     scenario={scenario}
+                                    severity={severity}
                                 />
                             )
                         )}

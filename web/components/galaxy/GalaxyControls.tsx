@@ -13,8 +13,16 @@ interface GalaxyControlsProps {
     onAxisChange: (axis: "x" | "y" | "z", value: string) => void;
     colorMode: "category" | "volatility";
     onColorModeChange: (mode: "category" | "volatility") => void;
-    scenario: "normal" | "btc_crash" | "eth_surge" | "liquidations";
-    onScenarioChange: (scenario: "normal" | "btc_crash" | "eth_surge" | "liquidations") => void;
+    scenario: "normal" | "btc_crash" | "eth_surge" | "liquidations" | "stable_depeg";
+    onScenarioChange: (scenario: "normal" | "btc_crash" | "eth_surge" | "liquidations" | "stable_depeg") => void;
+    severity: number;
+    onSeverityChange: (severity: number) => void;
+    portfolioStats?: {
+        currentVal: number;
+        projectedVal: number;
+        pnl: number;
+        pnlPercent: number;
+    } | null;
 }
 
 export default function GalaxyControls({
@@ -29,7 +37,10 @@ export default function GalaxyControls({
     colorMode,
     onColorModeChange,
     scenario,
-    onScenarioChange
+    onScenarioChange,
+    severity,
+    onSeverityChange,
+    portfolioStats
 }: GalaxyControlsProps) {
     const [isMinimized, setIsMinimized] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -255,23 +266,60 @@ export default function GalaxyControls({
                         </div>
 
                         {/* Risk Engine */}
-                        <div ref={riskRef} className="flex flex-col gap-2 pl-6 border-l border-white/5 opacity-0 w-[140px]">
-                            <div className="text-[10px] text-neon-red uppercase tracking-widest font-bold mb-1 flex items-center gap-1.5 animate-pulse">
+                        <div ref={riskRef} className={`flex flex-col gap-2 pl-6 border-l border-white/5 opacity-0 w-[160px] transition-colors duration-500 ${scenario !== 'normal' ? 'bg-red-500/5 -my-4 py-4 rounded-r-2xl pr-4' : ''}`}>
+                            <div className={`text-[10px] uppercase tracking-widest font-bold mb-1 flex items-center gap-1.5 ${scenario !== 'normal' ? 'text-red-400 animate-pulse' : 'text-white/40'}`}>
                                 <Zap size={10} /> Risk Engine
                             </div>
+
                             <select
                                 value={scenario}
                                 onChange={(e) => onScenarioChange(e.target.value as any)}
-                                className="w-full bg-red-500/10 border border-red-500/20 rounded-lg px-2 py-1.5 text-red-200 text-xs focus:outline-none focus:border-red-500 focus:bg-red-500/20 transition-all cursor-pointer font-medium hover:bg-red-500/15"
+                                className={`w-full bg-red-500/10 border border-red-500/20 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:border-red-500 focus:bg-red-500/20 transition-all cursor-pointer font-medium hover:bg-red-500/15 ${scenario !== 'normal' ? 'text-red-100 shadow-[0_0_10px_rgba(239,68,68,0.2)]' : 'text-red-200/50'}`}
                             >
                                 <option value="normal">Normal Market</option>
-                                <option value="btc_crash">BTC Crash (-20%)</option>
-                                <option value="eth_surge">ETH Surge (+15%)</option>
+                                <option value="btc_crash">BTC Crash</option>
+                                <option value="eth_surge">ETH Surge</option>
                                 <option value="liquidations">Liquidation Cascade</option>
+                                <option value="stable_depeg">Stablecoin Depeg</option>
                             </select>
-                            <div className="text-[9px] text-white/30 leading-tight mt-1 border-l-2 border-white/5 pl-2">
-                                Simulate macro events to test portfolio resilience.
-                            </div>
+
+                            {scenario !== 'normal' && (
+                                <div className="space-y-1 animate-in fade-in slide-in-from-top-2 duration-300">
+                                    <div className="flex justify-between text-[10px] text-red-300/80 font-mono">
+                                        <span>Intensity</span>
+                                        <span>{Math.round(severity * 100)}%</span>
+                                    </div>
+                                    <input
+                                        type="range"
+                                        min="0.05"
+                                        max="0.5"
+                                        step="0.05"
+                                        value={severity}
+                                        onChange={(e) => onSeverityChange(parseFloat(e.target.value))}
+                                        className="w-full h-1 bg-red-900/40 rounded-lg appearance-none cursor-pointer accent-red-500 hover:accent-red-400"
+                                    />
+
+                                    {portfolioStats && (
+                                        <div className="mt-2 pt-2 border-t border-red-500/10">
+                                            <div className="text-[9px] uppercase tracking-wider text-red-300/60 mb-0.5">Your Portfolio</div>
+                                            <div className="flex items-baseline justify-between">
+                                                <span className={`font-mono font-bold text-sm ${portfolioStats.pnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                                    {portfolioStats.pnl >= 0 ? '+' : ''}{portfolioStats.pnl.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })}
+                                                </span>
+                                                <span className={`text-[9px] px-1 rounded ${portfolioStats.pnl >= 0 ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}`}>
+                                                    {(portfolioStats.pnlPercent * 100).toFixed(1)}%
+                                                </span>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            {scenario === 'normal' && (
+                                <div className="text-[9px] text-white/30 leading-tight mt-1 border-l-2 border-white/5 pl-2">
+                                    Simulate black swan events.
+                                </div>
+                            )}
                         </div>
 
                     </div>
