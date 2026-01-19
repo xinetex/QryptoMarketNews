@@ -185,34 +185,25 @@ export default function MarketDiscoveryFeed({ onPredict, compact = false }: Mark
     return (
         <div className="space-y-4">
             {/* Header with Flex Badge */}
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 border border-white/10 flex items-center justify-center overflow-hidden">
-                        <Image
-                            src="/flex-32x32.png"
-                            alt="Flex Capital"
-                            width={24}
-                            height={24}
-                            className="opacity-80"
-                        />
-                    </div>
+            <div className="flex items-center justify-between pb-2">
+                <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-6 bg-indigo-500 rounded-full"></span>
                     <div>
-                        <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                        <h2 className="text-base font-bold text-white flex items-center gap-2 leading-none">
                             Market Discovery
-                            <span className="px-2 py-0.5 rounded-full bg-gradient-to-r from-red-500/20 to-white/10 text-[10px] text-white/70 font-medium">
-                                Flex Powered
+                            <span className="px-1.5 py-0.5 rounded bg-gradient-to-r from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 text-[9px] text-indigo-300 font-bold uppercase tracking-wider">
+                                Beta
                             </span>
                         </h2>
-                        <p className="text-xs text-zinc-500">Curated markets for you</p>
                     </div>
                 </div>
-                <button className="text-zinc-400 hover:text-white text-sm flex items-center gap-1 transition">
-                    View All <ChevronRight size={14} />
+                <button className="text-zinc-500 hover:text-white text-xs font-bold flex items-center gap-1 transition-colors uppercase tracking-wide">
+                    View All <ChevronRight size={12} />
                 </button>
             </div>
 
             {/* Category Pills */}
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-2 px-2">
                 {CATEGORIES.map((cat) => {
                     const Icon = cat.icon;
                     const isSelected = selectedCategory === cat.id;
@@ -220,12 +211,12 @@ export default function MarketDiscoveryFeed({ onPredict, compact = false }: Mark
                         <button
                             key={cat.id}
                             onClick={() => setSelectedCategory(cat.id)}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${isSelected
-                                    ? `bg-gradient-to-r ${cat.color} text-white shadow-lg`
-                                    : 'bg-zinc-800/50 text-zinc-400 hover:text-white hover:bg-zinc-700/50'
+                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all border ${isSelected
+                                ? `bg-zinc-800 border-zinc-600 text-white shadow-lg shadow-black/50`
+                                : 'bg-zinc-900/50 border-white/5 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 hover:border-white/10'
                                 }`}
                         >
-                            <Icon size={14} />
+                            <Icon size={12} className={isSelected ? 'text-indigo-400' : ''} />
                             {cat.name}
                         </button>
                     );
@@ -235,16 +226,16 @@ export default function MarketDiscoveryFeed({ onPredict, compact = false }: Mark
             {/* Markets Grid */}
             {compact ? (
                 // Compact: Horizontal scroll
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide -mx-2 px-2 snap-x">
                     {filteredMarkets.map((market) => (
-                        <div key={market.id} className="min-w-[280px] flex-shrink-0">
+                        <div key={market.id} className="min-w-[260px] flex-shrink-0 snap-start">
                             <MarketCard market={market} onPredict={handlePredict} />
                         </div>
                     ))}
                 </div>
             ) : (
                 // Full: Grid
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                     {filteredMarkets.map((market) => (
                         <MarketCard key={market.id} market={market} onPredict={handlePredict} />
                     ))}
@@ -253,9 +244,9 @@ export default function MarketDiscoveryFeed({ onPredict, compact = false }: Mark
 
             {/* Empty State */}
             {filteredMarkets.length === 0 && (
-                <div className="text-center py-12 text-zinc-500">
-                    <Zap size={32} className="mx-auto mb-2 opacity-50" />
-                    <p>No markets in this category yet.</p>
+                <div className="text-center py-12 text-zinc-500 bg-zinc-900/30 rounded-xl border border-white/5 border-dashed">
+                    <Zap size={24} className="mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">No markets found.</p>
                 </div>
             )}
         </div>

@@ -29,83 +29,84 @@ export default function FlexFeaturesCard({ defaultTab = 'discovery', showHeader 
         <div className="bg-gradient-to-b from-zinc-900/90 to-zinc-950/90 border border-white/10 rounded-3xl overflow-hidden">
             {/* Header */}
             {showHeader && (
-                <div className="p-6 bg-gradient-to-r from-zinc-900 via-zinc-800/50 to-zinc-900 border-b border-white/10">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
+                <div className="p-5 bg-gradient-to-r from-zinc-900 via-zinc-800/40 to-zinc-900 border-b border-white/5">
+                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
                             {/* Flex Logo */}
-                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-zinc-800 to-black border border-white/10 flex items-center justify-center overflow-hidden">
+                            <div className="w-10 h-10 rounded-lg bg-zinc-900 border border-white/10 flex items-center justify-center overflow-hidden shadow-lg shadow-black/50">
                                 <Image
                                     src="/flex-64x64.png"
                                     alt="Flex Capital"
-                                    width={32}
-                                    height={32}
+                                    width={28}
+                                    height={28}
+                                    className="opacity-90"
                                 />
                             </div>
 
                             <div>
-                                <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                                    Flex-Powered Features
+                                <h2 className="text-lg font-bold text-white flex items-center gap-2 tracking-tight">
+                                    Flex Innovation
                                 </h2>
-                                <p className="text-sm text-zinc-400">
-                                    AI-driven market intelligence
+                                <p className="text-xs text-zinc-500 font-medium tracking-wide uppercase">
+                                    Market Intelligence
                                 </p>
                             </div>
                         </div>
 
                         {/* Tab Switcher */}
-                        <div className="flex bg-zinc-800/50 rounded-xl p-1">
+                        <div className="flex bg-black/40 rounded-lg p-1 border border-white/5">
                             <button
                                 onClick={() => setActiveTab('discovery')}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'discovery'
-                                        ? 'bg-white/10 text-white'
-                                        : 'text-zinc-400 hover:text-white'
+                                className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold uppercase tracking-wide transition-all ${activeTab === 'discovery'
+                                    ? 'bg-zinc-800 text-white shadow-sm ring-1 ring-white/10'
+                                    : 'text-zinc-500 hover:text-zinc-300'
                                     }`}
                             >
-                                <LayoutGrid size={14} />
+                                <LayoutGrid size={12} />
                                 Discovery
                             </button>
                             <button
                                 onClick={() => setActiveTab('agent')}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'agent'
-                                        ? 'bg-white/10 text-white'
-                                        : 'text-zinc-400 hover:text-white'
+                                className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold uppercase tracking-wide transition-all ${activeTab === 'agent'
+                                    ? 'bg-zinc-800 text-white shadow-sm ring-1 ring-white/10'
+                                    : 'text-zinc-500 hover:text-zinc-300'
                                     }`}
                             >
-                                <MessageSquare size={14} />
+                                <MessageSquare size={12} />
                                 Agent
                             </button>
                         </div>
                     </div>
 
                     {/* Stats Bar */}
-                    <div className="mt-4 grid grid-cols-4 gap-4">
-                        <div className="bg-zinc-800/30 rounded-xl p-3 text-center">
-                            <div className="flex items-center justify-center gap-1 text-emerald-400 mb-1">
-                                <TrendingUp size={14} />
-                                <span className="text-lg font-bold">247</span>
+                    <div className="mt-4 grid grid-cols-4 gap-2 md:gap-4">
+                        <div className="bg-black/20 rounded-lg p-2 md:p-3 text-center border border-white/5">
+                            <div className="flex items-center justify-center gap-1 text-emerald-400 mb-0.5">
+                                <TrendingUp size={12} />
+                                <span className="text-sm md:text-base font-bold font-mono">247</span>
                             </div>
-                            <span className="text-[10px] text-zinc-500 uppercase tracking-wider">Active Markets</span>
+                            <span className="text-[9px] text-zinc-600 font-bold uppercase tracking-widest">Markets</span>
                         </div>
-                        <div className="bg-zinc-800/30 rounded-xl p-3 text-center">
-                            <div className="flex items-center justify-center gap-1 text-indigo-400 mb-1">
-                                <Target size={14} />
-                                <span className="text-lg font-bold">72%</span>
+                        <div className="bg-black/20 rounded-lg p-2 md:p-3 text-center border border-white/5">
+                            <div className="flex items-center justify-center gap-1 text-indigo-400 mb-0.5">
+                                <Target size={12} />
+                                <span className="text-sm md:text-base font-bold font-mono">72%</span>
                             </div>
-                            <span className="text-[10px] text-zinc-500 uppercase tracking-wider">Oracle Accuracy</span>
+                            <span className="text-[9px] text-zinc-600 font-bold uppercase tracking-widest">Accuracy</span>
                         </div>
-                        <div className="bg-zinc-800/30 rounded-xl p-3 text-center">
-                            <div className="flex items-center justify-center gap-1 text-orange-400 mb-1">
-                                <Zap size={14} />
-                                <span className="text-lg font-bold">$2.4M</span>
+                        <div className="bg-black/20 rounded-lg p-2 md:p-3 text-center border border-white/5">
+                            <div className="flex items-center justify-center gap-1 text-orange-400 mb-0.5">
+                                <Zap size={12} />
+                                <span className="text-sm md:text-base font-bold font-mono">$2.4M</span>
                             </div>
-                            <span className="text-[10px] text-zinc-500 uppercase tracking-wider">24h Volume</span>
+                            <span className="text-[9px] text-zinc-600 font-bold uppercase tracking-widest">Vol 24h</span>
                         </div>
-                        <div className="bg-zinc-800/30 rounded-xl p-3 text-center">
-                            <div className="flex items-center justify-center gap-1 text-yellow-400 mb-1">
-                                <Trophy size={14} />
-                                <span className="text-lg font-bold">1,247</span>
+                        <div className="bg-black/20 rounded-lg p-2 md:p-3 text-center border border-white/5">
+                            <div className="flex items-center justify-center gap-1 text-yellow-400 mb-0.5">
+                                <Trophy size={12} />
+                                <span className="text-sm md:text-base font-bold font-mono">1.2k</span>
                             </div>
-                            <span className="text-[10px] text-zinc-500 uppercase tracking-wider">Prophets</span>
+                            <span className="text-[9px] text-zinc-600 font-bold uppercase tracking-widest">Prophets</span>
                         </div>
                     </div>
                 </div>
