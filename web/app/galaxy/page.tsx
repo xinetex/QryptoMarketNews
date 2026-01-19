@@ -17,6 +17,8 @@ const CryptoScatter3D = dynamic(() => import("@/components/CryptoScatter3D"), {
     loading: () => <LoadingPlaceholder />,
 });
 
+import GalaxyControls from "@/components/galaxy/GalaxyControls";
+
 const LoadingPlaceholder = () => (
     <div className="w-full h-[600px] rounded-3xl bg-black/50 flex items-center justify-center">
         <div className="text-center">
@@ -38,25 +40,80 @@ const ZONE_COLORS: Record<string, string> = {
     metals: "#d4af37",
 };
 
+// Enhanced data types
+export interface ExtendedCoinData {
+    id: string;
+    name: string;
+    symbol: string;
+    price: number;
+    marketCap: number;
+    fdv: number;               // Fully Diluted Valuation
+    change: number;
+    volume: number;
+    volatility: number;        // 0-1 score
+    history: {                 // For trails
+        price: number;
+        timestamp: number;
+    }[];
+    price7d: number;          // For ghost layer
+}
+
 interface ZoneWithCoins {
     id: string;
     name: string;
     color: string;
-    coins: {
-        id: string; // Added ID
-        name: string;
-        symbol: string; // Added Symbol
-        price: number; // Added Price
-        marketCap: number;
-        change: number;
-        volume: number; // Added Volume
-    }[];
+    coins: ExtendedCoinData[];
+}
+
+// Simulation helper
+function generateMockHistory(currentPrice: number, volatility: number) {
+    const history = [];
+    let price = currentPrice;
+    const now = Date.now();
+    for (let i = 0; i < 24; i++) { // Last 24 hours
+        history.push({
+            price,
+            timestamp: now - i * 3600000
+        });
+        // Random walk backwards
+        const change = (Math.random() - 0.5) * volatility * 0.2;
+        price = price * (1 - change);
+    }
+    return history.reverse();
 }
 
 export default function GalaxyPage() {
     const [viewMode, setViewMode] = useState<"galaxy" | "scatter">("galaxy");
     const [zones, setZones] = useState<ZoneWithCoins[]>([]);
     const [loading, setLoading] = useState(true);
+    const [timeOffset, setTimeOffset] = useState(0);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [layers, setLayers] = useState({
+        trails: false,
+        ghost: false,
+        halo: true
+    });
+    const [axes, setAxes] = useState({
+        x: "mcap",
+        y: "change",
+        z: "volume"
+    });
+    const [colorMode, setColorMode] = useState<"category" | "volatility">("category");
+    const [scenario, setScenario] = useState<"normal" | "btc_crash" | "eth_surge" | "liquidations">("normal");
+
+    // Time Travel Animation
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (isPlaying) {
+            interval = setInterval(() => {
+                setTimeOffset(prev => {
+                    const next = prev + 1;
+                    return next > 24 ? 0 : next;
+                });
+            }, 500);
+        }
+        return () => clearInterval(interval);
+    }, [isPlaying]);
 
     useEffect(() => {
         async function fetchAllZones() {
@@ -69,15 +126,24 @@ export default function GalaxyPage() {
                         id: zoneId,
                         name: config.name,
                         color: ZONE_COLORS[zoneId] || "#ffffff",
-                        coins: (data || []).slice(0, 8).map((coin: CoinGeckoMarketResponse) => ({
-                            id: coin.id,
-                            name: coin.name,
-                            symbol: coin.symbol.toUpperCase(),
-                            price: coin.current_price,
-                            marketCap: coin.market_cap,
-                            change: coin.price_change_percentage_24h || 0,
-                            volume: coin.total_volume,
-                        })),
+                        coins: (data || []).slice(0, 8).map((coin: CoinGeckoMarketResponse) => {
+                            // Calculate derived/simulated metrics
+                            const volatility = (Math.abs(coin.price_change_percentage_24h || 0) / 100) + 0.05 + (Math.random() * 0.1);
+
+                            return {
+                                id: coin.id,
+                                name: coin.name,
+                                symbol: coin.symbol.toUpperCase(),
+                                price: coin.current_price,
+                                marketCap: coin.market_cap,
+                                fdv: coin.fully_diluted_valuation || coin.market_cap * (1.1 + Math.random() * 0.5),
+                                change: coin.price_change_percentage_24h || 0,
+                                volume: coin.total_volume,
+                                volatility,
+                                history: generateMockHistory(coin.current_price, volatility),
+                                price7d: coin.current_price * (1 - (coin.price_change_percentage_24h || 0) / 100 * (1 + (Math.random() - 0.5))),
+                            };
+                        }),
                     };
                 });
 
@@ -97,12 +163,8 @@ export default function GalaxyPage() {
     const scatterData = useMemo(() => {
         return zones.flatMap(zone =>
             zone.coins.map(coin => ({
-                id: coin.id,
-                symbol: coin.symbol,
-                name: coin.name,
-                price: coin.price,
+                ...coin,
                 change24h: coin.change,
-                marketCap: coin.marketCap,
                 volume24h: coin.volume,
                 zoneColor: zone.color
             }))
@@ -159,14 +221,41 @@ export default function GalaxyPage() {
 
             {/* Main View */}
             <main className="relative z-10 p-8">
-                <div className="max-w-6xl mx-auto">
+                <div className="max-w-6xl mx-auto relative">
+                    {/* Controls Overlay (only for Scatter mode) */}
+                    {viewMode === "scatter" && !loading && (
+                        <GalaxyControls
+                            onTimeChange={setTimeOffset}
+                            timeOffset={timeOffset}
+                            onToggleLayer={(layer: string, active: boolean) => setLayers(prev => ({ ...prev, [layer]: active }))}
+                            activeLayers={layers}
+                            isPlaying={isPlaying}
+                            onTogglePlay={() => setIsPlaying(!isPlaying)}
+                            axes={axes}
+                            onAxisChange={(axis, value) => setAxes(prev => ({ ...prev, [axis]: value }))}
+                            colorMode={colorMode}
+                            onColorModeChange={setColorMode}
+                            scenario={scenario}
+                            onScenarioChange={setScenario}
+                        />
+                    )}
+
                     {loading ? (
                         <LoadingPlaceholder />
                     ) : (
                         viewMode === "galaxy" ? (
                             <CryptoGalaxy zones={zones} />
                         ) : (
-                            <CryptoScatter3D data={scatterData} />
+                            <CryptoScatter3D
+                                data={scatterData}
+                                timeOffset={timeOffset}
+                                showTrails={layers.trails}
+                                showGhost={layers.ghost}
+                                showHalos={layers.halo}
+                                axes={axes}
+                                colorMode={colorMode}
+                                scenario={scenario}
+                            />
                         )
                     )}
 

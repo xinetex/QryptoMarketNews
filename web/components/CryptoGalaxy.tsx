@@ -147,7 +147,14 @@ interface CryptoGalaxyProps {
         id: string;
         name: string;
         color: string;
-        coins: { name: string; marketCap: number; change: number }[];
+        coins: {
+            name: string;
+            marketCap: number;
+            change: number;
+            // Added compatibility for other fields if needed for future Galaxy view updates
+            price?: number;
+            volatility?: number;
+        }[];
     }[];
 }
 

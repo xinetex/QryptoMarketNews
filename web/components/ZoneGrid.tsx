@@ -8,7 +8,7 @@ import type { ZoneData } from "@/lib/types/crypto";
 import Link from "next/link";
 import NewsSlider from "./NewsSlider";
 import HotMarketsSlider from "./HotMarketsSlider";
-import QGotchiCard from "./QGotchiCard";
+import ProphetOracleCard from "./ProphetOracleCard";
 
 import { useAdminSettings } from "@/hooks/useAdminSettings";
 
@@ -127,8 +127,8 @@ export default function ZoneGrid() {
                 </div>
             )}
 
-            {/* QGotchi - Crypto Tamagotchi Card */}
-            <QGotchiCard />
+            {/* Prophet Oracle - Market Intelligence Card */}
+            <ProphetOracleCard />
 
             {zones.map((zone) => {
                 const IconComponent = ICON_MAP[zone.icon] || Zap;

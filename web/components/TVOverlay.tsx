@@ -74,8 +74,8 @@ export default function TVOverlay() {
 
     const sponsor = settings?.sponsor || {
         enabled: true,
-        imageUrl: "/sponsors/guardians.png", // Default image path
-        linkUrl: "https://queef.io"
+        imageUrl: "/sponsors/powered_by_dome.png",
+        linkUrl: "https://domeapi.io"
     };
 
     return (
@@ -111,7 +111,7 @@ export default function TVOverlay() {
                     {/* Sponsor - Mobile: Small & below logo, Desktop: Beside logo */}
                     {sponsor.enabled && (
                         <a href={sponsor.linkUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 lg:gap-3 px-3 py-1 lg:px-4 lg:py-1.5 bg-glass border border-white/5 rounded-full hover:bg-white/5 transition-colors group">
-                            <span className="text-[8px] lg:text-[10px] uppercase tracking-widest text-zinc-500 group-hover:text-zinc-400 transition-colors font-bold">Sponsored by</span>
+                            <span className="text-[8px] lg:text-[10px] uppercase tracking-widest text-zinc-500 group-hover:text-zinc-400 transition-colors font-bold">Powered by</span>
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img src={sponsor.imageUrl} alt="Sponsor" className="h-6 lg:h-8 w-auto object-contain" />
                         </a>

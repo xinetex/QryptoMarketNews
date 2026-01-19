@@ -78,8 +78,8 @@ const DEFAULT_SETTINGS: AppSettings = {
     },
     sponsor: {
         enabled: true,
-        imageUrl: "/guardians_of_the_puff.png",
-        linkUrl: "https://queef.io",
+        imageUrl: "/powered_by_dome.png",
+        linkUrl: "https://domeapi.io",
     },
 };
 
