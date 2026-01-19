@@ -51,7 +51,7 @@ export default function GalaxyControls({
 
         // Animate container up
         animate(containerRef.current, {
-            translateY: [100, 0],
+            translateY: [50, 0],
             opacity: [0, 1],
             duration: 800,
             easing: "easeOutExpo",
@@ -104,7 +104,7 @@ export default function GalaxyControls({
     return (
         <div
             ref={containerRef}
-            className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-50 opacity-0"
+            className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-50 opacity-0"
         >
             <div className="bg-black/80 backdrop-blur-2xl border border-white/10 rounded-2xl w-[700px] shadow-2xl overflow-hidden ring-1 ring-white/5 relative">
 

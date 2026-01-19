@@ -223,7 +223,7 @@ export default function GalaxyPage() {
             <main className="relative z-10 p-8">
                 <div className="max-w-6xl mx-auto relative">
                     {/* Visualization Area */}
-                    <div className="relative group">
+                    <div className="relative group overflow-hidden rounded-3xl">
                         {/* Controls Overlay (only for Scatter mode) */}
                         {viewMode === "scatter" && !loading && (
                             <GalaxyControls
