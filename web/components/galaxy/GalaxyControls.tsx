@@ -1,7 +1,6 @@
-"use client";
-
-import { useState } from "react";
-import { Play, Pause, RotateCcw, Clock, Layers, Zap, Filter } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Play, Pause, RotateCcw, Clock, Layers, Zap, Filter, ChevronDown, ChevronUp, Maximize2, Minimize2 } from "lucide-react";
+import { animate, stagger } from "animejs";
 
 interface GalaxyControlsProps {
     onTimeChange: (offset: number) => void;
@@ -32,165 +31,249 @@ export default function GalaxyControls({
     scenario,
     onScenarioChange
 }: GalaxyControlsProps) {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isMinimized, setIsMinimized] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const contentRef = useRef<HTMLDivElement>(null);
+    const timeRef = useRef<HTMLDivElement>(null);
+    const layersRef = useRef<HTMLDivElement>(null);
+    const axesRef = useRef<HTMLDivElement>(null);
+    const colorsRef = useRef<HTMLDivElement>(null);
+    const riskRef = useRef<HTMLDivElement>(null);
 
     const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = parseInt(e.target.value);
         onTimeChange(val);
     };
 
+    // ... existing useEffect ...
+    useEffect(() => {
+        if (!containerRef.current) return;
+
+        // Animate container up
+        animate(containerRef.current, {
+            translateY: [100, 0],
+            opacity: [0, 1],
+            duration: 800,
+            easing: "easeOutExpo",
+            delay: 200
+        });
+
+        // Stagger children
+        animate(
+            [
+                timeRef.current,
+                layersRef.current,
+                axesRef.current,
+                colorsRef.current,
+                riskRef.current
+            ],
+            {
+                translateY: [20, 0],
+                opacity: [0, 1],
+                delay: stagger(100, { start: 400 }),
+                duration: 600,
+                easing: "easeOutQuad"
+            }
+        );
+    }, []);
+
+    const toggleMinimize = () => {
+        setIsMinimized(!isMinimized);
+        // Animate height/content
+        if (contentRef.current) {
+            if (!isMinimized) {
+                // Minimizing
+                animate(contentRef.current, {
+                    height: 0,
+                    opacity: 0,
+                    duration: 400,
+                    easing: "easeInOutQuad"
+                });
+            } else {
+                // Maximizing
+                animate(contentRef.current, {
+                    height: ["0px", "180px"], // Approx height
+                    opacity: [0, 1],
+                    duration: 400,
+                    easing: "easeInOutQuad"
+                });
+            }
+        }
+    };
+
     return (
-        <div className={`absolute bottom-8 left-1/2 transform -translate-x-1/2 transition-all duration-300 z-20 ${isOpen ? 'translate-y-0' : 'translate-y-full'}`}>
-            <div className="bg-black/80 backdrop-blur-xl border border-white/10 rounded-2xl p-4 w-[600px] shadow-2xl">
+        <div
+            ref={containerRef}
+            className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-50 opacity-0"
+        >
+            <div className="bg-black/80 backdrop-blur-2xl border border-white/10 rounded-2xl w-[700px] shadow-2xl overflow-hidden ring-1 ring-white/5 relative">
+
+                {/* Decorative Elements */}
+                <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-neon-blue/50 to-transparent" />
+                <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
+
                 {/* Header / Toggle */}
-                <div className="flex items-center justify-between mb-4 border-b border-white/10 pb-2">
-                    <div className="flex items-center gap-2 text-white font-bold">
-                        <Filter size={16} className="text-neon-blue" />
-                        <span>Galaxy Control Deck</span>
+                <div
+                    className="flex items-center justify-between px-6 py-3 cursor-pointer hover:bg-white/5 transition-colors"
+                    onClick={toggleMinimize}
+                >
+                    <div className="flex items-center gap-3">
+                        <div className="p-1.5 rounded-lg bg-neon-blue/10 border border-neon-blue/30">
+                            <Filter size={14} className="text-neon-blue" />
+                        </div>
+                        <span className="text-white font-bold tracking-wide text-sm font-mono uppercase">Galaxy Control Deck</span>
+
+                        {/* Live Indicator */}
+                        {isPlaying && (
+                            <span className="flex h-2 w-2 relative ml-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-blue opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-neon-blue"></span>
+                            </span>
+                        )}
                     </div>
+
+                    <button className="text-white/40 hover:text-white transition-colors">
+                        {isMinimized ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                    </button>
                 </div>
 
-                <div className="grid grid-cols-[1fr_auto] gap-6">
-                    {/* Time Controls */}
-                    <div className="space-y-2">
-                        <div className="flex items-center justify-between text-xs text-white/60 uppercase tracking-wider">
-                            <div className="flex items-center gap-2">
-                                <Clock size={12} /> Time Travel
+                {/* Main Content Area */}
+                <div ref={contentRef} className="overflow-hidden">
+                    <div className="px-6 pb-6 pt-2 grid grid-cols-[1.2fr_auto_auto_auto_auto] gap-8">
+
+                        {/* Time Controls */}
+                        <div ref={timeRef} className="space-y-3 opacity-0">
+                            <div className="flex items-center justify-between text-[10px] text-white/40 uppercase tracking-widest font-bold">
+                                <div className="flex items-center gap-1.5">
+                                    <Clock size={10} /> Time Travel
+                                </div>
+                                <span className={`font-mono ${timeOffset === 0 ? "text-neon-blue" : "text-amber-400"}`}>
+                                    {timeOffset === 0 ? "LIVE FEED" : `T-${timeOffset}H`}
+                                </span>
                             </div>
-                            <span className="text-neon-blue font-mono">{timeOffset === 0 ? "LIVE" : `-${timeOffset}h`}</span>
-                        </div>
 
-                        <div className="flex items-center gap-3">
-                            <button
-                                onClick={onTogglePlay}
-                                className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
-                            >
-                                {isPlaying ? <Pause size={16} /> : <Play size={16} />}
-                            </button>
-
-                            <input
-                                type="range"
-                                min="0"
-                                max="24"
-                                step="1"
-                                dir="rtl" // Right to left so 0 (Live) is on right? Or standard left-to-right: 24h ago -> Live
-                                value={timeOffset}
-                                onChange={handleTimeChange}
-                                className="w-full accent-neon-blue h-2 bg-white/10 rounded-lg appearance-none cursor-pointer"
-                            />
-
-                            <button
-                                onClick={() => { onTimeChange(0); }}
-                                className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
-                            >
-                                <RotateCcw size={16} />
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Layer Toggles */}
-                    <div className="flex flex-col gap-2 pl-6 border-l border-white/10">
-                        <div className="text-xs text-white/60 uppercase tracking-wider flex items-center gap-2 mb-1">
-                            <Layers size={12} /> Layers
-                        </div>
-
-                        <label className="flex items-center gap-2 cursor-pointer group">
-                            <input
-                                type="checkbox"
-                                checked={activeLayers.trails}
-                                onChange={(e) => onToggleLayer('trails', e.target.checked)}
-                                className="w-4 h-4 rounded border-white/30 bg-white/5 checked:bg-neon-blue"
-                            />
-                            <span className="text-sm text-white/80 group-hover:text-white transition-colors">Orbit Trails</span>
-                        </label>
-
-                        <label className="flex items-center gap-2 cursor-pointer group">
-                            <input
-                                type="checkbox"
-                                checked={activeLayers.ghost}
-                                onChange={(e) => onToggleLayer('ghost', e.target.checked)}
-                                className="w-4 h-4 rounded border-white/30 bg-white/5 checked:bg-purple-500"
-                            />
-                            <span className="text-sm text-white/80 group-hover:text-white transition-colors">Ghost Layer (7d)</span>
-                        </label>
-
-                        <label className="flex items-center gap-2 cursor-pointer group">
-                            <input
-                                type="checkbox"
-                                checked={activeLayers.halo}
-                                onChange={(e) => onToggleLayer('halo', e.target.checked)}
-                                className="w-4 h-4 rounded border-white/30 bg-white/5 checked:bg-pink-500"
-                            />
-                            <span className="text-sm text-white/80 group-hover:text-white transition-colors">Risk Halos</span>
-                        </label>
-                    </div>
-
-                    {/* Axis Controls */}
-                    <div className="flex flex-col gap-2 pl-6 border-l border-white/10">
-                        <div className="text-xs text-white/60 uppercase tracking-wider mb-1">Dimensions</div>
-                        {["x", "y", "z"].map((axis) => (
-                            <div key={axis} className="flex items-center gap-2 text-xs">
-                                <span className="uppercase text-white/40 w-2">{axis}</span>
-                                <select
-                                    value={axes[axis as "x" | "y" | "z"]}
-                                    onChange={(e) => onAxisChange(axis as "x" | "y" | "z", e.target.value)}
-                                    className="bg-white/5 border border-white/10 rounded px-2 py-1 text-white/80"
+                            <div className="bg-white/5 rounded-xl p-2 flex items-center gap-3 border border-white/5">
+                                <button
+                                    onClick={(e) => { e.stopPropagation(); onTogglePlay(); }}
+                                    className={`p-2 rounded-lg transition-all active:scale-95 ${isPlaying ? "bg-neon-blue text-black shadow-glow-blue" : "bg-white/10 text-white hover:bg-white/20"}`}
                                 >
-                                    <option value="mcap">Market Cap</option>
-                                    <option value="volume">Volume</option>
-                                    <option value="change">24h Change</option>
-                                    <option value="volatility">Volatility</option>
-                                    <option value="fdv">FDV</option>
-                                </select>
+                                    {isPlaying ? <Pause size={14} fill="currentColor" /> : <Play size={14} fill="currentColor" />}
+                                </button>
+
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max="24"
+                                    step="1"
+                                    dir="rtl"
+                                    value={timeOffset}
+                                    onChange={handleTimeChange}
+                                    className="w-full accent-neon-blue h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer hover:bg-white/20 transition-colors"
+                                />
+
+                                <button
+                                    onClick={(e) => { e.stopPropagation(); onTimeChange(0); }}
+                                    className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors text-[10px] font-bold"
+                                    title="Reset to Live"
+                                >
+                                    LIVE
+                                </button>
                             </div>
-                        ))}
-                    </div>
+                        </div>
 
-                    {/* Color Mode */}
-                    <div className="flex flex-col gap-2 pl-6 border-l border-white/10">
-                        <div className="text-xs text-white/60 uppercase tracking-wider mb-1">Coloring</div>
-                        <div className="flex flex-col gap-2">
-                            <label className="flex items-center gap-2 cursor-pointer">
-                                <input
-                                    type="radio"
-                                    name="colorMode"
-                                    checked={colorMode === "category"}
-                                    onChange={() => onColorModeChange("category")}
-                                    className="w-4 h-4 border-white/30 bg-white/5 checked:bg-neon-blue"
-                                />
-                                <span className="text-sm text-white/80">Category</span>
+                        {/* Layer Toggles */}
+                        <div ref={layersRef} className="flex flex-col gap-2 pl-6 border-l border-white/5 opacity-0">
+                            <div className="text-[10px] text-white/40 uppercase tracking-widest font-bold flex items-center gap-1.5 mb-1">
+                                <Layers size={10} /> Layers
+                            </div>
+
+                            <label className="flex items-center gap-2 cursor-pointer group select-none">
+                                <div className={`w-3 h-3 rounded-full border transition-all ${activeLayers.trails ? "bg-neon-blue border-neon-blue shadow-glow-blue-sm" : "border-white/30 bg-transparent"}`} />
+                                <input type="checkbox" className="hidden" checked={activeLayers.trails} onChange={(e) => onToggleLayer('trails', e.target.checked)} />
+                                <span className="text-xs text-white/60 group-hover:text-white transition-colors">Trails</span>
                             </label>
-                            <label className="flex items-center gap-2 cursor-pointer">
-                                <input
-                                    type="radio"
-                                    name="colorMode"
-                                    checked={colorMode === "volatility"}
-                                    onChange={() => onColorModeChange("volatility")}
-                                    className="w-4 h-4 border-white/30 bg-white/5 checked:bg-red-500"
-                                />
-                                <span className="text-sm text-white/80">Risk/Vol</span>
+
+                            <label className="flex items-center gap-2 cursor-pointer group select-none">
+                                <div className={`w-3 h-3 rounded-full border transition-all ${activeLayers.ghost ? "bg-purple-500 border-purple-500 shadow-glow-purple-sm" : "border-white/30 bg-transparent"}`} />
+                                <input type="checkbox" className="hidden" checked={activeLayers.ghost} onChange={(e) => onToggleLayer('ghost', e.target.checked)} />
+                                <span className="text-xs text-white/60 group-hover:text-white transition-colors">Ghost (7d)</span>
+                            </label>
+
+                            <label className="flex items-center gap-2 cursor-pointer group select-none">
+                                <div className={`w-3 h-3 rounded-full border transition-all ${activeLayers.halo ? "bg-pink-500 border-pink-500 shadow-glow-pink-sm" : "border-white/30 bg-transparent"}`} />
+                                <input type="checkbox" className="hidden" checked={activeLayers.halo} onChange={(e) => onToggleLayer('halo', e.target.checked)} />
+                                <span className="text-xs text-white/60 group-hover:text-white transition-colors">Risk Halos</span>
                             </label>
                         </div>
-                    </div>
 
-                    {/* Risk Engine / Scenarios */}
-                    <div className="flex flex-col gap-2 pl-6 border-l border-white/10">
-                        <div className="text-xs text-neon-red uppercase tracking-wider mb-1 flex items-center gap-1">
-                            <Zap size={12} /> Risk Engine
+                        {/* Axis Controls */}
+                        <div ref={axesRef} className="flex flex-col gap-2 pl-6 border-l border-white/5 opacity-0">
+                            <div className="text-[10px] text-white/40 uppercase tracking-widest font-bold mb-1">Dimensions</div>
+                            {["x", "y", "z"].map((axis) => (
+                                <div key={axis} className="flex items-center gap-2 text-xs group">
+                                    <span className="uppercase text-white/20 font-mono w-3 font-bold group-hover:text-neon-blue transition-colors">{axis}</span>
+                                    <select
+                                        value={axes[axis as "x" | "y" | "z"]}
+                                        onChange={(e) => onAxisChange(axis as "x" | "y" | "z", e.target.value)}
+                                        className="bg-transparent border-b border-white/10 py-0.5 text-white/80 focus:outline-none focus:border-neon-blue focus:text-neon-blue hover:text-white transition-colors cursor-pointer text-[11px]"
+                                    >
+                                        <option value="mcap">Market Cap</option>
+                                        <option value="volume">Volume</option>
+                                        <option value="change">24h Change</option>
+                                        <option value="volatility">Volatility</option>
+                                        <option value="fdv">FDV</option>
+                                    </select>
+                                </div>
+                            ))}
                         </div>
-                        <select
-                            value={scenario}
-                            onChange={(e) => onScenarioChange(e.target.value as any)}
-                            className="bg-red-900/20 border border-red-500/30 rounded px-2 py-1 text-white/90 text-sm focus:outline-none focus:border-red-500"
-                        >
-                            <option value="normal">Normal Market</option>
-                            <option value="btc_crash">BTC Crash (-20%)</option>
-                            <option value="eth_surge">ETH Surge (+15%)</option>
-                            <option value="liquidations">Liquidation Cascade</option>
-                        </select>
-                        <div className="text-[10px] text-white/40 max-w-[120px] leading-tight">
-                            Simulate market stress events to test portfolio resilience.
+
+                        {/* Color Mode */}
+                        <div ref={colorsRef} className="flex flex-col gap-2 pl-6 border-l border-white/5 opacity-0">
+                            <div className="text-[10px] text-white/40 uppercase tracking-widest font-bold mb-1">Coloring</div>
+                            <div className="flex flex-col gap-2">
+                                <label className="flex items-center gap-2 cursor-pointer group">
+                                    <input
+                                        type="radio"
+                                        name="colorMode"
+                                        checked={colorMode === "category"}
+                                        onChange={() => onColorModeChange("category")}
+                                        className="w-3 h-3 border-white/30 bg-transparent checked:bg-neon-blue accent-neon-blue"
+                                    />
+                                    <span className={`text-xs transition-colors ${colorMode === "category" ? "text-white font-medium" : "text-white/60"}`}>Category</span>
+                                </label>
+                                <label className="flex items-center gap-2 cursor-pointer group">
+                                    <input
+                                        type="radio"
+                                        name="colorMode"
+                                        checked={colorMode === "volatility"}
+                                        onChange={() => onColorModeChange("volatility")}
+                                        className="w-3 h-3 border-white/30 bg-transparent checked:bg-red-500 accent-red-500"
+                                    />
+                                    <span className={`text-xs transition-colors ${colorMode === "volatility" ? "text-white font-medium" : "text-white/60"}`}>Risk/Vol</span>
+                                </label>
+                            </div>
                         </div>
+
+                        {/* Risk Engine */}
+                        <div ref={riskRef} className="flex flex-col gap-2 pl-6 border-l border-white/5 opacity-0 w-[140px]">
+                            <div className="text-[10px] text-neon-red uppercase tracking-widest font-bold mb-1 flex items-center gap-1.5 animate-pulse">
+                                <Zap size={10} /> Risk Engine
+                            </div>
+                            <select
+                                value={scenario}
+                                onChange={(e) => onScenarioChange(e.target.value as any)}
+                                className="w-full bg-red-500/10 border border-red-500/20 rounded-lg px-2 py-1.5 text-red-200 text-xs focus:outline-none focus:border-red-500 focus:bg-red-500/20 transition-all cursor-pointer font-medium hover:bg-red-500/15"
+                            >
+                                <option value="normal">Normal Market</option>
+                                <option value="btc_crash">BTC Crash (-20%)</option>
+                                <option value="eth_surge">ETH Surge (+15%)</option>
+                                <option value="liquidations">Liquidation Cascade</option>
+                            </select>
+                            <div className="text-[9px] text-white/30 leading-tight mt-1 border-l-2 border-white/5 pl-2">
+                                Simulate macro events to test portfolio resilience.
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

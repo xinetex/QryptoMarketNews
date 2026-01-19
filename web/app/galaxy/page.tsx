@@ -232,7 +232,7 @@ export default function GalaxyPage() {
                             isPlaying={isPlaying}
                             onTogglePlay={() => setIsPlaying(!isPlaying)}
                             axes={axes}
-                            onAxisChange={(axis, value) => setAxes(prev => ({ ...prev, [axis]: value }))}
+                            onAxisChange={(axis: "x" | "y" | "z", value: string) => setAxes(prev => ({ ...prev, [axis]: value }))}
                             colorMode={colorMode}
                             onColorModeChange={setColorMode}
                             scenario={scenario}
