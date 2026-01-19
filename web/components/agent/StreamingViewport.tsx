@@ -55,14 +55,17 @@ export function StreamingViewport({
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-1 bg-indigo-500/50 blur-lg" />
 
             {/* Content Area */}
-            <div className="flex-1 font-mono text-lg md:text-xl leading-relaxed text-zinc-300">
+            <div
+                className="flex-1 font-mono text-lg md:text-xl leading-relaxed text-zinc-200"
+                style={{ textShadow: "0 0 15px rgba(165, 180, 252, 0.25)" }}
+            >
                 {displayedWords.map((word, i) => (
                     <span
                         key={i}
-                        className="inline-block mr-2 opacity-0 animate-[fadeIn_0.5s_ease-out_forwards]"
-                        style={{ animationDelay: '0ms' }} // Animation handled by React mounting
+                        className="inline-block opacity-0 animate-[fadeIn_0.5s_ease-out_forwards]"
+                        style={{ animationDelay: '0ms' }}
                     >
-                        {word}
+                        {word}&nbsp;
                     </span>
                 ))}
 

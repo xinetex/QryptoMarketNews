@@ -88,22 +88,25 @@ export async function generateProphecy(coinId: string): Promise<ProphecySignal> 
     else if (volatility > 40) volState = 'volatile';
 
     // 5. Construct Narrative
-    let narrative = `The oracle gazes upon ${coinId}... `;
+    const priceFormatted = currentPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+    const volFormatted = volatility.toFixed(1);
+
+    let narrative = `The oracle gazes upon ${coinId} (${priceFormatted})... `;
 
     // Momentum Description
-    if (totalScore > 40) narrative += "A surge of energy is detected. The charts align for a powerful ascent. ";
-    else if (totalScore > 10) narrative += "Bullish structure is forming, though resistance lingers. ";
-    else if (totalScore > -10) narrative += "Indecision plagues the market. The path is clouded. ";
-    else if (totalScore > -40) narrative += "Weakness is evident. The spirits suggests caution. ";
-    else narrative += "CRITICAL WARNING. A collapse in structure is imminent or underway. ";
+    if (totalScore > 40) narrative += `A massive surge of energy is detected. The charts align for a powerful ascent. `;
+    else if (totalScore > 10) narrative += `Bullish structure is forming. Momentum is building. `;
+    else if (totalScore > -10) narrative += `Indecision plagues the market. `;
+    else if (totalScore > -40) narrative += `Weakness is evident. The trend is buckling. `;
+    else narrative += `CRITICAL WARNING. A collapse in structure is imminent. `;
 
     // Volume Context
-    if (volumeRatio > 1.5) narrative += "Volume is effectively screaming—interest is at a fever pitch. ";
-    else if (volumeRatio < 0.6) narrative += "The crowd has gone silent. Liquidity is drying up. ";
+    if (volumeRatio > 1.5) narrative += `Volume is ${volumeRatio.toFixed(1)}x the average—interest is at a fever pitch. `;
+    else if (volumeRatio < 0.6) narrative += `The crowd has gone silent (Volume: ${(volumeRatio * 100).toFixed(0)}% of avg). `;
 
     // Volatility Context
-    if (volState === 'extreme') narrative += "Volatility is extreme—expect violent swings in either direction.";
-    else if (volState === 'calm') narrative += "The waters are calm, perhaps too calm...";
+    if (volState === 'extreme') narrative += `Volatility is extreme (${volFormatted}%)—expect violent swings.`;
+    else if (volState === 'calm') narrative += `The waters are calm (${volFormatted}% Vol), perhaps too calm...`;
 
     return {
         coinId,

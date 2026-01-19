@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { RSVPViewport } from './RSVPViewport';
 import { StreamingViewport } from './StreamingViewport';
+import { AttunementLoader } from './AttunementLoader';
 import { Send, Eye, BrainCircuit } from 'lucide-react';
 import { useAccount } from 'wagmi';
 import { agentMemory } from '@/lib/agent-memory';
@@ -96,10 +97,7 @@ export default function ProphetAgent() {
                         />
                     )
                 ) : isThinking ? (
-                    <div className="text-zinc-500 font-mono animate-pulse text-center">
-                        <div className="mb-4 text-4xl">🔮</div>
-                        Scanning timelines...
-                    </div>
+                    <AttunementLoader />
                 ) : (
                     <div className="text-center space-y-4 opacity-50">
                         <Eye size={48} className="mx-auto text-zinc-700" />
