@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="AdPlayer" extends="Group">
+    <interface>
+        <field id="adData" type="assocarray" />
+        <field id="play" type="boolean" alwaysNotify="true" />
+        <field id="adComplete" type="boolean" />
+        <field id="adSkipped" type="boolean" />
+    </interface>
+    
+    <children>
+        <!-- Ad Container -->
+        <Rectangle id="adContainer" width="1920" height="1080" color="#000000">
+            
+            <!-- Video Player for Ad -->
+            <Video id="adVideo" width="1920" height="1080" />
+            
+            <!-- Ad Overlay -->
+            <Rectangle id="adOverlay" width="1920" height="100" translation="[0, 980]" color="#00000099">
+                <LayoutGroup id="overlayLayout" layoutDirection="horiz" itemSpacings="[20]" translation="[40, 20]">
+                    
+                    <!-- Ad Badge -->
+                    <Rectangle id="adBadge" width="60" height="24" color="#FFD700" cornerRadius="4">
+                        <Label id="adLabel" text="AD" font="font:SmallBoldSystemFont" 
+                               color="#000000" horizAlign="center" vertAlign="center"
+                               width="60" height="24" />
+                    </Rectangle>
+                    
+                    <!-- Sponsor Text -->
+                    <Label id="sponsorLabel" text="Sponsored" font="font:SmallSystemFont" 
+                           color="#FFFFFF" vertAlign="center" />
+                    
+                    <!-- Skip Timer / Button -->
+                    <Label id="skipLabel" text="Skip in 5s" font="font:SmallSystemFont"
+                           color="#AAAAAA" vertAlign="center" translation="[1700, 0]" />
+                           
+                </LayoutGroup>
+            </Rectangle>
+            
+            <!-- Wallet Targeting Badge (shows if ad is wallet-targeted) -->
+            <Rectangle id="targetedBadge" visible="false" width="200" height="30" 
+                       translation="[1680, 30]" color="#8B5CF699" cornerRadius="6">
+                <Label id="targetedLabel" text="🎯 For You" font="font:SmallSystemFont"
+                       color="#FFFFFF" horizAlign="center" vertAlign="center"
+                       width="200" height="30" />
+            </Rectangle>
+            
+        </Rectangle>
+    </children>
+    
+    <script type="text/brightscript" uri="AdPlayer.brs" />
+</component>
