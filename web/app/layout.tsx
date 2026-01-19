@@ -22,6 +22,7 @@ export const metadata: Metadata = {
 };
 
 import { Providers } from "./providers";
+import { OnchainProvider } from "@/components/providers/OnchainProvider";
 
 export default function RootLayout({
   children,
@@ -34,7 +35,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
-        <Providers>{children}</Providers>
+        <OnchainProvider>
+          <Providers>{children}</Providers>
+        </OnchainProvider>
       </body>
     </html>
   );

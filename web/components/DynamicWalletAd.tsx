@@ -1,14 +1,28 @@
 "use client";
 
 import { useState, useEffect } from "react";
-
-import { Wallet, Sparkles, X, ExternalLink, Activity, Zap } from "lucide-react";
-import { getUserPortfolio } from "@/lib/portfolio-service";
-import { getHistoricalVolatility, formatChange } from "@/lib/coingecko";
+import { Wallet as WalletIcon, ExternalLink, Activity, Sparkles } from "lucide-react";
+import { getHistoricalVolatility } from "@/lib/coingecko";
+import { useAccount } from 'wagmi';
+import {
+    ConnectWallet,
+    Wallet,
+    WalletDropdown,
+    WalletDropdownDisconnect,
+    WalletDropdownLink
+} from '@coinbase/onchainkit/wallet';
+import {
+    Address,
+    Avatar,
+    Name,
+    Identity,
+    EthBalance,
+} from '@coinbase/onchainkit/identity';
+import { syncPoints } from "@/lib/points";
 
 /* 
   Dynamic Wallet Ad Component
-  - Disconnected: Prompts to connect for "Premium Signals" + "Rewards"
+  - Disconnected: Prompts to connect via Coinbase Smart Wallet for "Premium Signals" + "Rewards"
   - Connected: Shows Targeted Ad (Whale/DeFi) + Portfolio Summary
 */
 
@@ -22,77 +36,75 @@ interface Ad {
 }
 
 export default function DynamicWalletAd() {
-    const [isConnected, setIsConnected] = useState(false);
+    const { address, isConnected } = useAccount();
     const [ad, setAd] = useState<Ad | null>(null);
     const [signals, setSignals] = useState<{ symbol: string; volatility: number }[]>([]);
-    const [loading, setLoading] = useState(false);
 
-    // Mock Wallet Connection
-    const handleConnect = async () => {
-        setLoading(true);
-
-        // 1. Fetch Real Market Signals
-        try {
-            const [btcVol, ethVol, solVol] = await Promise.all([
-                getHistoricalVolatility("bitcoin", 30),
-                getHistoricalVolatility("ethereum", 30),
-                getHistoricalVolatility("solana", 30)
-            ]);
-
-            setSignals([
-                { symbol: "BTC", volatility: btcVol },
-                { symbol: "ETH", volatility: ethVol },
-                { symbol: "SOL", volatility: solVol }
-            ]);
-        } catch (e) {
-            console.error("Failed to fetch signals", e);
+    // Sync Points on Connect
+    useEffect(() => {
+        if (address) {
+            syncPoints(address).catch(console.error);
         }
+    }, [address]);
 
-        // Simulate delay & profiling
-        setTimeout(async () => {
-            setIsConnected(true);
-            setLoading(false);
+    // Data Fetching Effect (Real Signals)
+    useEffect(() => {
+        if (isConnected) {
+            const fetchData = async () => {
+                try {
+                    const [btcVol, ethVol, solVol] = await Promise.all([
+                        getHistoricalVolatility("bitcoin", 30),
+                        getHistoricalVolatility("ethereum", 30),
+                        getHistoricalVolatility("solana", 30)
+                    ]);
 
-            // Mock Ad Fetching based on 'whale' segment (simulated)
-            // In production: fetch('http://localhost:3000/api/decision', ...);
-            setAd({
-                id: 'ad_123',
-                title: 'Ledger Stax: Exclusive Edition',
-                description: 'Secure your assets in style. Reserved for Whale tier users.',
-                cta: 'Shop Now',
-                image: 'https://images.unsplash.com/photo-1621416894569-0f39e8467132?auto=format&fit=crop&q=80&w=1000', // Hardware wallet vibe
-                sponsor: 'Ledger'
-            });
-        }, 1500);
-    };
+                    setSignals([
+                        { symbol: "BTC", volatility: btcVol },
+                        { symbol: "ETH", volatility: ethVol },
+                        { symbol: "SOL", volatility: solVol }
+                    ]);
+
+                    // Mock Ad Fetching based on 'whale' segment (simulated)
+                    setAd({
+                        id: 'ad_123',
+                        title: 'Ledger Stax: Exclusive Edition',
+                        description: 'Secure your assets in style. Reserved for Whale tier users.',
+                        cta: 'Shop Now',
+                        image: 'https://images.unsplash.com/photo-1621416894569-0f39e8467132?auto=format&fit=crop&q=80&w=1000',
+                        sponsor: 'Ledger'
+                    });
+                } catch (e) {
+                    console.error("Failed to fetch signals", e);
+                }
+            };
+            fetchData();
+        }
+    }, [isConnected]);
 
     if (!isConnected) {
         return (
-            <div className="rounded-xl bg-gradient-to-br from-indigo-900/40 to-black border border-indigo-500/20 p-5 flex flex-col items-center justify-center text-center relative overflow-hidden group">
+            <div className="rounded-xl bg-gradient-to-br from-indigo-900/40 to-black border border-indigo-500/20 p-5 flex flex-col items-center justify-center text-center relative overflow-hidden group min-h-[220px]">
                 {/* Decoration */}
                 <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
                 <div className="absolute -top-10 -right-10 w-20 h-20 bg-indigo-500/30 blur-3xl rounded-full" />
 
-                <div className="relative z-10">
-                    <div className="w-10 h-10 rounded-full bg-indigo-500/10 border border-indigo-500/50 flex items-center justify-center mx-auto mb-3 text-indigo-400 group-hover:scale-110 transition-transform duration-300">
-                        <Wallet size={20} />
+                <div className="relative z-10 flex flex-col items-center">
+                    <div className="w-10 h-10 rounded-full bg-indigo-500/10 border border-indigo-500/50 flex items-center justify-center mb-3 text-indigo-400 group-hover:scale-110 transition-transform duration-300">
+                        <WalletIcon size={20} />
                     </div>
                     <h3 className="font-bold text-white mb-1">Unlock Pro Signals</h3>
                     <p className="text-[10px] text-zinc-400 mb-4 max-w-[200px] leading-relaxed">
-                        Connect your wallet to access personalized risk analysis and exclusive airdrops.
+                        Connect with <strong>Coinbase Smart Wallet</strong> (Passkeys) or any wallet to access personalized risk analysis.
                     </p>
 
-                    <button
-                        onClick={handleConnect}
-                        disabled={loading}
-                        className="px-4 py-2 bg-white text-black rounded-lg text-xs font-bold hover:bg-indigo-50 transition-colors shadow-lg shadow-indigo-900/20 disabled:opacity-50 flex items-center gap-2"
-                    >
-                        {loading ? 'Connecting...' : (
-                            <>
-                                Connect Wallet <Sparkles size={12} className="text-indigo-600" />
-                            </>
-                        )}
-                    </button>
+                    <Wallet>
+                        <ConnectWallet
+                            className="bg-white text-black hover:bg-indigo-50 border-none font-bold text-xs"
+                        >
+                            <Avatar className="h-6 w-6" />
+                            <Name />
+                        </ConnectWallet>
+                    </Wallet>
                 </div>
             </div>
         );
@@ -103,9 +115,30 @@ export default function DynamicWalletAd() {
 
             {/* Market Pulse Signals (Real Data) */}
             <div className="border-b border-white/5 bg-black/20 p-3">
-                <div className="flex items-center gap-2 mb-2">
-                    <Activity size={12} className="text-emerald-400" />
-                    <span className="text-[10px] font-bold text-zinc-300 uppercase tracking-wider">30d Volatility Pulse</span>
+                <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                        <Activity size={12} className="text-emerald-400" />
+                        <span className="text-[10px] font-bold text-zinc-300 uppercase tracking-wider">30d Volatility Pulse</span>
+                    </div>
+                    {/* Disconnect / Identity Dropdown */}
+                    <Wallet>
+                        <ConnectWallet className="!h-6 !min-h-0 !px-2 !py-0 !text-[10px] bg-transparent border border-white/10 hover:bg-white/5">
+                            <Avatar className="h-4 w-4" />
+                            <Name className="text-zinc-400" />
+                        </ConnectWallet>
+                        <WalletDropdown>
+                            <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
+                                <Avatar />
+                                <Name />
+                                <Address />
+                                <EthBalance />
+                            </Identity>
+                            <WalletDropdownLink icon="wallet" href="https://keys.coinbase.com">
+                                Wallet
+                            </WalletDropdownLink>
+                            <WalletDropdownDisconnect />
+                        </WalletDropdown>
+                    </Wallet>
                 </div>
                 <div className="flex gap-2">
                     {signals.map(s => (
