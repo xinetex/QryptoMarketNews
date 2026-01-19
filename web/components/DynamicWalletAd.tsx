@@ -184,9 +184,15 @@ export default function DynamicWalletAd() {
                         </p>
 
                         <div className="mt-auto">
-                            <button className="w-full py-1.5 rounded-lg border border-white/10 hover:bg-white/5 text-xs text-white transition-colors flex items-center justify-center gap-2 group/btn">
+                            <a
+                                href={ad.tracking?.clickUrl || '#'}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={() => console.log('Clicked ad:', ad.id)}
+                                className="w-full py-1.5 rounded-lg border border-white/10 hover:bg-white/5 text-xs text-white transition-colors flex items-center justify-center gap-2 group/btn cursor-pointer"
+                            >
                                 View Offer <ExternalLink size={12} className="group-hover/btn:translate-x-0.5 transition-transform" />
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </>

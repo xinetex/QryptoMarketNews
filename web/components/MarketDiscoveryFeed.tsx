@@ -36,6 +36,7 @@ interface DiscoveryMarket {
     trending: boolean;
     hot: boolean;
     image?: string;
+    url?: string; // Deep Link
 }
 
 // Mock discovery markets - in production, fetch from API
@@ -49,6 +50,7 @@ const MOCK_MARKETS: DiscoveryMarket[] = [
         endDate: '2026-03-01',
         trending: true,
         hot: true,
+        url: 'https://polymarket.com/event/bitcoin-price-2026', // Example deep link
     },
     {
         id: '2',
@@ -59,6 +61,7 @@ const MOCK_MARKETS: DiscoveryMarket[] = [
         endDate: '2026-02-15',
         trending: true,
         hot: false,
+        url: 'https://polymarket.com/event/fed-rates-feb-2026',
     },
     {
         id: '3',
@@ -69,6 +72,7 @@ const MOCK_MARKETS: DiscoveryMarket[] = [
         endDate: '2026-02-09',
         trending: false,
         hot: true,
+        url: 'https://polymarket.com/event/super-bowl-lxii',
     },
     {
         id: '4',
@@ -79,6 +83,7 @@ const MOCK_MARKETS: DiscoveryMarket[] = [
         endDate: '2026-06-30',
         trending: true,
         hot: false,
+        url: 'https://polymarket.com/event/eth-vs-sol-tvl',
     },
     {
         id: '5',
@@ -89,6 +94,7 @@ const MOCK_MARKETS: DiscoveryMarket[] = [
         endDate: '2026-03-15',
         trending: false,
         hot: false,
+        url: 'https://polymarket.com/event/oscars-2026-ai',
     },
     {
         id: '6',
@@ -99,6 +105,7 @@ const MOCK_MARKETS: DiscoveryMarket[] = [
         endDate: '2026-12-31',
         trending: true,
         hot: true,
+        url: 'https://polymarket.com/event/global-recession-2026',
     },
 ];
 
@@ -111,8 +118,18 @@ function MarketCard({ market, onPredict }: MarketCardProps) {
     const noPrice = 1 - market.yesPrice;
     const daysLeft = Math.ceil((new Date(market.endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
 
+    // Helper to open link
+    const handleClick = (e: React.MouseEvent) => {
+        // If clicking buttons, don't trigger card click
+        if ((e.target as HTMLElement).closest('button')) return;
+        if (market.url) window.open(market.url, '_blank');
+    };
+
     return (
-        <div className="group relative bg-zinc-900/80 border border-white/10 rounded-2xl p-4 hover:border-white/20 transition-all hover:scale-[1.02] cursor-pointer">
+        <div
+            onClick={handleClick}
+            className="group relative bg-zinc-900/80 border border-white/10 rounded-2xl p-4 hover:border-white/20 transition-all hover:scale-[1.02] cursor-pointer"
+        >
             {/* Badges */}
             <div className="absolute top-3 right-3 flex gap-1">
                 {market.hot && (
@@ -135,14 +152,20 @@ function MarketCard({ market, onPredict }: MarketCardProps) {
             {/* Price Bars */}
             <div className="space-y-2 mb-3">
                 <button
-                    onClick={() => onPredict(market, 'YES')}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onPredict(market, 'YES');
+                    }}
                     className="w-full flex items-center justify-between p-2 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 transition group/btn"
                 >
                     <span className="text-emerald-400 font-medium text-sm">YES</span>
                     <span className="text-emerald-300 font-bold">{(market.yesPrice * 100).toFixed(0)}¢</span>
                 </button>
                 <button
-                    onClick={() => onPredict(market, 'NO')}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onPredict(market, 'NO');
+                    }}
                     className="w-full flex items-center justify-between p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 transition group/btn"
                 >
                     <span className="text-red-400 font-medium text-sm">NO</span>
@@ -177,8 +200,9 @@ export default function MarketDiscoveryFeed({ onPredict, compact = false }: Mark
         if (onPredict) {
             onPredict(market, position);
         } else {
-            // Default: log and could open modal
+            // Default: Deep link to market
             console.log(`Predict ${position} on: ${market.title}`);
+            if (market.url) window.open(market.url, '_blank');
         }
     };
 
