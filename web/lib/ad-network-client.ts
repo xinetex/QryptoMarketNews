@@ -30,8 +30,8 @@ export interface AdDecisionResponse {
     };
 }
 
-// Default to local for dev, production env var for deploy
-const AD_NETWORK_URL = process.env.NEXT_PUBLIC_AD_NETWORK_URL || 'http://localhost:3001';
+// Default to provided Vercel deployment, fallback to local
+const AD_NETWORK_URL = process.env.NEXT_PUBLIC_AD_NETWORK_URL || 'https://ad-network-jfl2iuksu-drgnflai-jetty.vercel.app';
 const API_KEY = process.env.NEXT_PUBLIC_AD_NETWORK_KEY || 'dev-secret-key'; // Matches safe default
 
 export async function fetchAdDecision(walletAddress?: string): Promise<AdDecisionResponse | null> {
