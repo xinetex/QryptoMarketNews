@@ -113,7 +113,7 @@ export default function RSVPDeck({ items, autoPlay = false, speed = 4000 }: RSVP
                             setActiveIndex(i);
                             setIsPlaying(false);
                         }}
-                        className="absolute inset-0 flex items-center justify-center p-4 origin-center will-change-transform cursor-pointer"
+                        className="absolute inset-0 flex items-center justify-center p-2 origin-center will-change-transform cursor-pointer"
                         style={{ backfaceVisibility: 'hidden' }}
                     >
                         <div className="w-full h-full bg-zinc-900/90 border border-white/10 rounded-xl shadow-2xl overflow-hidden backdrop-blur-md">

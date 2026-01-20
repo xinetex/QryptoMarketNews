@@ -75,7 +75,7 @@ export default function FlexConsole({ address, signals }: { address: string, sig
 
     // 1. Command Node (Wallet Core)
     const CommandNode = (
-        <div className="h-full flex flex-col bg-zinc-900/50 p-3 justify-between relative overflow-hidden">
+        <div className="h-full flex flex-col bg-zinc-900/50 p-2 justify-between relative overflow-hidden">
             <motion.div
                 key={commandView}
                 initial={{ opacity: 0, x: 20 }}
@@ -246,7 +246,7 @@ export default function FlexConsole({ address, signals }: { address: string, sig
     }, []);
 
     const TelemetryNode = (
-        <div className="h-full flex flex-col bg-zinc-900/50 p-3 relative overflow-hidden">
+        <div className="h-full flex flex-col bg-zinc-900/50 p-2 relative overflow-hidden">
             {/* Decoding Effect Background */}
             <div className="absolute inset-0 opacity-10 pointer-events-none"
                 style={{ backgroundImage: 'radial-gradient(circle at 50% 50%, #4f46e5 1px, transparent 1px)', backgroundSize: '12px 12px' }}
@@ -321,7 +321,7 @@ export default function FlexConsole({ address, signals }: { address: string, sig
 
     // 3. Risk Node (Visual Infographic)
     const RiskNode = (
-        <div className="h-full flex flex-col bg-zinc-900/50 p-3 items-center justify-center relative overflow-hidden">
+        <div className="h-full flex flex-col bg-zinc-900/50 p-2 items-center justify-center relative overflow-hidden">
             {/* Background Scanner Effect */}
             <div className="absolute inset-0 bg-[linear-gradient(transparent_0%,rgba(16,185,129,0.05)_50%,transparent_100%)] animate-[scan_3s_linear_infinite]" style={{ backgroundSize: '100% 200%' }} />
 
@@ -363,7 +363,7 @@ export default function FlexConsole({ address, signals }: { address: string, sig
 
     // 4. Signals Node (Nano)
     const SignalNode = (
-        <div className="h-full flex flex-col bg-zinc-900/50 p-3 relative">
+        <div className="h-full flex flex-col bg-zinc-900/50 p-2 relative">
             <div className="text-[8px] text-zinc-500 font-bold uppercase tracking-widest mb-3 flex items-center gap-2">
                 <Zap size={10} className="text-yellow-500" /> Active Streams
             </div>
@@ -436,7 +436,7 @@ export default function FlexConsole({ address, signals }: { address: string, sig
     };
 
     const PredictionNode = (
-        <div className="h-full flex flex-col bg-zinc-900/50 p-3 relative overflow-hidden">
+        <div className="h-full flex flex-col bg-zinc-900/50 p-2 relative overflow-hidden">
             <div className="text-[8px] text-zinc-500 font-bold uppercase tracking-widest mb-3 flex items-center gap-2">
                 <Globe size={10} className="text-indigo-500" /> Prophecy Uplink
             </div>
