@@ -38,7 +38,6 @@ export default function AlertableZoneCard({ zone, icon: IconComponent, gradientC
 
     // Expose a method to trigger alert (simulation for now)
     useEffect(() => {
-        // Randomly trigger an alert for "Life" simulation
         const randomTrigger = Math.random() > 0.96;
 
         const triggerAlert = () => {
@@ -59,35 +58,7 @@ export default function AlertableZoneCard({ zone, icon: IconComponent, gradientC
                 ];
                 evt = events[Math.floor(Math.random() * events.length)];
             }
-
             setAlert(evt);
-
-            if (alertRef.current) {
-                // Zoom In Animation
-                animate(alertRef.current, {
-                    scale: [0.8, 1],
-                    opacity: [0, 1],
-                    duration: 400,
-                    easing: 'easeOutBack'
-                });
-            }
-
-            // Auto-Revert after 6s
-            setTimeout(() => {
-                if (!alertRef.current) {
-                    setAlert(null);
-                    return;
-                }
-
-                // Zoom Out Animation
-                animate(alertRef.current, {
-                    scale: 1.1,
-                    opacity: 0,
-                    duration: 300,
-                    easing: 'easeInQuad',
-                    complete: () => setAlert(null)
-                });
-            }, 6000);
         };
 
         const timer = setInterval(() => {
@@ -98,6 +69,36 @@ export default function AlertableZoneCard({ zone, icon: IconComponent, gradientC
 
         return () => clearInterval(timer);
     }, [alert, insights, tokens, zone.name]);
+
+    // Handle Animation when Alert State Changes
+    useEffect(() => {
+        if (alert && alertRef.current) {
+            // Zoom In
+            animate(alertRef.current, {
+                scale: [0.8, 1],
+                opacity: [0, 1],
+                duration: 400,
+                easing: 'easeOutBack'
+            });
+
+            // Auto-Revert
+            const timer = setTimeout(() => {
+                if (alertRef.current) {
+                    animate(alertRef.current, {
+                        scale: 1.1,
+                        opacity: 0,
+                        duration: 300,
+                        easing: 'easeInQuad',
+                        complete: () => setAlert(null)
+                    });
+                } else {
+                    setAlert(null);
+                }
+            }, 6000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [alert]);
 
     return (
         <div className="relative w-full h-40 group">
@@ -150,8 +151,8 @@ export default function AlertableZoneCard({ zone, icon: IconComponent, gradientC
 
                     <div className="relative z-30 flex flex-col items-center">
                         <div className={`p-3 rounded-full mb-2 ${alert.severity === 'critical' ? 'bg-red-500/20 text-red-500' :
-                                alert.severity === 'warning' ? 'bg-orange-500/20 text-orange-400' :
-                                    alert.severity === 'knowledge' ? 'bg-indigo-500/20 text-indigo-400' : 'bg-emerald-500/20 text-emerald-400'
+                            alert.severity === 'warning' ? 'bg-orange-500/20 text-orange-400' :
+                                alert.severity === 'knowledge' ? 'bg-indigo-500/20 text-indigo-400' : 'bg-emerald-500/20 text-emerald-400'
                             }`}>
                             {alert.type === 'WHALE' && <Crosshair size={24} />}
                             {alert.type === 'VOLUME' && <TrendingUp size={24} />}
@@ -163,8 +164,8 @@ export default function AlertableZoneCard({ zone, icon: IconComponent, gradientC
                             {alert.title}
                         </div>
                         <div className={`text-xs font-mono font-bold leading-tight px-1 ${alert.severity === 'critical' ? 'text-red-200' :
-                                alert.severity === 'warning' ? 'text-orange-200' :
-                                    alert.severity === 'knowledge' ? 'text-indigo-200' : 'text-emerald-200'
+                            alert.severity === 'warning' ? 'text-orange-200' :
+                                alert.severity === 'knowledge' ? 'text-indigo-200' : 'text-emerald-200'
                             }`}>
                             {alert.message}
                         </div>
