@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState, ReactNode } from 'react';
-import anime from 'animejs/lib/anime.es.js';
-import { Play, Pause, FastForward, Rewind } from 'lucide-react';
+import { animate } from 'animejs';
+import { Play, Pause, ChevronRight, ChevronLeft, Scan, Lock } from 'lucide-react';
 
 interface RSVPDeckProps {
     items: ReactNode[];
@@ -10,7 +10,7 @@ interface RSVPDeckProps {
     speed?: number; // ms per card
 }
 
-export default function RSVPDeck({ items, autoPlay = false, speed = 3000 }: RSVPDeckProps) {
+export default function RSVPDeck({ items, autoPlay = false, speed = 4000 }: RSVPDeckProps) {
     const [activeIndex, setActiveIndex] = useState(0);
     const [isPlaying, setIsPlaying] = useState(autoPlay);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -60,8 +60,7 @@ export default function RSVPDeck({ items, autoPlay = false, speed = 3000 }: RSVP
             // Apply Z-Index immediately for hit-testing
             el.style.zIndex = zIndex.toString();
 
-            anime({
-                targets: el,
+            animate(el, {
                 translateZ: z,
                 translateY: y,
                 scale: scale,
@@ -74,7 +73,7 @@ export default function RSVPDeck({ items, autoPlay = false, speed = 3000 }: RSVP
 
     }, [activeIndex, items]);
 
-    // Auto-Play Logic (The RSVP Heart)
+    // Auto-Play Logic
     useEffect(() => {
         let interval: NodeJS.Timeout;
         if (isPlaying) {
@@ -85,8 +84,17 @@ export default function RSVPDeck({ items, autoPlay = false, speed = 3000 }: RSVP
         return () => clearInterval(interval);
     }, [isPlaying, speed, items.length]);
 
-    const handleNext = () => setActiveIndex((prev) => (prev + 1) % items.length);
-    const handlePrev = () => setActiveIndex((prev) => (prev - 1 + items.length) % items.length);
+    // Navigation Controls (Auto-Lock on manual interaction)
+    const handleNext = () => {
+        setIsPlaying(false);
+        setActiveIndex((prev) => (prev + 1) % items.length);
+    };
+
+    const handlePrev = () => {
+        setIsPlaying(false);
+        setActiveIndex((prev) => (prev - 1 + items.length) % items.length);
+    };
+
     const togglePlay = () => setIsPlaying(!isPlaying);
 
     return (
@@ -101,7 +109,10 @@ export default function RSVPDeck({ items, autoPlay = false, speed = 3000 }: RSVP
                     <div
                         key={i}
                         ref={el => { itemsRef.current[i] = el; }}
-                        onClick={() => setActiveIndex(i)} // Click deep item to zoom to it
+                        onClick={() => {
+                            setActiveIndex(i);
+                            setIsPlaying(false);
+                        }}
                         className="absolute inset-0 flex items-center justify-center p-4 origin-center will-change-transform cursor-pointer"
                         style={{ backfaceVisibility: 'hidden' }}
                     >
@@ -112,32 +123,33 @@ export default function RSVPDeck({ items, autoPlay = false, speed = 3000 }: RSVP
                 ))}
             </div>
 
-            {/* Deck Controls */}
-            <div className="h-12 bg-zinc-950 border-t border-white/5 flex items-center justify-between px-4 z-20">
-                <div className="flex items-center gap-1 text-[9px] font-mono text-zinc-500 uppercase">
-                    <span className={isPlaying ? 'text-emerald-400 animate-pulse' : 'text-zinc-600'}>
-                        {isPlaying ? 'AUTO-PILOT' : 'MANUAL'}
-                    </span>
-                    <span className="text-zinc-700">|</span>
-                    <span>{activeIndex + 1}/{items.length}</span>
-                </div>
+            {/* Deck Controls (Navigational Instrument Style) */}
+            <div className="h-10 bg-zinc-950 border-t border-white/5 flex items-center justify-between px-3 z-20">
+                <button
+                    onClick={togglePlay}
+                    className={`flex items-center gap-1.5 px-2 py-1 rounded text-[9px] font-bold uppercase tracking-wider transition-colors ${isPlaying ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}`}
+                >
+                    {isPlaying ? <Scan size={10} /> : <Lock size={10} />}
+                    {isPlaying ? 'SCANNING' : 'LOCKED'}
+                </button>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center">
                     <button onClick={handlePrev} className="p-1.5 hover:bg-white/10 rounded text-zinc-400 hover:text-white transition-colors">
-                        <Rewind size={14} />
+                        <ChevronLeft size={14} />
                     </button>
-                    <button onClick={togglePlay} className="p-2 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 rounded-full text-indigo-400 transition-colors">
-                        {isPlaying ? <Pause size={14} fill="currentColor" /> : <Play size={14} fill="currentColor" />}
-                    </button>
+
+                    <div className="px-2 text-[9px] font-mono text-zinc-600">
+                        {activeIndex + 1} / {items.length}
+                    </div>
+
                     <button onClick={handleNext} className="p-1.5 hover:bg-white/10 rounded text-zinc-400 hover:text-white transition-colors">
-                        <FastForward size={14} />
+                        <ChevronRight size={14} />
                     </button>
                 </div>
             </div>
 
-            {/* Overlay Gradient (Depth Cue) */}
-            <div className="absolute top-0 left-0 w-full h-16 bg-gradient-to-b from-black/50 to-transparent pointer-events-none z-10" />
-            <div className="absolute bottom-12 left-0 w-full h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none z-10" />
+            {/* Soft Overlay (Depth Cue) - Top only, removed bottom to clear buttons */}
+            <div className="absolute top-0 left-0 w-full h-12 bg-gradient-to-b from-black/50 to-transparent pointer-events-none z-10" />
         </div>
     );
 }
