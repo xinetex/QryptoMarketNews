@@ -98,6 +98,16 @@ export default function ZoneGrid() {
             .sort((a, b) => a.order - b.order)
             .map(adminZone => {
                 const marketData = categories.find(c => c.id === adminZone.coingeckoCategory || c.id === adminZone.id);
+
+                // Debug RWA
+                if (adminZone.id === 'rwa') {
+                    console.log("RWA Debug:", {
+                        id: adminZone.id,
+                        tokens: ZONE_TOKENS[adminZone.id],
+                        hasTokens: !!ZONE_TOKENS[adminZone.id]
+                    });
+                }
+
                 return {
                     id: adminZone.id,
                     name: adminZone.name,
