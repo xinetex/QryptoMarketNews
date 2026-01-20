@@ -32,6 +32,26 @@ const ZONE_GRADIENTS: Record<string, string> = {
     layer2: "from-indigo-500/20 to-indigo-900/10",
 };
 
+// Insights for specific zones
+const ZONE_INSIGHTS: Record<string, string[]> = {
+    rwa: [
+        "RWA = Claims on assets like Treasuries & Real Estate.",
+        "Top Protocols: Ondo, Maple, TrueFi, Centrifuge.",
+        "Major Listings: Binance, OKX, Coinbase.",
+        "Requirement: Many RWAs require KYC/Accreditation."
+    ],
+    ai: [
+        "Agents are autonomous trading entities.",
+        "DePIN Compute Layer is scaling rapidly.",
+        "Prophet Neural Net optimization active."
+    ],
+    solana: [
+        "High throughput, low latency execution.",
+        "Home to DePIN and Memecoin liquidity.",
+        "Firedancer upgrade imminent."
+    ]
+};
+
 // YouTube Card Component
 function YouTubeCard({ videoId, title }: { videoId: string; title: string }) {
     return (
@@ -148,6 +168,7 @@ export default function ZoneGrid() {
                                 zone={zone}
                                 icon={IconComponent}
                                 gradientClass={gradientClass}
+                                insights={ZONE_INSIGHTS[zone.id]}
                             />
                         );
                     })}

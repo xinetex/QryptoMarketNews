@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { animate } from 'animejs';
 import Link from 'next/link';
-import { LucideIcon, Zap, AlertTriangle, TrendingUp, Activity } from 'lucide-react';
+import { LucideIcon, Zap, AlertTriangle, TrendingUp, Activity, Brain, Globe } from 'lucide-react';
 import { formatChange } from '@/lib/coingecko';
 
 interface ZoneData {
@@ -16,18 +16,19 @@ interface ZoneData {
 }
 
 interface AlertEvent {
-    type: 'WHALE' | 'VOLUME' | 'BREAKOUT';
+    type: 'WHALE' | 'VOLUME' | 'BREAKOUT' | 'INSIGHT';
     message: string;
-    severity: 'info' | 'warning' | 'critical';
+    severity: 'info' | 'warning' | 'critical' | 'knowledge';
 }
 
 interface AlertableZoneCardProps {
     zone: ZoneData;
     icon: LucideIcon;
     gradientClass: string;
+    insights?: string[];
 }
 
-export default function AlertableZoneCard({ zone, icon: IconComponent, gradientClass }: AlertableZoneCardProps) {
+export default function AlertableZoneCard({ zone, icon: IconComponent, gradientClass, insights }: AlertableZoneCardProps) {
     const cardRef = useRef<HTMLDivElement>(null);
     const [alert, setAlert] = useState<AlertEvent | null>(null);
     const [isFlipped, setIsFlipped] = useState(false);
@@ -39,12 +40,21 @@ export default function AlertableZoneCard({ zone, icon: IconComponent, gradientC
         const randomTrigger = Math.random() > 0.96; // Low chance per tick
 
         const triggerAlert = () => {
-            const events: AlertEvent[] = [
-                { type: 'WHALE', message: 'Whale Accumulation', severity: 'info' },
-                { type: 'VOLUME', message: '+400% Vol Spike', severity: 'warning' },
-                { type: 'BREAKOUT', message: 'Price Breakout', severity: 'critical' }
-            ];
-            const evt = events[Math.floor(Math.random() * events.length)];
+            let evt: AlertEvent;
+
+            // Priority: Show Insight if available (60% chance)
+            if (insights && insights.length > 0 && Math.random() > 0.4) {
+                const randomInsight = insights[Math.floor(Math.random() * insights.length)];
+                evt = { type: 'INSIGHT', message: randomInsight, severity: 'knowledge' };
+            } else {
+                // Generative Market Events
+                const events: AlertEvent[] = [
+                    { type: 'WHALE', message: 'Whale Accumulation', severity: 'info' },
+                    { type: 'VOLUME', message: '+400% Vol Spike', severity: 'warning' },
+                    { type: 'BREAKOUT', message: 'Price Breakout', severity: 'critical' }
+                ];
+                evt = events[Math.floor(Math.random() * events.length)];
+            }
 
             setAlert(evt);
             setIsFlipped(true);
@@ -58,7 +68,7 @@ export default function AlertableZoneCard({ zone, icon: IconComponent, gradientC
                 easing: 'easeInOutCubic'
             });
 
-            // Auto-Revert after 5s
+            // Auto-Revert after 6s (slightly longer for reading)
             setTimeout(() => {
                 if (!cardRef.current) return;
                 animate(cardRef.current, {
@@ -70,7 +80,7 @@ export default function AlertableZoneCard({ zone, icon: IconComponent, gradientC
                         setAlert(null);
                     }
                 });
-            }, 5000);
+            }, 6000);
         };
 
         const timer = setInterval(() => {
@@ -80,7 +90,7 @@ export default function AlertableZoneCard({ zone, icon: IconComponent, gradientC
         }, 8000 + Math.random() * 5000); // Staggered checks
 
         return () => clearInterval(timer);
-    }, [isFlipped]);
+    }, [isFlipped, insights]);
 
     return (
         <div className="perspective-1000 w-full h-40">
@@ -127,28 +137,34 @@ export default function AlertableZoneCard({ zone, icon: IconComponent, gradientC
                     style={{
                         backfaceVisibility: 'hidden',
                         transform: 'rotateY(180deg)',
-                        backgroundColor: alert?.severity === 'critical' ? '#450a0a' : alert?.severity === 'warning' ? '#422006' : '#022c22'
+                        backgroundColor: alert?.severity === 'critical' ? '#450a0a' :
+                            alert?.severity === 'warning' ? '#422006' :
+                                alert?.severity === 'knowledge' ? '#1e1b4b' : '#022c22'
                     }}
                 >
                     {/* Alert Background */}
                     <div className={`absolute inset-0 opacity-20 animate-pulse ${alert?.severity === 'critical' ? 'bg-red-500' :
-                        alert?.severity === 'warning' ? 'bg-orange-500' : 'bg-emerald-500'
+                            alert?.severity === 'warning' ? 'bg-orange-500' :
+                                alert?.severity === 'knowledge' ? 'bg-indigo-500' : 'bg-emerald-500'
                         }`} />
 
                     <div className="relative z-10 flex flex-col items-center">
                         <div className={`p-3 rounded-full mb-3 ${alert?.severity === 'critical' ? 'bg-red-500/20 text-red-500' :
-                            alert?.severity === 'warning' ? 'bg-orange-500/20 text-orange-400' : 'bg-emerald-500/20 text-emerald-400'
+                                alert?.severity === 'warning' ? 'bg-orange-500/20 text-orange-400' :
+                                    alert?.severity === 'knowledge' ? 'bg-indigo-500/20 text-indigo-400' : 'bg-emerald-500/20 text-emerald-400'
                             }`}>
                             {alert?.type === 'WHALE' && <Activity size={24} />}
                             {alert?.type === 'VOLUME' && <TrendingUp size={24} />}
                             {alert?.type === 'BREAKOUT' && <Zap size={24} />}
+                            {alert?.type === 'INSIGHT' && <Brain size={24} />}
                         </div>
 
                         <div className="text-xs font-bold text-white uppercase tracking-widest mb-1">
-                            {alert?.type} DETECTED
+                            {alert?.type === 'INSIGHT' ? 'MARKET INTEL' : `${alert?.type} DETECTED`}
                         </div>
-                        <div className={`text-[10px] font-mono ${alert?.severity === 'critical' ? 'text-red-300' :
-                            alert?.severity === 'warning' ? 'text-orange-300' : 'text-emerald-300'
+                        <div className={`text-[10px] font-mono leading-tight px-1 ${alert?.severity === 'critical' ? 'text-red-300' :
+                                alert?.severity === 'warning' ? 'text-orange-300' :
+                                    alert?.severity === 'knowledge' ? 'text-indigo-200' : 'text-emerald-300'
                             }`}>
                             {alert?.message}
                         </div>
