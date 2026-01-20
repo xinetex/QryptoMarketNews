@@ -52,6 +52,17 @@ const ZONE_INSIGHTS: Record<string, string[]> = {
     ]
 };
 
+// Specific tokens for simulation
+const ZONE_TOKENS: Record<string, string[]> = {
+    rwa: ["ONDO", "CFG", "TRU", "MPL", "GFI", "RIO"],
+    ai: ["FET", "TAO", "RENDER", "GRT", "NEAR", "OCEAN"],
+    solana: ["SOL", "JUP", "PYTH", "WIF", "RAY", "BONK"],
+    defi: ["AAVE", "UNI", "MKR", "LDO", "CRV", "SNX"],
+    gaming: ["IMX", "BEAM", "GALA", "ILV", "PRIME", "RON"],
+    layer2: ["ARB", "OP", "BLAST", "STRK", "POL"],
+    memes: ["PEPE", "DOGE", "SHIB", "FLOKI", "MOG"]
+};
+
 // YouTube Card Component
 function YouTubeCard({ videoId, title }: { videoId: string; title: string }) {
     return (
@@ -169,6 +180,7 @@ export default function ZoneGrid() {
                                 icon={IconComponent}
                                 gradientClass={gradientClass}
                                 insights={ZONE_INSIGHTS[zone.id]}
+                                tokens={ZONE_TOKENS[zone.id]}
                             />
                         );
                     })}
