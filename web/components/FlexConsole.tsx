@@ -133,7 +133,53 @@ export default function FlexConsole({ address, signals }: { address: string, sig
         </div>
     );
 
-    // 3. Signals Node (Nano)
+    // 3. Risk Node (Visual Infographic)
+    const RiskNode = (
+        <div className="h-full flex flex-col bg-zinc-900/50 p-3 items-center justify-center">
+            <div className="w-full flex justify-between items-center mb-2 px-1">
+                <span className="text-[8px] text-zinc-500 font-bold uppercase flex items-center gap-2">
+                    <Activity size={10} /> Threat Radar
+                </span>
+                <span className={`text-base font-black ${riskScore > 70 ? 'text-emerald-400' : 'text-yellow-400'}`}>
+                    {riskScore}
+                </span>
+            </div>
+
+            <div className="relative w-40 h-20 mb-1">
+                {/* Gauge Background */}
+                <div className="absolute inset-x-4 inset-y-2 bg-zinc-800/50 rounded-t-full border-t border-x border-white/5" />
+
+                {/* Colored Zones (CSS Conic Gradient approximation or manual segments) */}
+                <div className="absolute bottom-0 left-4 right-4 h-[200%] rounded-full opacity-30 box-border border-[12px] border-emerald-500 border-b-0 border-l-yellow-500 border-r-emerald-500"
+                    style={{ clipPath: 'polygon(0 0, 100% 0, 100% 50%, 0 50%)' }}
+                />
+
+                {/* Needle */}
+                <motion.div
+                    className="absolute bottom-0 left-1/2 h-[85%] w-0.5 bg-white origin-bottom z-10 shadow-[0_0_10px_white]"
+                    initial={{ rotate: -90 }}
+                    animate={{ rotate: (riskScore / 100) * 180 - 90 }}
+                    transition={{ delay: 0.5, type: 'spring', stiffness: 60 }}
+                >
+                    <div className="w-2 h-2 bg-white rounded-full absolute bottom-0 -left-[3px]" />
+                </motion.div>
+
+                {/* Grid Lines */}
+                <div className="absolute inset-0 flex justify-center items-end opacity-20">
+                    <div className="w-[1px] h-full bg-white rotate-[-45deg] origin-bottom absolute" />
+                    <div className="w-[1px] h-full bg-white rotate-[45deg] origin-bottom absolute" />
+                    <div className="w-[1px] h-full bg-white rotate-[0deg] origin-bottom absolute" />
+                </div>
+            </div>
+
+            <div className="text-center">
+                <div className="text-[9px] font-bold text-white tracking-widest">RESILIENT STRUCTURE</div>
+                <div className="text-[7px] text-zinc-500 uppercase mt-0.5">Zero vectors detected</div>
+            </div>
+        </div>
+    );
+
+    // 4. Signals Node (Nano)
     const SignalNode = (
         <div className="h-full flex flex-col bg-zinc-900/50 p-3">
             <div className="text-[8px] text-zinc-500 font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
@@ -191,7 +237,7 @@ export default function FlexConsole({ address, signals }: { address: string, sig
                         <span className="text-[8px] text-emerald-500/50 tracking-[0.2em]">INITIALIZING LINK...</span>
                     </motion.div>
                 ) : (
-                    <RSVPDeck items={[CommandNode, TelemetryNode, SignalNode]} speed={5000} />
+                    <RSVPDeck items={[CommandNode, TelemetryNode, RiskNode, SignalNode]} speed={5000} />
                 )}
             </div>
 
