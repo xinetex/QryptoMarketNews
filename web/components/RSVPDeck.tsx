@@ -167,6 +167,7 @@ export default function RSVPDeck({
                         </button>
                     </div>
                 </div>
+            )}
 
             {/* Soft Overlay (Depth Cue) - Top only, removed bottom to clear buttons */}
             <div className="absolute top-0 left-0 w-full h-12 bg-gradient-to-b from-black/50 to-transparent pointer-events-none z-10" />
