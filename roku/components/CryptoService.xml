@@ -34,7 +34,7 @@
         <field id="visualsData" type="array" />
         
         <field id="prerollVastUrl" type="string" />
-        <field id="apiBaseUrl" type="string" value="http://192.168.4.108:3000" />
+        <field id="apiBaseUrl" type="string" value="https://qryptomarket-news.vercel.app" />
 
     </interface>
     
