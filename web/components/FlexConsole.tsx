@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Shield, TrendingUp, Zap, Activity, Globe, Lock, Unlock } from 'lucide-react';
+import { Shield, TrendingUp, Zap, Activity, Globe, Lock, Unlock, Wallet as WalletIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { getPoints } from '@/lib/points';
 import NeuralHandshake from './NeuralHandshake';
+import { useBalance } from 'wagmi';
 
 function ChevronRight({ size, className }: any) {
     return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m9 18 6-6-6-6" /></svg>;
@@ -15,6 +16,9 @@ export default function FlexConsole({ address, signals }: { address: string, sig
     const [scanning, setScanning] = useState(true);
     const [points, setPoints] = useState<any>(null);
     const [showHandshake, setShowHandshake] = useState(false);
+
+    // Fetch Balance
+    const { data: balance } = useBalance({ address: address as `0x${string}` });
 
     useEffect(() => {
         // Check Onboarding Status
@@ -67,6 +71,33 @@ export default function FlexConsole({ address, signals }: { address: string, sig
                         <span className="text-[10px] font-mono text-indigo-400">ANALYZING WALLET VECTORS...</span>
                     </motion.div>
                 )}
+
+                {/* Portfolio Value Card (NEW) */}
+                <div className="mb-6 p-4 rounded-xl bg-gradient-to-br from-zinc-900 to-black border border-white/5 relative group overflow-hidden">
+                    <div className="absolute top-0 right-0 p-3 opacity-20">
+                        <WalletIcon size={48} className="text-white transform rotate-12 translate-x-2 -translate-y-2" />
+                    </div>
+                    <div className="relative z-10">
+                        <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider block mb-1">Total Balance</span>
+                        <div className="text-2xl font-black text-white tracking-tight flex items-baseline gap-1">
+                            {balance ? parseFloat(balance.formatted).toFixed(4) : '0.0000'}
+                            <span className="text-sm font-bold text-zinc-500">{balance?.symbol || 'ETH'}</span>
+                        </div>
+                        <div className="flex gap-2 mt-3">
+                            <a
+                                href="https://keys.coinbase.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-1 py-1.5 bg-white/5 hover:bg-white/10 border border-white/5 rounded text-[10px] font-bold text-zinc-300 text-center transition-colors"
+                            >
+                                Send / Receive
+                            </a>
+                            <button className="flex-1 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 rounded text-[10px] font-bold text-indigo-400 transition-colors">
+                                Add Funds
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
                 {/* Risk Radar */}
                 <div className="mb-6 relative">
