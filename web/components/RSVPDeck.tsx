@@ -8,11 +8,30 @@ interface RSVPDeckProps {
     items: ReactNode[];
     autoPlay?: boolean;
     speed?: number; // ms per card
+    activeIndex?: number;
+    onIndexChange?: (index: number) => void;
+    hideToolbar?: boolean;
 }
 
-export default function RSVPDeck({ items, autoPlay = false, speed = 4000 }: RSVPDeckProps) {
-    const [activeIndex, setActiveIndex] = useState(0);
+export default function RSVPDeck({
+    items,
+    autoPlay = false,
+    speed = 4000,
+    activeIndex: controlledIndex,
+    onIndexChange,
+    hideToolbar = false
+}: RSVPDeckProps) {
+    const [internalIndex, setInternalIndex] = useState(0);
     const [isPlaying, setIsPlaying] = useState(autoPlay);
+
+    // Use controlled index if provided, otherwise internal
+    const isControlled = controlledIndex !== undefined;
+    const activeIndex = isControlled ? controlledIndex : internalIndex;
+
+    const changeIndex = (newIndex: number) => {
+        if (onIndexChange) onIndexChange(newIndex);
+        if (!isControlled) setInternalIndex(newIndex);
+    };
     const containerRef = useRef<HTMLDivElement>(null);
     const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -78,7 +97,7 @@ export default function RSVPDeck({ items, autoPlay = false, speed = 4000 }: RSVP
         let interval: NodeJS.Timeout;
         if (isPlaying) {
             interval = setInterval(() => {
-                setActiveIndex(prev => (prev + 1) % items.length);
+                changeIndex((activeIndex + 1) % items.length);
             }, speed);
         }
         return () => clearInterval(interval);
@@ -87,12 +106,12 @@ export default function RSVPDeck({ items, autoPlay = false, speed = 4000 }: RSVP
     // Navigation Controls (Auto-Lock on manual interaction)
     const handleNext = () => {
         setIsPlaying(false);
-        setActiveIndex((prev) => (prev + 1) % items.length);
+        changeIndex((activeIndex + 1) % items.length);
     };
 
     const handlePrev = () => {
         setIsPlaying(false);
-        setActiveIndex((prev) => (prev - 1 + items.length) % items.length);
+        changeIndex((activeIndex - 1 + items.length) % items.length);
     };
 
     const togglePlay = () => setIsPlaying(!isPlaying);
@@ -110,7 +129,7 @@ export default function RSVPDeck({ items, autoPlay = false, speed = 4000 }: RSVP
                         key={i}
                         ref={el => { itemsRef.current[i] = el; }}
                         onClick={() => {
-                            setActiveIndex(i);
+                            changeIndex(i);
                             setIsPlaying(false);
                         }}
                         className="absolute inset-0 flex items-center justify-center p-2 origin-center will-change-transform cursor-pointer"
@@ -123,30 +142,31 @@ export default function RSVPDeck({ items, autoPlay = false, speed = 4000 }: RSVP
                 ))}
             </div>
 
-            {/* Deck Controls (Navigational Instrument Style) */}
-            <div className="h-10 bg-zinc-950 border-t border-white/5 flex items-center justify-between px-3 z-20">
-                <button
-                    onClick={togglePlay}
-                    className={`flex items-center gap-1.5 px-2 py-1 rounded text-[9px] font-bold uppercase tracking-wider transition-colors ${isPlaying ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}`}
-                >
-                    {isPlaying ? <Scan size={10} /> : <Lock size={10} />}
-                    {isPlaying ? 'SCANNING' : 'LOCKED'}
-                </button>
-
-                <div className="flex items-center">
-                    <button onClick={handlePrev} className="p-1.5 hover:bg-white/10 rounded text-zinc-400 hover:text-white transition-colors">
-                        <ChevronLeft size={14} />
+            {/* Deck Controls (Navigational Instrument Style) - Conditional */}
+            {!hideToolbar && (
+                <div className="h-10 bg-zinc-950 border-t border-white/5 flex items-center justify-between px-3 z-20">
+                    <button
+                        onClick={togglePlay}
+                        className={`flex items-center gap-1.5 px-2 py-1 rounded text-[9px] font-bold uppercase tracking-wider transition-colors ${isPlaying ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}`}
+                    >
+                        {isPlaying ? <Scan size={10} /> : <Lock size={10} />}
+                        {isPlaying ? 'SCANNING' : 'LOCKED'}
                     </button>
 
-                    <div className="px-2 text-[9px] font-mono text-zinc-600">
-                        {activeIndex + 1} / {items.length}
+                    <div className="flex items-center">
+                        <button onClick={handlePrev} className="p-1.5 hover:bg-white/10 rounded text-zinc-400 hover:text-white transition-colors">
+                            <ChevronLeft size={14} />
+                        </button>
+
+                        <div className="px-2 text-[9px] font-mono text-zinc-600">
+                            {activeIndex + 1} / {items.length}
+                        </div>
+
+                        <button onClick={handleNext} className="p-1.5 hover:bg-white/10 rounded text-zinc-400 hover:text-white transition-colors">
+                            <ChevronRight size={14} />
+                        </button>
                     </div>
-
-                    <button onClick={handleNext} className="p-1.5 hover:bg-white/10 rounded text-zinc-400 hover:text-white transition-colors">
-                        <ChevronRight size={14} />
-                    </button>
                 </div>
-            </div>
 
             {/* Soft Overlay (Depth Cue) - Top only, removed bottom to clear buttons */}
             <div className="absolute top-0 left-0 w-full h-12 bg-gradient-to-b from-black/50 to-transparent pointer-events-none z-10" />

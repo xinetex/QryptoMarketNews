@@ -71,6 +71,15 @@ export default function FlexConsole({ address, signals }: { address: string, sig
 
     // --- HYBRID NANO-DECK NODES ---
 
+    // Deck Control State
+    const [deckIndex, setDeckIndex] = useState(0);
+    const DECK_ITEMS = 5; // Total items
+
+    const handleNextDeck = () => setDeckIndex((prev) => (prev + 1) % DECK_ITEMS);
+    const handlePrevDeck = () => setDeckIndex((prev) => (prev - 1 + DECK_ITEMS) % DECK_ITEMS);
+
+    // --- HYBRID NANO-DECK NODES ---
+
     const [commandView, setCommandView] = useState<'main' | 'receive' | 'send'>('main');
 
     // 1. Command Node (Wallet Core)
@@ -515,6 +524,13 @@ export default function FlexConsole({ address, signals }: { address: string, sig
                 </div>
 
                 <div className="flex items-center gap-3">
+                    {/* Navigation Controls in Header */}
+                    <div className="flex items-center gap-1 bg-black/40 rounded px-1.5 py-0.5 border border-white/5">
+                        <button onClick={handlePrevDeck} className="hover:text-white transition-colors"><ChevronRight size={10} className="rotate-180" /></button>
+                        <span className="font-mono text-zinc-500 w-4 text-center">{deckIndex + 1}/{DECK_ITEMS}</span>
+                        <button onClick={handleNextDeck} className="hover:text-white transition-colors"><ChevronRight size={10} /></button>
+                    </div>
+
                     <div className="flex items-center gap-1.5">
                         <div className="w-1 h-1 rounded-full bg-emerald-500 shadow-[0_0_5px_currentColor]"></div>
                         <span className="text-emerald-500/80 font-bold hidden sm:inline">MAINNET</span>
@@ -536,7 +552,13 @@ export default function FlexConsole({ address, signals }: { address: string, sig
                         <span className="text-[8px] text-emerald-500/50 tracking-[0.2em]">INITIALIZING LINK...</span>
                     </motion.div>
                 ) : (
-                    <RSVPDeck items={[CommandNode, TelemetryNode, RiskNode, SignalNode, PredictionNode]} speed={5000} />
+                    <RSVPDeck
+                        items={[CommandNode, TelemetryNode, RiskNode, SignalNode, PredictionNode]}
+                        speed={5000}
+                        activeIndex={deckIndex}
+                        onIndexChange={setDeckIndex}
+                        hideToolbar={true}
+                    />
                 )}
             </div>
 
@@ -547,6 +569,7 @@ export default function FlexConsole({ address, signals }: { address: string, sig
                     <span className="text-zinc-700">|</span>
                     <span>RPC: <span className="text-emerald-500/80">SYNCED</span></span>
                 </div>
+                <Lock size={8} className="text-red-900/50" />
             </div>
         </div>
     );
