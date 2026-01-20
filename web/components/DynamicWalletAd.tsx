@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Wallet as WalletIcon, ExternalLink, Activity, Sparkles, Target } from "lucide-react";
+import { Wallet as WalletIcon, ExternalLink, Activity, Sparkles, Target, LogOut } from "lucide-react";
 import { getHistoricalVolatility } from "@/lib/coingecko";
-import { useAccount } from 'wagmi';
+import { useAccount, useDisconnect } from 'wagmi';
 import {
     ConnectWallet,
     Wallet,
@@ -34,6 +34,7 @@ import FlexConsole from "./FlexConsole";
 
 export default function DynamicWalletAd() {
     const { address, isConnected } = useAccount();
+    const { disconnect } = useDisconnect();
     const [ad, setAd] = useState<AdCreative | null>(null);
     const [signals, setSignals] = useState<{ symbol: string; volatility: number }[]>([]);
     const [viewMode, setViewMode] = useState<'console' | 'ad'>('console');
@@ -106,7 +107,17 @@ export default function DynamicWalletAd() {
                         Offers <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                     </button>
                 )}
-                <div className="flex-none px-2 flex items-center">
+                <div className="flex-none px-2 flex items-center gap-2">
+                    <button
+                        onClick={() => {
+                            disconnect();
+                            clearPoints();
+                        }}
+                        className="p-1.5 rounded-full bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 transition-colors"
+                        title="Disconnect Wallet"
+                    >
+                        <LogOut size={10} />
+                    </button>
                     <Wallet>
                         <ConnectWallet className="!h-5 !min-h-0 !px-1.5 !py-0 !text-[9px] bg-transparent text-zinc-500 border border-white/5 hover:bg-white/5 rounded-full">
                             <Avatar className="h-3.5 w-3.5" />
