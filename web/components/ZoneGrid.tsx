@@ -11,6 +11,7 @@ import HotMarketsSlider from "./HotMarketsSlider";
 import ProphetOracleCard from "./ProphetOracleCard";
 // Import FlexColumnSwap
 import FlexColumnSwap from "./FlexColumnSwap";
+import AlertableZoneCard from "./AlertableZoneCard";
 
 import { useAdminSettings } from "@/hooks/useAdminSettings";
 
@@ -142,36 +143,12 @@ export default function ZoneGrid() {
                         const gradientClass = ZONE_GRADIENTS[zone.id] || "from-white/10 to-white/5";
 
                         return (
-                            <Link
+                            <AlertableZoneCard
                                 key={zone.id}
-                                href={`/zone/${zone.id}`}
-                                className="zone-card group relative h-40 rounded-xl bg-[#12121A] border border-white/5 p-5 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:border-indigo-500/50 hover:shadow-xl hover:shadow-indigo-500/10"
-                            >
-                                <div className={`absolute inset-0 bg-gradient-to-br ${gradientClass} opacity-50 group-hover:opacity-80 transition-opacity duration-500`} />
-
-                                <div className="flex justify-between items-start z-10">
-                                    <div className={`${zone.color} bg-zinc-900/80 p-2 rounded-lg border border-white/5 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
-                                        <IconComponent size={20} strokeWidth={1.5} />
-                                    </div>
-                                    <div className="text-right">
-                                        <div className="text-[10px] text-zinc-500 font-medium mb-0.5">24h</div>
-                                        <div className={`text-sm font-bold tracking-tight ${zone.isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
-                                            {zone.change}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="z-10">
-                                    <h3 className="text-zinc-100 text-lg font-medium tracking-tight mb-0.5 group-hover:text-white transition-colors">
-                                        {zone.name}
-                                    </h3>
-                                    <p className="text-[10px] text-zinc-500 group-hover:text-zinc-400 transition-colors">
-                                        Explore {zone.name.toLowerCase()} Prophets
-                                    </p>
-                                </div>
-
-                                <div className="absolute bottom-0 left-0 h-1 bg-indigo-500 transition-all duration-300 w-0 group-hover:w-1/3" />
-                            </Link>
+                                zone={zone}
+                                icon={IconComponent}
+                                gradientClass={gradientClass}
+                            />
                         );
                     })}
                 </div>
