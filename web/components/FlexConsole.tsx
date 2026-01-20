@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import RSVPDeck from './RSVPDeck';
-import { Shield, TrendingUp, Zap, Activity, Globe, Lock, Unlock, Wallet as WalletIcon, QrCode, Send, Copy, ArrowRight, ArrowDownLeft } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Shield, TrendingUp, Zap, Activity, Globe, Lock, Unlock, Wallet as WalletIcon, QrCode, Send, Copy, ArrowRight, ArrowDownLeft, Check } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { getPoints } from '@/lib/points';
 import NeuralHandshake from './NeuralHandshake';
 
@@ -18,6 +18,7 @@ export default function FlexConsole({ address, signals }: { address: string, sig
     const [scanning, setScanning] = useState(true);
     const [points, setPoints] = useState<any>(null);
     const [showHandshake, setShowHandshake] = useState(false);
+    const [copied, setCopied] = useState(false);
 
     // Fetch Balance
     const { data: balance } = useBalance({ address: address as `0x${string}` });
@@ -45,67 +46,224 @@ export default function FlexConsole({ address, signals }: { address: string, sig
 
     // --- HYBRID NANO-DECK NODES ---
 
+    const [commandView, setCommandView] = useState<'main' | 'receive' | 'send'>('main');
+
     // 1. Command Node (Wallet Core)
     const CommandNode = (
-        <div className="h-full flex flex-col bg-zinc-900/50 p-3 justify-between">
-            {/* Balance Section */}
-            <div>
-                <div className="text-[8px] text-zinc-600 mb-0.5 uppercase tracking-widest">Active Balance</div>
-                <div className="text-2xl text-white font-bold tracking-tighter flex items-baseline gap-1.5">
-                    {balance ? parseFloat(balance.formatted).toFixed(4) : '0.000'}
-                    <span className="text-[10px] text-zinc-500 font-normal mt-2">{balance?.symbol || 'ETH'}</span>
-                </div>
-                <div className="flex items-center gap-2 mt-2 p-1.5 bg-black/40 border border-white/5 rounded w-fit hover:border-emerald-500/30 transition-colors cursor-pointer group/addr">
-                    <span className="text-[9px] font-mono text-zinc-300">
-                        {address ? (
-                            <>
-                                <span className="text-emerald-400/80">{address.slice(0, 4)}</span>
-                                <span className="text-zinc-500">...</span>
-                                <span>{address.slice(-4)}</span>
-                            </>
-                        ) : (
-                            'CONNECT'
-                        )}
-                    </span>
-                    <Copy size={8} className="text-zinc-600 group-hover/addr:text-emerald-400 transition-colors" />
-                </div>
-            </div>
+        <div className="h-full flex flex-col bg-zinc-900/50 p-3 justify-between relative overflow-hidden">
+            <motion.div
+                key={commandView}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.2 }}
+                className="h-full flex flex-col justify-between"
+            >
+                {commandView === 'main' ? (
+                    <>
+                        {/* Balance Section */}
+                        <div>
+                            <div className="text-[8px] text-zinc-600 mb-0.5 uppercase tracking-widest">Active Balance</div>
+                            <div className="text-2xl text-white font-bold tracking-tighter flex items-baseline gap-1.5">
+                                {balance ? parseFloat(balance.formatted).toFixed(4) : '0.000'}
+                                <span className="text-[10px] text-zinc-500 font-normal mt-2">{balance?.symbol || 'ETH'}</span>
+                            </div>
+                            <div className="flex items-center gap-2 mt-2 p-1.5 bg-black/40 border border-white/5 rounded w-fit hover:border-emerald-500/30 transition-colors cursor-pointer group/addr">
+                                <span className="text-[9px] font-mono text-zinc-300">
+                                    {address ? (
+                                        <>
+                                            <span className="text-emerald-400/80">{address.slice(0, 4)}</span>
+                                            <span className="text-zinc-500">...</span>
+                                            <span>{address.slice(-4)}</span>
+                                        </>
+                                    ) : (
+                                        'CONNECT'
+                                    )}
+                                </span>
+                                <Copy size={8} className="text-zinc-600 group-hover/addr:text-emerald-400 transition-colors" />
+                            </div>
+                        </div>
 
-            {/* Micro Actions */}
-            <div className="grid grid-cols-3 gap-1.5">
-                <button className="py-2 border border-zinc-800 hover:border-zinc-700 bg-zinc-900/50 hover:bg-zinc-900 text-[8px] font-bold text-zinc-400 hover:text-white rounded uppercase tracking-wider transition-colors flex flex-col items-center gap-1 group">
-                    <ArrowRight size={10} className="group-hover:-rotate-45 transition-transform" />
-                    Send
-                </button>
-                <button className="py-2 border border-zinc-800 hover:border-zinc-700 bg-zinc-900/50 hover:bg-zinc-900 text-[8px] font-bold text-zinc-400 hover:text-white rounded uppercase tracking-wider transition-colors flex flex-col items-center gap-1 group">
-                    <ArrowDownLeft size={10} className="group-hover:translate-y-0.5 transition-transform" />
-                    Receive
-                </button>
-                <button className="py-2 border border-zinc-800 hover:border-zinc-700 bg-zinc-900/50 hover:bg-zinc-900 text-[8px] font-bold text-zinc-400 hover:text-white rounded uppercase tracking-wider transition-colors flex flex-col items-center gap-1">
-                    <QrCode size={10} />
-                    Identity
-                </button>
-            </div>
+                        {/* Micro Actions */}
+                        <div className="grid grid-cols-3 gap-1.5">
+                            <button
+                                onClick={() => setCommandView('send')}
+                                className="py-2 border border-zinc-800 hover:border-zinc-700 bg-zinc-900/50 hover:bg-zinc-900 text-[8px] font-bold text-zinc-400 hover:text-white rounded uppercase tracking-wider transition-colors flex flex-col items-center gap-1 group"
+                            >
+                                <ArrowRight size={10} className="group-hover:-rotate-45 transition-transform" />
+                                Send
+                            </button>
+                            <button
+                                onClick={() => setCommandView('receive')}
+                                className="py-2 border border-zinc-800 hover:border-zinc-700 bg-zinc-900/50 hover:bg-zinc-900 text-[8px] font-bold text-zinc-400 hover:text-white rounded uppercase tracking-wider transition-colors flex flex-col items-center gap-1 group"
+                            >
+                                <ArrowDownLeft size={10} className="group-hover:translate-y-0.5 transition-transform" />
+                                Receive
+                            </button>
+                            <button className="py-2 border border-zinc-800 hover:border-zinc-700 bg-zinc-900/50 hover:bg-zinc-900 text-[8px] font-bold text-zinc-400 hover:text-white rounded uppercase tracking-wider transition-colors flex flex-col items-center gap-1">
+                                <QrCode size={10} />
+                                Identity
+                            </button>
+                        </div>
+                    </>
+                ) : commandView === 'receive' ? (
+                    <>
+                        {/* HEADER */}
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-[9px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1">
+                                <ArrowDownLeft size={10} /> Receive
+                            </span>
+                            <button
+                                onClick={() => setCommandView('main')}
+                                className="text-[8px] text-zinc-500 hover:text-white uppercase tracking-wider font-bold"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+
+                        {/* QR CODE + ADDR */}
+                        <div className="flex-1 flex flex-col items-center justify-center bg-white/5 rounded-lg border border-white/5 p-2 mb-2 relative group overflow-hidden">
+                            {/* QR */}
+                            {address ? (
+                                <img
+                                    src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${address}&bgcolor=18181b&color=34d399&margin=10`}
+                                    alt="QR"
+                                    className="w-16 h-16 rounded opacity-90 group-hover:opacity-100 transition-opacity"
+                                />
+                            ) : (
+                                <div className="w-16 h-16 bg-black/40 rounded flex items-center justify-center text-[8px] text-zinc-600">NO ADDR</div>
+                            )}
+
+                            {/* Addr Copier */}
+                            <div className="mt-2 w-full flex items-center justify-between bg-black/40 px-2 py-1.5 rounded border border-white/5 text-[8px] font-mono text-zinc-400">
+                                <span>{address ? `${address.slice(0, 6)}...${address.slice(-4)}` : '...'}</span>
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (address) {
+                                            navigator.clipboard.writeText(address);
+                                            // Optional: simple visual feedback could be managed here or by parent
+                                            // But let's do a quick inline feedback:
+                                            const btn = e.currentTarget;
+                                            const originalText = btn.innerHTML;
+                                            // This is a bit hacky for inline SVG, better to use state if full generic
+                                            // For now we assume the user just wants it to work.
+                                            // Let's rely on global toast or just the act of copying. 
+                                            // Actually, let's add a state for "copied" in the component.
+                                            setCopied(true);
+                                            setTimeout(() => setCopied(false), 2000);
+                                        }
+                                    }}
+                                    className="cursor-pointer hover:text-emerald-400 transition-colors"
+                                >
+                                    {copied ? <Check size={8} className="text-emerald-400" /> : <Copy size={8} />}
+                                </button>
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        {/* SEND VIEW */}
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-[9px] font-bold text-indigo-400 uppercase tracking-wider flex items-center gap-1">
+                                <ArrowRight size={10} /> Send
+                            </span>
+                            <button
+                                onClick={() => setCommandView('main')}
+                                className="text-[8px] text-zinc-500 hover:text-white uppercase tracking-wider font-bold"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+
+                        <div className="flex-1 flex flex-col gap-2">
+                            <div className="space-y-1">
+                                <span className="text-[7px] text-zinc-500 uppercase font-bold">Recipient</span>
+                                <input
+                                    type="text"
+                                    placeholder="0x..."
+                                    className="w-full bg-black/40 border border-white/5 focus:border-indigo-500/50 rounded px-2 py-1.5 text-[9px] text-white font-mono outline-none transition-colors"
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <span className="text-[7px] text-zinc-500 uppercase font-bold">Amount (ETH)</span>
+                                <input
+                                    type="text"
+                                    placeholder="0.0"
+                                    className="w-full bg-black/40 border border-white/5 focus:border-indigo-500/50 rounded px-2 py-1.5 text-[9px] text-white font-mono outline-none transition-colors"
+                                />
+                            </div>
+                        </div>
+
+                        <button className="mt-2 w-full py-2 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 text-indigo-400 text-[8px] font-bold uppercase tracking-widest rounded transition-colors">
+                            Confirm Transaction
+                        </button>
+                    </>
+                )}
+            </motion.div>
         </div>
     );
 
     // 2. Telemetry Node (System Grid)
+    // Dynamic Simulation State
+    const [telemetry, setTelemetry] = useState({ gas: 14, tps: 2400, sync: 98, sentinel: true });
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setTelemetry(prev => ({
+                gas: Math.max(8, Math.min(30, prev.gas + (Math.random() - 0.5) * 4)),
+                tps: Math.max(1000, prev.tps + (Math.random() - 0.5) * 200),
+                sync: Math.min(100, Math.max(95, prev.sync + (Math.random() - 0.5))),
+                sentinel: true
+            }));
+        }, 2000);
+        return () => clearInterval(interval);
+    }, []);
+
     const TelemetryNode = (
-        <div className="h-full flex flex-col bg-zinc-900/50 p-3">
-            <div className="text-[8px] text-zinc-500 font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
+        <div className="h-full flex flex-col bg-zinc-900/50 p-3 relative overflow-hidden">
+            {/* Decoding Effect Background */}
+            <div className="absolute inset-0 opacity-10 pointer-events-none"
+                style={{ backgroundImage: 'radial-gradient(circle at 50% 50%, #4f46e5 1px, transparent 1px)', backgroundSize: '12px 12px' }}
+            />
+
+            <div className="text-[8px] text-zinc-500 font-bold uppercase tracking-widest mb-2 flex items-center gap-2 relative z-10">
                 <Activity size={10} /> System Telemetry
             </div>
 
-            <div className="grid grid-cols-2 gap-2 flex-1">
-                {/* Gas */}
-                <div className="p-2 border border-white/5 bg-black/40 rounded flex flex-col gap-1 relative overflow-hidden">
-                    <span className="text-[7px] text-zinc-600 font-bold uppercase">Gas Vector</span>
+            <div className="grid grid-cols-2 gap-2 flex-1 relative z-10">
+                {/* Gas Vector (Histogram) */}
+                <div className="p-2 border border-white/5 bg-black/40 rounded flex flex-col gap-1 relative overflow-hidden group">
+                    <span className="text-[7px] text-zinc-600 font-bold uppercase group-hover:text-zinc-400 transition-colors">Gas Vector</span>
                     <div className="flex items-center gap-1.5">
-                        <span className="text-[10px] text-zinc-300 font-bold">14</span>
+                        <span className="text-[10px] text-zinc-300 font-bold">{Math.round(telemetry.gas)}</span>
                         <span className="text-[7px] text-zinc-500">GWEI</span>
                     </div>
-                    <div className="w-full h-0.5 bg-zinc-800 rounded-full overflow-hidden mt-auto">
-                        <div className="h-full w-1/3 bg-emerald-500/50"></div>
+                    {/* Fake Histogram */}
+                    <div className="mt-auto flex items-end gap-0.5 h-3">
+                        {[0.4, 0.7, 0.5, 0.9, 0.6].map((h, i) => (
+                            <motion.div
+                                key={i}
+                                className="w-1 bg-indigo-500/50 rounded-t-[1px]"
+                                animate={{ height: `${Math.max(20, Math.min(100, (telemetry.gas / 30) * 100 * h))}%` }}
+                                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                            />
+                        ))}
+                    </div>
+                </div>
+
+                {/* Network Load (TPS) */}
+                <div className="p-2 border border-white/5 bg-black/40 rounded flex flex-col gap-1 relative overflow-hidden">
+                    <span className="text-[7px] text-zinc-600 font-bold uppercase">Network TPS</span>
+                    <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] text-emerald-400 font-bold">{Math.round(telemetry.tps)}</span>
+                    </div>
+                    <div className="overflow-hidden mt-1 relative h-2">
+                        <div className="flex gap-1 absolute top-0 left-0 animate-[scroll_2s_linear_infinite]">
+                            {Array.from({ length: 10 }).map((_, i) => (
+                                <div key={i} className="w-0.5 h-full bg-emerald-500/30 transform skew-x-12" />
+                            ))}
+                        </div>
                     </div>
                 </div>
 
@@ -116,24 +274,19 @@ export default function FlexConsole({ address, signals }: { address: string, sig
                         <Shield size={10} className="text-emerald-500" />
                         <span className="text-[9px] text-emerald-400/80">SECURE</span>
                     </div>
-                    {/* Blinking Light */}
-                    <div className="absolute top-2 right-2 flex gap-0.5">
-                        <div className="w-0.5 h-0.5 bg-emerald-500 animate-[pulse_2s_infinite]"></div>
-                    </div>
                 </div>
 
                 {/* Sync Status */}
-                <div className="p-2 border border-white/5 bg-black/40 rounded flex flex-col gap-1 col-span-2 justify-center">
-                    <div className="flex justify-between items-center mb-0.5">
-                        <span className="text-[7px] text-zinc-600 font-bold uppercase">Prophet Sync</span>
-                        <span className="text-[7px] text-indigo-400">98%</span>
+                <div className="p-2 border border-white/5 bg-black/40 rounded flex flex-col gap-1 relative overflow-hidden">
+                    <span className="text-[7px] text-zinc-600 font-bold uppercase">Node Sync</span>
+                    <div className="flex items-center justify-between">
+                        <span className="text-[10px] text-indigo-400 font-bold">{telemetry.sync.toFixed(1)}%</span>
+                        <Activity size={8} className="text-indigo-500 animate-spin" style={{ animationDuration: '3s' }} />
                     </div>
-                    <div className="w-full h-1 bg-zinc-900 border border-white/5 rounded-full p-[1px]">
+                    <div className="w-full h-0.5 bg-zinc-800 rounded-full overflow-hidden mt-1">
                         <motion.div
-                            className="h-full bg-indigo-500 rounded-full"
-                            initial={{ width: "0%" }}
-                            animate={{ width: "98%" }}
-                            transition={{ duration: 2, delay: 1 }}
+                            className="h-full bg-indigo-500 box-shadow-[0_0_5px_indigo]"
+                            animate={{ width: `${telemetry.sync}%` }}
                         />
                     </div>
                 </div>
@@ -143,45 +296,41 @@ export default function FlexConsole({ address, signals }: { address: string, sig
 
     // 3. Risk Node (Visual Infographic)
     const RiskNode = (
-        <div className="h-full flex flex-col bg-zinc-900/50 p-3 items-center justify-center">
-            <div className="w-full flex justify-between items-center mb-2 px-1">
+        <div className="h-full flex flex-col bg-zinc-900/50 p-3 items-center justify-center relative overflow-hidden">
+            {/* Background Scanner Effect */}
+            <div className="absolute inset-0 bg-[linear-gradient(transparent_0%,rgba(16,185,129,0.05)_50%,transparent_100%)] animate-[scan_3s_linear_infinite]" style={{ backgroundSize: '100% 200%' }} />
+
+            <div className="w-full flex justify-between items-center mb-2 px-1 relative z-10">
                 <span className="text-[8px] text-zinc-500 font-bold uppercase flex items-center gap-2">
                     <Activity size={10} /> Threat Radar
                 </span>
-                <span className={`text-base font-black ${riskScore > 70 ? 'text-emerald-400' : 'text-yellow-400'}`}>
+                <span className={`text-xl font-black ${riskScore > 70 ? 'text-emerald-400' : 'text-yellow-400'}`}>
                     {riskScore}
                 </span>
             </div>
 
-            <div className="relative w-40 h-20 mb-1">
-                {/* Gauge Background */}
-                <div className="absolute inset-x-4 inset-y-2 bg-zinc-800/50 rounded-t-full border-t border-x border-white/5" />
+            {/* Central Radar Visual */}
+            <div className="relative w-full flex-1 flex items-center justify-center mb-1">
+                <div className="w-32 h-1 bg-zinc-800 rounded-full overflow-hidden relative">
+                    {/* Safety Zone */}
+                    <div className="absolute left-0 top-0 bottom-0 w-[70%] bg-emerald-900/40" />
+                    {/* Danger Zone */}
+                    <div className="absolute right-0 top-0 bottom-0 w-[30%] bg-red-900/40" />
 
-                {/* Colored Zones (CSS Conic Gradient approximation or manual segments) */}
-                <div className="absolute bottom-0 left-4 right-4 h-[200%] rounded-full opacity-30 box-border border-[12px] border-emerald-500 border-b-0 border-l-yellow-500 border-r-emerald-500"
-                    style={{ clipPath: 'polygon(0 0, 100% 0, 100% 50%, 0 50%)' }}
-                />
-
-                {/* Needle */}
-                <motion.div
-                    className="absolute bottom-0 left-1/2 h-[85%] w-0.5 bg-white origin-bottom z-10 shadow-[0_0_10px_white]"
-                    initial={{ rotate: -90 }}
-                    animate={{ rotate: (riskScore / 100) * 180 - 90 }}
-                    transition={{ delay: 0.5, type: 'spring', stiffness: 60 }}
-                >
-                    <div className="w-2 h-2 bg-white rounded-full absolute bottom-0 -left-[3px]" />
-                </motion.div>
-
-                {/* Grid Lines */}
-                <div className="absolute inset-0 flex justify-center items-end opacity-20">
-                    <div className="w-[1px] h-full bg-white rotate-[-45deg] origin-bottom absolute" />
-                    <div className="w-[1px] h-full bg-white rotate-[45deg] origin-bottom absolute" />
-                    <div className="w-[1px] h-full bg-white rotate-[0deg] origin-bottom absolute" />
+                    {/* Indicator */}
+                    <motion.div
+                        className="absolute top-0 bottom-0 w-8 bg-emerald-500 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.5)]"
+                        initial={{ left: '0%' }}
+                        animate={{ left: `${riskScore}%` }}
+                        transition={{ type: "spring", stiffness: 50 }}
+                    >
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full" />
+                    </motion.div>
                 </div>
             </div>
 
-            <div className="text-center">
-                <div className="text-[9px] font-bold text-white tracking-widest">RESILIENT STRUCTURE</div>
+            <div className="text-center relative z-10">
+                <div className="text-[9px] font-bold text-white tracking-widest uppercase">RESILIENT STRUCTURE</div>
                 <div className="text-[7px] text-zinc-500 uppercase mt-0.5">Zero vectors detected</div>
             </div>
         </div>
@@ -189,22 +338,50 @@ export default function FlexConsole({ address, signals }: { address: string, sig
 
     // 4. Signals Node (Nano)
     const SignalNode = (
-        <div className="h-full flex flex-col bg-zinc-900/50 p-3">
-            <div className="text-[8px] text-zinc-500 font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
+        <div className="h-full flex flex-col bg-zinc-900/50 p-3 relative">
+            <div className="text-[8px] text-zinc-500 font-bold uppercase tracking-widest mb-3 flex items-center gap-2">
                 <Zap size={10} className="text-yellow-500" /> Active Streams
             </div>
 
-            <div className="flex-1 space-y-1">
-                {signals.slice(0, 3).map((s, i) => (
-                    <div key={i} className="flex items-center justify-between p-1.5 rounded bg-black/40 border border-white/5 hover:border-indigo-500/30 transition-colors">
-                        <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded bg-white/5 flex items-center justify-center text-[8px] font-bold text-zinc-400">{s.symbol[0]}</div>
-                            <span className="text-[9px] font-bold text-zinc-300">{s.symbol}</span>
-                        </div>
-                        <span className="text-[8px] font-mono text-emerald-400">{s.volatility}% VOL</span>
-                    </div>
-                ))}
+            {/* Dynamic Signal List */}
+            <div className="flex-1 space-y-2 overflow-hidden">
+                <AnimatePresence mode="popLayout">
+                    {signals.length > 0 ? signals.slice(0, 3).map((s, i) => (
+                        <motion.div
+                            key={s.symbol}
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: i * 0.1 }}
+                            className="flex items-center justify-between p-2 rounded bg-black/40 border border-white/5 hover:border-yellow-500/30 group transition-colors cursor-pointer"
+                        >
+                            <div className="flex items-center gap-2">
+                                <span className={`text-[7px] font-bold px-1 py-0.5 rounded ${s.volatility > 5 ? 'bg-red-500/20 text-red-400' : 'bg-emerald-500/20 text-emerald-400'}`}>
+                                    {s.volatility > 5 ? 'H' : 'L'}
+                                </span>
+                                <span className="text-[9px] font-bold text-zinc-300 group-hover:text-white">{s.symbol}</span>
+                            </div>
+
+                            <div className="flex flex-col items-end">
+                                <span className="text-[9px] font-mono text-white">{s.volatility.toFixed(1)}%</span>
+                                <span className="text-[7px] text-zinc-600 uppercase">VOLATILITY</span>
+                            </div>
+                        </motion.div>
+                    )) : (
+                        // Empty State if no signals
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="flex flex-col items-center justify-center h-20 text-zinc-600 gap-1"
+                        >
+                            <Globe size={16} className="opacity-20 animate-pulse" />
+                            <span className="text-[8px] tracking-widest">SEARCHING...</span>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
+
+            {/* Corner Decor */}
+            <div className="absolute bottom-2 right-2 w-2 h-2 border-r border-b border-yellow-500/20" />
         </div>
     );
 
