@@ -11,6 +11,7 @@ import MarketPulse from "./MarketPulse";
 import BreakingNews from "./BreakingNews";
 import { useCryptoPrices } from "@/lib/hooks/useCrypto";
 import { formatPrice, formatChange } from "@/lib/coingecko";
+import ProphetBadge from "./ProphetBadge";
 
 export default function TVOverlay() {
     const overlayRef = useRef<HTMLDivElement>(null);
@@ -122,6 +123,11 @@ export default function TVOverlay() {
                             />
                         </a>
                     )}
+                </div>
+
+                {/* Dynamic Island: Prophet Badge */}
+                <div className="hidden lg:block pointer-events-auto">
+                    <ProphetBadge />
                 </div>
 
                 {/* Desktop Nav (lg and up) */}
