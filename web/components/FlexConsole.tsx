@@ -23,6 +23,9 @@ export default function FlexConsole({ address, signals }: { address: string, sig
     // Fetch Balance
     const { data: balance } = useBalance({ address: address as `0x${string}` });
 
+    // Fetched Alpha Vector State
+    const [alphaVector, setAlphaVector] = useState<any>(null);
+
     useEffect(() => {
         // Check Onboarding Status
         const hasOnboarded = localStorage.getItem('prophet_onboarded');
@@ -36,7 +39,29 @@ export default function FlexConsole({ address, signals }: { address: string, sig
         // Load Points
         setPoints(getPoints());
 
-        return () => clearTimeout(timer);
+        // Fetch Alpha Vector
+        const fetchAlpha = async () => {
+            try {
+                const res = await fetch('/api/alpha/vector', { method: 'POST' });
+                const data = await res.json();
+                if (data && data.components) {
+                    setAlphaVector(data);
+                    // Update risk score from engine
+                    setRiskScore(data.components.risk);
+                }
+            } catch (e) {
+                console.error("Alpha link failed", e);
+            }
+        };
+        fetchAlpha();
+
+        // Poll every 30s
+        const poll = setInterval(fetchAlpha, 30000);
+
+        return () => {
+            clearTimeout(timer);
+            clearInterval(poll);
+        }
     }, []);
 
     const handleHandshakeComplete = () => {
@@ -330,8 +355,8 @@ export default function FlexConsole({ address, signals }: { address: string, sig
             </div>
 
             <div className="text-center relative z-10">
-                <div className="text-[9px] font-bold text-white tracking-widest uppercase">RESILIENT STRUCTURE</div>
-                <div className="text-[7px] text-zinc-500 uppercase mt-0.5">Zero vectors detected</div>
+                <div className="text-[9px] font-bold text-white tracking-widest uppercase">{alphaVector ? "LIVE ENGINE LINKED" : "RESILIENT STRUCTURE"}</div>
+                <div className="text-[7px] text-zinc-500 uppercase mt-0.5">{alphaVector?.driver_breakdown?.primary_driver || "Zero vectors detected"}</div>
             </div>
         </div>
     );
@@ -346,27 +371,28 @@ export default function FlexConsole({ address, signals }: { address: string, sig
             {/* Dynamic Signal List */}
             <div className="flex-1 space-y-2 overflow-hidden">
                 <AnimatePresence mode="popLayout">
-                    {signals.length > 0 ? signals.slice(0, 3).map((s, i) => (
+                    {(alphaVector?.signals?.length > 0 ? alphaVector.signals : signals.slice(0, 3)).map((s: any, i: number) => (
                         <motion.div
-                            key={s.symbol}
+                            key={s.symbol || s.asset}
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: i * 0.1 }}
                             className="flex items-center justify-between p-2 rounded bg-black/40 border border-white/5 hover:border-yellow-500/30 group transition-colors cursor-pointer"
                         >
                             <div className="flex items-center gap-2">
-                                <span className={`text-[7px] font-bold px-1 py-0.5 rounded ${s.volatility > 5 ? 'bg-red-500/20 text-red-400' : 'bg-emerald-500/20 text-emerald-400'}`}>
-                                    {s.volatility > 5 ? 'H' : 'L'}
+                                <span className={`text-[7px] font-bold px-1 py-0.5 rounded ${s.confidence > 75 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
+                                    {s.confidence > 80 ? 'HIGH' : 'MED'}
                                 </span>
-                                <span className="text-[9px] font-bold text-zinc-300 group-hover:text-white">{s.symbol}</span>
+                                <span className="text-[9px] font-bold text-zinc-300 group-hover:text-white">{s.asset || s.symbol}</span>
                             </div>
 
                             <div className="flex flex-col items-end">
-                                <span className="text-[9px] font-mono text-white">{s.volatility.toFixed(1)}%</span>
+                                <span className="text-[9px] font-mono text-white">{(s.metrics?.volatility || s.volatility || 0).toFixed(1)}%</span>
                                 <span className="text-[7px] text-zinc-600 uppercase">VOLATILITY</span>
                             </div>
                         </motion.div>
-                    )) : (
+                    ))}
+                    {(!alphaVector?.signals?.length && !signals.length) && (
                         // Empty State if no signals
                         <motion.div
                             initial={{ opacity: 0 }}

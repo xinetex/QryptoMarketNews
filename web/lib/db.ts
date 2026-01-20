@@ -96,6 +96,20 @@ export async function initDatabase() {
             )
         `;
 
+        // Alpha OS: User Profiles
+        await sql`
+            CREATE TABLE IF NOT EXISTS user_alpha_profiles (
+                wallet_address VARCHAR(255) PRIMARY KEY,
+                risk_tolerance VARCHAR(50) DEFAULT 'MODERATE',
+                investment_horizon VARCHAR(50) DEFAULT 'WEEKS',
+                favorite_sectors JSONB DEFAULT '[]'::jsonb,
+                blacklisted_tokens JSONB DEFAULT '[]'::jsonb,
+                learning_mode BOOLEAN DEFAULT TRUE,
+                last_active_at TIMESTAMP DEFAULT NOW(),
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+        `;
+
         console.log('Database tables initialized');
         return true;
     } catch (error) {

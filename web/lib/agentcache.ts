@@ -136,6 +136,25 @@ export async function getOrSetCache<T>(
     return data;
 }
 
+/**
+ * Generic Fetch with Cache
+ */
+export async function cachedFetch<T>(
+    url: string,
+    options?: RequestInit,
+    ttl: number = 3600
+): Promise<T> {
+    const cacheKey = generateCacheKey(url);
+
+    return getOrSetCache(cacheKey, async () => {
+        const response = await fetch(url, options);
+        if (!response.ok) {
+            throw new Error(`API error: ${response.status} for ${url}`);
+        }
+        return response.json();
+    }, ttl);
+}
+
 // ===== COINGECKO LEGACY SUPPORT =====
 
 export async function cachedCoinGeckoFetch<T>(
@@ -143,23 +162,13 @@ export async function cachedCoinGeckoFetch<T>(
     params?: Record<string, string>,
     ttl: number = TTL_COIN_DATA
 ): Promise<T> {
-    const cacheKey = generateCacheKey(endpoint, params);
+    const url = new URL(`${COINGECKO_BASE}${endpoint}`);
+    if (params) {
+        Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+    }
 
-    return getOrSetCache(cacheKey, async () => {
-        const url = new URL(`${COINGECKO_BASE}${endpoint}`);
-        if (params) {
-            Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
-        }
-
-        const response = await fetch(url.toString(), {
-            headers: { 'Accept': 'application/json' },
-        });
-
-        if (!response.ok) {
-            throw new Error(`CoinGecko API error: ${response.status}`);
-        }
-
-        return response.json();
+    return cachedFetch<T>(url.toString(), {
+        headers: { 'Accept': 'application/json' }
     }, ttl);
 }
 
