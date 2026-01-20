@@ -126,7 +126,7 @@ export default function DynamicWalletAd() {
 
             {/* View Switching */}
             {viewMode === 'console' ? (
-                <FlexConsole address={address || ''} signals={signals} />
+                <FlexConsole key={address} address={address || ''} signals={signals} />
             ) : ad ? (
                 <>
                     {/* Ad View (Existing Logic) */}
