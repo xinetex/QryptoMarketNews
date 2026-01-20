@@ -128,6 +128,18 @@ export default function NewsSlider({ autoPlay = true, interval = 5000 }: NewsSli
                     <span className="text-white/50">•</span>
                     <span className="text-white/50">{currentNews.published}</span>
                 </div>
+
+                {/* Alpha Score Badge */}
+                {currentNews.alpha_score !== undefined && (
+                    <div className="absolute top-0 right-0">
+                        <div className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider border ${currentNews.alpha_score > 80 ? 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30 shadow-[0_0_10px_rgba(99,102,241,0.2)]' :
+                                currentNews.alpha_score > 50 ? 'bg-zinc-800 text-zinc-400 border-white/10' :
+                                    'bg-zinc-900 text-zinc-600 border-white/5'
+                            }`}>
+                            Alpha: {currentNews.alpha_score}
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Navigation Arrows */}
