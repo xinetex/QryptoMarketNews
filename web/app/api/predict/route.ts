@@ -23,7 +23,7 @@ export async function POST(request: Request) {
         // Assuming UI maps ID correctly for the call or we do a search.
         // Let's assume UI sends valid ID in 'symbol' field for now, or we lookup.
 
-        const currentPrice = coinData.market_data?.current_price?.usd || 0;
+        const currentPrice = coinData.current_price || 0;
 
         if (currentPrice === 0) {
             return NextResponse.json({ error: 'Invalid Asset Price' }, { status: 400 });
