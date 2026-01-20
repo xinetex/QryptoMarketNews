@@ -31,7 +31,7 @@ const ZONE_CATEGORIES: Record<string, { name: string; icon: string; color: strin
         name: "Real World Assets",
         icon: "Globe",
         color: "text-blue-400",
-        categoryIds: ["real-world-assets"],
+        categoryIds: ["real-world-assets-rwa", "real-world-assets"],
     },
     nft: {
         name: "NFT Market",
