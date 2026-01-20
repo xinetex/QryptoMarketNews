@@ -55,7 +55,9 @@ export interface ZoneEnhancedData extends ZoneConfig {
     change24h: number | null;
     topProtocols: {
         name: string;
+        symbol: string;
         tvl: number;
+        change1d: number | null;
         logo: string;
         chain: string;
     }[];

@@ -150,7 +150,9 @@ function getTopProtocols(protocols: DeFiProtocol[], count: number) {
         .slice(0, count)
         .map((p) => ({
             name: p.name,
+            symbol: p.symbol,
             tvl: p.tvl,
+            change1d: p.change_1d,
             logo: p.logo,
             chain: p.chain,
         }));
