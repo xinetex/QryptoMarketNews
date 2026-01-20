@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Shield, TrendingUp, Zap, Activity, Globe, Lock, Unlock, Wallet as WalletIcon } from 'lucide-react';
+import RSVPDeck from './RSVPDeck';
+import { Shield, TrendingUp, Zap, Activity, Globe, Lock, Unlock, Wallet as WalletIcon, QrCode, Send, Copy, ArrowRight, ArrowDownLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { getPoints } from '@/lib/points';
 import NeuralHandshake from './NeuralHandshake';
-import RSVPDeck from './RSVPDeck';
+
 import { useBalance } from 'wagmi';
 
 function ChevronRight({ size, className }: any) {
@@ -42,146 +43,165 @@ export default function FlexConsole({ address, signals }: { address: string, sig
         setShowHandshake(false);
     };
 
-    // Define Cards for RSVP Deck
-    const BalanceCard = (
-        <div className="h-full flex flex-col p-5 relative">
-            <div className="absolute top-0 right-0 p-4 opacity-10">
-                <WalletIcon size={80} className="text-white transform rotate-12 translate-x-4 -translate-y-4" />
-            </div>
-            <div className="flex-1 flex flex-col justify-center relative z-10">
-                <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider block mb-2">Total Balance</span>
-                <div className="text-3xl font-black text-white tracking-tight flex items-baseline gap-2">
-                    {balance ? parseFloat(balance.formatted).toFixed(4) : '0.0000'}
-                    <span className="text-sm font-bold text-zinc-500">{balance?.symbol || 'ETH'}</span>
+    // --- HYBRID NANO-DECK NODES ---
+
+    // 1. Command Node (Wallet Core)
+    const CommandNode = (
+        <div className="h-full flex flex-col bg-zinc-900/50 p-3 justify-between">
+            {/* Balance Section */}
+            <div>
+                <div className="text-[8px] text-zinc-600 mb-0.5 uppercase tracking-widest">Active Balance</div>
+                <div className="text-2xl text-white font-bold tracking-tighter flex items-baseline gap-1.5">
+                    {balance ? parseFloat(balance.formatted).toFixed(4) : '0.000'}
+                    <span className="text-[10px] text-zinc-500 font-normal mt-2">{balance?.symbol || 'ETH'}</span>
                 </div>
-                <div className="h-px w-12 bg-indigo-500/50 my-4" />
-                <p className="text-[10px] text-zinc-400 leading-relaxed max-w-[200px]">
-                    Your liquidity is ready for deployment.
-                </p>
+                <div className="flex items-center gap-2 mt-2 p-1.5 bg-white/5 border border-white/5 rounded w-fit hover:bg-white/10 transition-colors cursor-pointer">
+                    <span className="text-[9px] font-mono text-zinc-400">
+                        {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'CONNECT'}
+                    </span>
+                    <Copy size={8} className="text-zinc-500" />
+                </div>
             </div>
-            <div className="flex gap-2 mt-auto relative z-10">
-                <a
-                    href="https://keys.coinbase.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 py-2 bg-white/5 hover:bg-white/10 border border-white/5 rounded-lg text-[10px] font-bold text-zinc-300 text-center transition-colors shadow-lg"
-                >
-                    Manage
-                </a>
-                <button className="flex-1 py-2 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 rounded-lg text-[10px] font-bold text-indigo-400 text-center transition-colors shadow-lg shadow-indigo-500/10">
-                    Add Funds
+
+            {/* Micro Actions */}
+            <div className="grid grid-cols-3 gap-1.5">
+                <button className="py-2 border border-zinc-800 hover:border-zinc-700 bg-zinc-900/50 hover:bg-zinc-900 text-[8px] font-bold text-zinc-400 hover:text-white rounded uppercase tracking-wider transition-colors flex flex-col items-center gap-1 group">
+                    <ArrowRight size={10} className="group-hover:-rotate-45 transition-transform" />
+                    Send
+                </button>
+                <button className="py-2 border border-zinc-800 hover:border-zinc-700 bg-zinc-900/50 hover:bg-zinc-900 text-[8px] font-bold text-zinc-400 hover:text-white rounded uppercase tracking-wider transition-colors flex flex-col items-center gap-1 group">
+                    <ArrowDownLeft size={10} className="group-hover:translate-y-0.5 transition-transform" />
+                    Receive
+                </button>
+                <button className="py-2 border border-zinc-800 hover:border-zinc-700 bg-zinc-900/50 hover:bg-zinc-900 text-[8px] font-bold text-zinc-400 hover:text-white rounded uppercase tracking-wider transition-colors flex flex-col items-center gap-1">
+                    <QrCode size={10} />
+                    Identity
                 </button>
             </div>
         </div>
     );
 
-    const RiskCard = (
-        <div className="h-full flex flex-col p-5">
-            <div className="flex justify-between items-center mb-4">
-                <span className="text-[10px] text-zinc-500 font-bold uppercase flex items-center gap-2">
-                    <Activity size={12} /> Exposure Risk
-                </span>
-                <span className={`text-2xl font-black ${riskScore > 70 ? 'text-emerald-400' : 'text-yellow-400'}`}>
-                    {riskScore}
-                </span>
+    // 2. Telemetry Node (System Grid)
+    const TelemetryNode = (
+        <div className="h-full flex flex-col bg-zinc-900/50 p-3">
+            <div className="text-[8px] text-zinc-500 font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
+                <Activity size={10} /> System Telemetry
             </div>
 
-            <div className="flex-1 flex items-center justify-center">
-                {/* Big Gauge Visual */}
-                <div className="relative w-40 h-20 overflow-hidden">
-                    <div className="absolute inset-0 bg-zinc-800 rounded-t-full" />
-                    <div className="absolute inset-2 bg-zinc-900 rounded-t-full z-10" />
-                    {/* Zones */}
-                    <div className="absolute bottom-0 left-0 w-full h-[200%] rounded-full border-[10px] border-emerald-500/20 clip-path-gauge" />
+            <div className="grid grid-cols-2 gap-2 flex-1">
+                {/* Gas */}
+                <div className="p-2 border border-white/5 bg-black/40 rounded flex flex-col gap-1 relative overflow-hidden">
+                    <span className="text-[7px] text-zinc-600 font-bold uppercase">Gas Vector</span>
+                    <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] text-zinc-300 font-bold">14</span>
+                        <span className="text-[7px] text-zinc-500">GWEI</span>
+                    </div>
+                    <div className="w-full h-0.5 bg-zinc-800 rounded-full overflow-hidden mt-auto">
+                        <div className="h-full w-1/3 bg-emerald-500/50"></div>
+                    </div>
+                </div>
 
-                    {/* Needle */}
-                    <motion.div
-                        className="absolute bottom-0 left-1/2 w-1 h-full bg-white origin-bottom z-20"
-                        initial={{ rotate: -90 }}
-                        animate={{ rotate: (riskScore / 100) * 180 - 90 }}
-                        transition={{ delay: 0.5, type: 'spring' }}
-                    />
+                {/* Sentinel */}
+                <div className="p-2 border border-white/5 bg-black/40 rounded flex flex-col gap-1 relative overflow-hidden">
+                    <span className="text-[7px] text-zinc-600 font-bold uppercase">Sentinel</span>
+                    <div className="flex items-center gap-1.5">
+                        <Shield size={10} className="text-emerald-500" />
+                        <span className="text-[9px] text-emerald-400/80">SECURE</span>
+                    </div>
+                    {/* Blinking Light */}
+                    <div className="absolute top-2 right-2 flex gap-0.5">
+                        <div className="w-0.5 h-0.5 bg-emerald-500 animate-[pulse_2s_infinite]"></div>
+                    </div>
+                </div>
+
+                {/* Sync Status */}
+                <div className="p-2 border border-white/5 bg-black/40 rounded flex flex-col gap-1 col-span-2 justify-center">
+                    <div className="flex justify-between items-center mb-0.5">
+                        <span className="text-[7px] text-zinc-600 font-bold uppercase">Prophet Sync</span>
+                        <span className="text-[7px] text-indigo-400">98%</span>
+                    </div>
+                    <div className="w-full h-1 bg-zinc-900 border border-white/5 rounded-full p-[1px]">
+                        <motion.div
+                            className="h-full bg-indigo-500 rounded-full"
+                            initial={{ width: "0%" }}
+                            animate={{ width: "98%" }}
+                            transition={{ duration: 2, delay: 1 }}
+                        />
+                    </div>
                 </div>
             </div>
-
-            <p className="mt-4 text-[10px] text-zinc-400 text-center leading-relaxed bg-white/5 p-2 rounded border border-white/5">
-                <strong className="text-white block mb-1">Status: Resilient</strong>
-                Portfolio structure is robust against current volatility vectors.
-            </p>
         </div>
     );
 
-    const SignalsCard = (
-        <div className="h-full flex flex-col p-5">
-            <div className="flex items-center gap-2 mb-4">
-                <Zap size={14} className="text-yellow-400" />
-                <span className="text-xs font-bold text-white uppercase tracking-wider">Alpha Signals</span>
+    // 3. Signals Node (Nano)
+    const SignalNode = (
+        <div className="h-full flex flex-col bg-zinc-900/50 p-3">
+            <div className="text-[8px] text-zinc-500 font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
+                <Zap size={10} className="text-yellow-500" /> Active Streams
             </div>
 
-            <div className="flex-1 space-y-2 overflow-y-auto pr-1 custom-scrollbar">
+            <div className="flex-1 space-y-1">
                 {signals.slice(0, 3).map((s, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-black/40 border border-white/5 hover:border-indigo-500/30 transition-colors group">
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded bg-zinc-800 flex items-center justify-center text-[10px] font-bold text-zinc-400">
-                                {s.symbol}
-                            </div>
-                            <div>
-                                <div className="text-[10px] font-bold text-zinc-300 group-hover:text-white">{s.symbol}/USD</div>
-                                <div className="text-[9px] text-zinc-500">Vol Forecast</div>
-                            </div>
+                    <div key={i} className="flex items-center justify-between p-1.5 rounded bg-black/40 border border-white/5 hover:border-indigo-500/30 transition-colors">
+                        <div className="flex items-center gap-2">
+                            <div className="w-4 h-4 rounded bg-white/5 flex items-center justify-center text-[8px] font-bold text-zinc-400">{s.symbol[0]}</div>
+                            <span className="text-[9px] font-bold text-zinc-300">{s.symbol}</span>
                         </div>
-                        <div className="text-right">
-                            <div className="text-xs font-mono font-bold text-white">{s.volatility}%</div>
-                            <div className="text-[9px] text-emerald-400">+Low Risk</div>
-                        </div>
+                        <span className="text-[8px] font-mono text-emerald-400">{s.volatility}% VOL</span>
                     </div>
                 ))}
             </div>
-
-            <button className="w-full py-2 mt-4 bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] font-bold uppercase tracking-widest rounded transition-colors flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20">
-                <Lock size={10} /> Unlock Whale Tier
-            </button>
         </div>
     );
 
+    // --- NANO WALLET UI ---
+
     return (
-        <div className="h-full flex flex-col bg-zinc-950/50 relative">
+        <div className="h-full flex flex-col bg-zinc-950 relative font-mono select-none">
             {showHandshake && <NeuralHandshake onComplete={handleHandshakeComplete} />}
 
-            {/* Header: Pro Status */}
-            <div className="p-3 border-b border-white/5 flex justify-between items-center bg-zinc-900/50">
+            {/* Header / Status Bar */}
+            <div className="px-3 py-2 border-b border-white/5 flex items-center justify-between text-[8px] tracking-widest bg-zinc-900/50">
                 <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-[10px] font-bold text-emerald-400 tracking-widest uppercase">
-                        Flex Intelligence
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-[9px] font-bold text-emerald-400 tracking-widest uppercase">
+                        Prophet Core
                     </span>
                 </div>
-                <div className="px-2 py-0.5 rounded bg-indigo-500/10 border border-indigo-500/20 text-[9px] font-bold text-indigo-400">
-                    RSVP DECK
+
+                <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1.5">
+                        <div className="w-1 h-1 rounded-full bg-emerald-500 shadow-[0_0_5px_currentColor]"></div>
+                        <span className="text-emerald-500/80 font-bold hidden sm:inline">MAINNET</span>
+                    </div>
+                    <div className="text-zinc-600">v4.2</div>
                 </div>
             </div>
 
-            {/* RSVP Deck Container */}
-            <div className="flex-1 p-2 relative overflow-hidden bg-zinc-950">
+            {/* Deck Content */}
+            <div className="flex-1 p-2 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-zinc-900/40 to-zinc-950 relative overflow-hidden">
                 {scanning ? (
                     <motion.div
                         initial={{ opacity: 1 }}
                         animate={{ opacity: 0 }}
                         transition={{ delay: 1.5, duration: 0.5 }}
-                        className="absolute inset-0 z-30 bg-zinc-950 flex flex-col items-center justify-center gap-3"
+                        className="absolute inset-0 z-30 bg-zinc-950 flex flex-col items-center justify-center gap-2"
                     >
-                        <Activity className="text-indigo-400 animate-spin" size={24} />
-                        <span className="text-[10px] font-mono text-indigo-400">INITIALIZING DECK...</span>
+                        <Activity className="text-emerald-500/50 animate-pulse" size={16} />
+                        <span className="text-[8px] text-emerald-500/50 tracking-[0.2em]">INITIALIZING LINK...</span>
                     </motion.div>
                 ) : (
-                    <RSVPDeck items={[BalanceCard, RiskCard, SignalsCard]} />
+                    <RSVPDeck items={[CommandNode, TelemetryNode, SignalNode]} speed={5000} />
                 )}
             </div>
 
-            {/* Footer Status */}
-            <div className="p-2 border-t border-white/5 bg-black/40 text-[9px] font-mono text-zinc-600 flex justify-between">
-                <span>SENTINEL: ONLINE</span>
-                <span className="text-indigo-400">REP: {points?.totalPoints?.toLocaleString() || '...'}</span>
+            {/* Footer System Line */}
+            <div className="px-2 py-1 border-t border-white/5 bg-black/60 flex items-center justify-between">
+                <div className="flex gap-2 text-[7px] text-zinc-600 uppercase font-bold">
+                    <span>UPTIME: 14:029:01</span>
+                    <span className="text-zinc-700">|</span>
+                    <span>RPC: <span className="text-emerald-500/80">SYNCED</span></span>
+                </div>
             </div>
         </div>
     );
