@@ -125,9 +125,20 @@ export default function AlertableZoneCard({ zone, icon: IconComponent, gradientC
                     <h3 className="text-zinc-100 text-lg font-medium tracking-tight mb-0.5 group-hover:text-white transition-colors">
                         {zone.name}
                     </h3>
-                    <p className="text-[10px] text-zinc-500 group-hover:text-zinc-400 transition-colors">
-                        Explore {zone.name.toLowerCase()} Prophets
-                    </p>
+
+                    {tokens && tokens.length > 0 ? (
+                        <div className="flex flex-wrap gap-1.5 mt-2">
+                            {tokens.slice(0, 4).map((t, i) => (
+                                <span key={i} className="text-[9px] font-mono font-bold text-zinc-400 bg-zinc-900/60 px-1.5 py-px rounded border border-white/5 group-hover:border-indigo-500/30 group-hover:text-indigo-300 transition-colors">
+                                    {t}
+                                </span>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-[10px] text-zinc-500 group-hover:text-zinc-400 transition-colors">
+                            Explore {zone.name.toLowerCase()} Prophets
+                        </p>
+                    )}
                 </div>
 
                 <div className="absolute bottom-0 left-0 h-1 bg-indigo-500 transition-all duration-300 w-0 group-hover:w-1/3" />
