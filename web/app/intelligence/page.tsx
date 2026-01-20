@@ -1,4 +1,5 @@
 import ProphetAgent from '@/components/agent/ProphetAgent';
+import ProphetManual from '@/components/ProphetManual';
 
 export default function IntelligencePage() {
     return (
@@ -37,6 +38,9 @@ export default function IntelligencePage() {
                         400-800 WPM transmission for rapid insight ingestion.
                     </div>
                 </div>
+
+                {/* System Manual / Help Section */}
+                <ProphetManual />
             </div>
 
         </div>
