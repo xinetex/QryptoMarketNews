@@ -5,6 +5,7 @@ import { Shield, TrendingUp, Zap, Activity, Globe, Lock, Unlock, Wallet as Walle
 import { motion } from 'framer-motion';
 import { getPoints } from '@/lib/points';
 import NeuralHandshake from './NeuralHandshake';
+import RSVPDeck from './RSVPDeck';
 import { useBalance } from 'wagmi';
 
 function ChevronRight({ size, className }: any) {
@@ -41,6 +42,108 @@ export default function FlexConsole({ address, signals }: { address: string, sig
         setShowHandshake(false);
     };
 
+    // Define Cards for RSVP Deck
+    const BalanceCard = (
+        <div className="h-full flex flex-col p-5 relative">
+            <div className="absolute top-0 right-0 p-4 opacity-10">
+                <WalletIcon size={80} className="text-white transform rotate-12 translate-x-4 -translate-y-4" />
+            </div>
+            <div className="flex-1 flex flex-col justify-center relative z-10">
+                <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider block mb-2">Total Balance</span>
+                <div className="text-3xl font-black text-white tracking-tight flex items-baseline gap-2">
+                    {balance ? parseFloat(balance.formatted).toFixed(4) : '0.0000'}
+                    <span className="text-sm font-bold text-zinc-500">{balance?.symbol || 'ETH'}</span>
+                </div>
+                <div className="h-px w-12 bg-indigo-500/50 my-4" />
+                <p className="text-[10px] text-zinc-400 leading-relaxed max-w-[200px]">
+                    Your liquidity is ready for deployment.
+                </p>
+            </div>
+            <div className="flex gap-2 mt-auto relative z-10">
+                <a
+                    href="https://keys.coinbase.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 py-2 bg-white/5 hover:bg-white/10 border border-white/5 rounded-lg text-[10px] font-bold text-zinc-300 text-center transition-colors shadow-lg"
+                >
+                    Manage
+                </a>
+                <button className="flex-1 py-2 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 rounded-lg text-[10px] font-bold text-indigo-400 text-center transition-colors shadow-lg shadow-indigo-500/10">
+                    Add Funds
+                </button>
+            </div>
+        </div>
+    );
+
+    const RiskCard = (
+        <div className="h-full flex flex-col p-5">
+            <div className="flex justify-between items-center mb-4">
+                <span className="text-[10px] text-zinc-500 font-bold uppercase flex items-center gap-2">
+                    <Activity size={12} /> Exposure Risk
+                </span>
+                <span className={`text-2xl font-black ${riskScore > 70 ? 'text-emerald-400' : 'text-yellow-400'}`}>
+                    {riskScore}
+                </span>
+            </div>
+
+            <div className="flex-1 flex items-center justify-center">
+                {/* Big Gauge Visual */}
+                <div className="relative w-40 h-20 overflow-hidden">
+                    <div className="absolute inset-0 bg-zinc-800 rounded-t-full" />
+                    <div className="absolute inset-2 bg-zinc-900 rounded-t-full z-10" />
+                    {/* Zones */}
+                    <div className="absolute bottom-0 left-0 w-full h-[200%] rounded-full border-[10px] border-emerald-500/20 clip-path-gauge" />
+
+                    {/* Needle */}
+                    <motion.div
+                        className="absolute bottom-0 left-1/2 w-1 h-full bg-white origin-bottom z-20"
+                        initial={{ rotate: -90 }}
+                        animate={{ rotate: (riskScore / 100) * 180 - 90 }}
+                        transition={{ delay: 0.5, type: 'spring' }}
+                    />
+                </div>
+            </div>
+
+            <p className="mt-4 text-[10px] text-zinc-400 text-center leading-relaxed bg-white/5 p-2 rounded border border-white/5">
+                <strong className="text-white block mb-1">Status: Resilient</strong>
+                Portfolio structure is robust against current volatility vectors.
+            </p>
+        </div>
+    );
+
+    const SignalsCard = (
+        <div className="h-full flex flex-col p-5">
+            <div className="flex items-center gap-2 mb-4">
+                <Zap size={14} className="text-yellow-400" />
+                <span className="text-xs font-bold text-white uppercase tracking-wider">Alpha Signals</span>
+            </div>
+
+            <div className="flex-1 space-y-2 overflow-y-auto pr-1 custom-scrollbar">
+                {signals.slice(0, 3).map((s, i) => (
+                    <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-black/40 border border-white/5 hover:border-indigo-500/30 transition-colors group">
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded bg-zinc-800 flex items-center justify-center text-[10px] font-bold text-zinc-400">
+                                {s.symbol}
+                            </div>
+                            <div>
+                                <div className="text-[10px] font-bold text-zinc-300 group-hover:text-white">{s.symbol}/USD</div>
+                                <div className="text-[9px] text-zinc-500">Vol Forecast</div>
+                            </div>
+                        </div>
+                        <div className="text-right">
+                            <div className="text-xs font-mono font-bold text-white">{s.volatility}%</div>
+                            <div className="text-[9px] text-emerald-400">+Low Risk</div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            <button className="w-full py-2 mt-4 bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] font-bold uppercase tracking-widest rounded transition-colors flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20">
+                <Lock size={10} /> Unlock Whale Tier
+            </button>
+        </div>
+    );
+
     return (
         <div className="h-full flex flex-col bg-zinc-950/50 relative">
             {showHandshake && <NeuralHandshake onComplete={handleHandshakeComplete} />}
@@ -50,111 +153,29 @@ export default function FlexConsole({ address, signals }: { address: string, sig
                 <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                     <span className="text-[10px] font-bold text-emerald-400 tracking-widest uppercase">
-                        Flex Intelligence Active
+                        Flex Intelligence
                     </span>
                 </div>
                 <div className="px-2 py-0.5 rounded bg-indigo-500/10 border border-indigo-500/20 text-[9px] font-bold text-indigo-400">
-                    PRO TIER
+                    RSVP DECK
                 </div>
             </div>
 
-            {/* Main Dashboard */}
-            <div className="flex-1 p-4 relative overflow-hidden">
-                {scanning && (
+            {/* RSVP Deck Container */}
+            <div className="flex-1 p-2 relative overflow-hidden bg-zinc-950">
+                {scanning ? (
                     <motion.div
                         initial={{ opacity: 1 }}
                         animate={{ opacity: 0 }}
                         transition={{ delay: 1.5, duration: 0.5 }}
-                        className="absolute inset-0 z-20 bg-zinc-950 flex flex-col items-center justify-center gap-3"
+                        className="absolute inset-0 z-30 bg-zinc-950 flex flex-col items-center justify-center gap-3"
                     >
                         <Activity className="text-indigo-400 animate-spin" size={24} />
-                        <span className="text-[10px] font-mono text-indigo-400">ANALYZING WALLET VECTORS...</span>
+                        <span className="text-[10px] font-mono text-indigo-400">INITIALIZING DECK...</span>
                     </motion.div>
+                ) : (
+                    <RSVPDeck items={[BalanceCard, RiskCard, SignalsCard]} />
                 )}
-
-                {/* Portfolio Value Card (NEW) */}
-                <div className="mb-6 p-4 rounded-xl bg-gradient-to-br from-zinc-900 to-black border border-white/5 relative group overflow-hidden">
-                    <div className="absolute top-0 right-0 p-3 opacity-20">
-                        <WalletIcon size={48} className="text-white transform rotate-12 translate-x-2 -translate-y-2" />
-                    </div>
-                    <div className="relative z-10">
-                        <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider block mb-1">Total Balance</span>
-                        <div className="text-2xl font-black text-white tracking-tight flex items-baseline gap-1">
-                            {balance ? parseFloat(balance.formatted).toFixed(4) : '0.0000'}
-                            <span className="text-sm font-bold text-zinc-500">{balance?.symbol || 'ETH'}</span>
-                        </div>
-                        <div className="flex gap-2 mt-3">
-                            <a
-                                href="https://keys.coinbase.com"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex-1 py-1.5 bg-white/5 hover:bg-white/10 border border-white/5 rounded text-[10px] font-bold text-zinc-300 text-center transition-colors"
-                            >
-                                Send / Receive
-                            </a>
-                            <button className="flex-1 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 rounded text-[10px] font-bold text-indigo-400 transition-colors">
-                                Add Funds
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Risk Radar */}
-                <div className="mb-6 relative">
-                    <div className="flex justify-between items-end mb-2">
-                        <span className="text-[10px] text-zinc-500 font-bold uppercase">Exposure Risk</span>
-                        <span className={`text-xl font-black ${riskScore > 70 ? 'text-emerald-400' : 'text-yellow-400'}`}>
-                            {riskScore}/100
-                        </span>
-                    </div>
-                    {/* Visual Meter */}
-                    <div className="h-2 bg-zinc-800 rounded-full overflow-hidden flex">
-                        <div className="h-full bg-red-500/50 w-[20%]" />
-                        <div className="h-full bg-yellow-500/50 w-[30%]" />
-                        <div className="h-full bg-emerald-500/50 w-[50%]" />
-                        {/* Indicator */}
-                        <motion.div
-                            className="absolute top-6 bottom-0 w-1 bg-white h-3 mt-[-4px] shadow-[0_0_10px_white]"
-                            initial={{ left: '0%' }}
-                            animate={{ left: `${riskScore}%` }}
-                            transition={{ delay: 2, duration: 1, type: "spring" }}
-                        />
-                    </div>
-                    <p className="mt-2 text-[10px] text-zinc-400 leading-tight">
-                        Your portfolio shows <span className="text-white font-bold">Resilient</span> structure against current volatility vectors.
-                    </p>
-                </div>
-
-                {/* Alpha Signals */}
-                <div className="space-y-2">
-                    <div className="flex items-center gap-2 mb-2">
-                        <Zap size={12} className="text-yellow-400" />
-                        <span className="text-[10px] font-bold text-zinc-300 uppercase">Active Alpha Signals</span>
-                    </div>
-
-                    {signals.slice(0, 3).map((s, i) => (
-                        <div key={i} className="flex items-center justify-between p-2 rounded bg-white/5 border border-white/5 hover:border-indigo-500/30 transition-colors cursor-pointer group">
-                            <div className="flex items-center gap-2">
-                                <Shield size={10} className="text-zinc-600 group-hover:text-indigo-400" />
-                                <span className="text-xs font-bold text-zinc-300">{s.symbol}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <span className="text-[10px] font-mono text-zinc-500">Vol: {s.volatility}%</span>
-                                <ChevronRight size={10} className="text-zinc-600" />
-                            </div>
-                        </div>
-                    ))}
-
-                    <div className="flex items-center justify-between p-2 rounded bg-indigo-500/10 border border-indigo-500/20 mt-2">
-                        <div className="flex items-center gap-2">
-                            <Lock size={10} className="text-indigo-400" />
-                            <span className="text-[10px] font-bold text-indigo-300">Whale Accumulation (BTC)</span>
-                        </div>
-                        <button className="px-2 py-0.5 bg-indigo-500 text-[9px] font-bold text-white rounded hover:bg-indigo-400 transition-colors">
-                            UNLOCK
-                        </button>
-                    </div>
-                </div>
             </div>
 
             {/* Footer Status */}
