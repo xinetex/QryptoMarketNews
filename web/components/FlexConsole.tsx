@@ -411,6 +411,94 @@ export default function FlexConsole({ address, signals }: { address: string, sig
         </div>
     );
 
+    // 5. Prediction Node (Interactive)
+    const [predictionStep, setPredictionStep] = useState<'IDLE' | 'SELECT_ASSET' | 'SELECT_DIR' | 'CONFIRMING' | 'SUCCESS'>('IDLE');
+    const [predAsset, setPredAsset] = useState<string>('');
+    const [predDir, setPredDir] = useState<'UP' | 'DOWN'>('UP');
+
+    const handlePredict = async () => {
+        setPredictionStep('CONFIRMING');
+        try {
+            await fetch('/api/predict', {
+                method: 'POST',
+                body: JSON.stringify({ wallet: address, symbol: predAsset, direction: predDir, rationale: 'FlexConsole Alpha' }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+            setPredictionStep('SUCCESS');
+            setTimeout(() => {
+                setPredictionStep('IDLE');
+                setPredAsset('');
+            }, 3000); // Reset after success
+        } catch (e) {
+            console.error(e);
+            setPredictionStep('IDLE');
+        }
+    };
+
+    const PredictionNode = (
+        <div className="h-full flex flex-col bg-zinc-900/50 p-3 relative overflow-hidden">
+            <div className="text-[8px] text-zinc-500 font-bold uppercase tracking-widest mb-3 flex items-center gap-2">
+                <Globe size={10} className="text-indigo-500" /> Prophecy Uplink
+            </div>
+
+            <AnimatePresence mode="wait">
+                {predictionStep === 'IDLE' ? (
+                    <motion.button
+                        key="idle"
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        onClick={() => setPredictionStep('SELECT_ASSET')}
+                        className="flex-1 flex flex-col items-center justify-center gap-2 border border-dashed border-white/10 rounded hover:bg-white/5 hover:border-white/20 transition-all group"
+                    >
+                        <div className="w-8 h-8 rounded-full bg-indigo-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <Zap size={14} className="text-indigo-400" />
+                        </div>
+                        <span className="text-[9px] font-bold text-zinc-400 group-hover:text-white mt-1">INITIATE FORECAST</span>
+                    </motion.button>
+                ) : predictionStep === 'SELECT_ASSET' ? (
+                    <motion.div key="asset" initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -20, opacity: 0 }} className="flex-1 flex flex-col gap-2">
+                        <span className="text-[8px] text-zinc-500 font-bold text-center">SELECT TARGET ASSET</span>
+                        <div className="grid grid-cols-2 gap-2">
+                            {['bitcoin', 'ethereum', 'solana', 'dogecoin'].map(c => (
+                                <button key={c} onClick={() => { setPredAsset(c); setPredictionStep('SELECT_DIR'); }}
+                                    className="p-2 bg-black/40 border border-white/5 hover:border-indigo-500/50 rounded text-[9px] font-bold text-zinc-300 hover:text-white uppercase transition-colors">
+                                    {c}
+                                </button>
+                            ))}
+                        </div>
+                        <button onClick={() => setPredictionStep('IDLE')} className="mt-auto text-[8px] text-zinc-600 hover:text-zinc-400 text-center uppercase">Cancel</button>
+                    </motion.div>
+                ) : predictionStep === 'SELECT_DIR' ? (
+                    <motion.div key="dir" initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -20, opacity: 0 }} className="flex-1 flex flex-col gap-2">
+                        <span className="text-[8px] text-zinc-500 font-bold text-center">PREDICT 24H MOVE ({predAsset.substring(0, 3).toUpperCase()})</span>
+                        <div className="flex-1 flex flex-col gap-2 justify-center">
+                            <button onClick={() => { setPredDir('UP'); handlePredict(); }} className="flex-1 bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20 rounded flex items-center justify-center gap-2 group">
+                                <TrendingUp size={14} className="text-emerald-500 group-hover:scale-110 transition-transform" />
+                                <span className="text-[10px] font-bold text-emerald-400">HIGHER</span>
+                            </button>
+                            <button onClick={() => { setPredDir('DOWN'); handlePredict(); }} className="flex-1 bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 rounded flex items-center justify-center gap-2 group">
+                                <TrendingUp size={14} className="text-red-500 rotate-180 group-hover:scale-110 transition-transform" />
+                                <span className="text-[10px] font-bold text-red-400">LOWER</span>
+                            </button>
+                        </div>
+                    </motion.div>
+                ) : predictionStep === 'CONFIRMING' ? (
+                    <motion.div key="confirm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 flex flex-col items-center justify-center gap-2">
+                        <Activity className="text-indigo-500 animate-spin" size={20} />
+                        <span className="text-[8px] font-bold text-indigo-400 animate-pulse">ENCRYPTING SIGNAL...</span>
+                    </motion.div>
+                ) : (
+                    <motion.div key="success" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 flex flex-col items-center justify-center gap-2 bg-emerald-500/10 rounded border border-emerald-500/20">
+                        <Check size={24} className="text-emerald-400" />
+                        <div className="text-center">
+                            <div className="text-[10px] font-black text-emerald-400 uppercase">PREDICTION LOCKED</div>
+                            <div className="text-[8px] text-emerald-500/70 uppercase font-bold">+10 REPUTATION EARNED</div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+
     // --- NANO WALLET UI ---
 
     return (
@@ -431,7 +519,7 @@ export default function FlexConsole({ address, signals }: { address: string, sig
                         <div className="w-1 h-1 rounded-full bg-emerald-500 shadow-[0_0_5px_currentColor]"></div>
                         <span className="text-emerald-500/80 font-bold hidden sm:inline">MAINNET</span>
                     </div>
-                    <div className="text-zinc-600">v4.2</div>
+                    <div className="text-zinc-600">v4.3</div>
                 </div>
             </div>
 
@@ -448,7 +536,7 @@ export default function FlexConsole({ address, signals }: { address: string, sig
                         <span className="text-[8px] text-emerald-500/50 tracking-[0.2em]">INITIALIZING LINK...</span>
                     </motion.div>
                 ) : (
-                    <RSVPDeck items={[CommandNode, TelemetryNode, RiskNode, SignalNode]} speed={5000} />
+                    <RSVPDeck items={[CommandNode, TelemetryNode, RiskNode, SignalNode, PredictionNode]} speed={5000} />
                 )}
             </div>
 

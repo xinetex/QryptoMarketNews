@@ -210,6 +210,27 @@ export async function getMarketChart(coinId: string, days: number = 7): Promise<
 }
 
 /**
+ * Fetch minimal coin data for prediction resolution
+ */
+export async function getCoin(coinId: string): Promise<CoinGeckoMarketResponse> {
+    try {
+        const data = await cachedCoinGeckoFetch<CoinGeckoMarketResponse[]>(
+            '/coins/markets',
+            {
+                vs_currency: 'usd',
+                ids: coinId,
+                sparkline: 'false'
+            },
+            60
+        );
+        return data[0] || { id: coinId, symbol: coinId, name: coinId, current_price: 0 } as any;
+    } catch (error) {
+        console.error(`Failed to fetch coin ${coinId}:`, error);
+        return { id: coinId, symbol: coinId, name: coinId, current_price: 0 } as any;
+    }
+}
+
+/**
  * Calculate historical volatility (Standard Deviation of daily returns)
  * Returns a percentage value (e.g., 5.2 for 5.2%)
  */

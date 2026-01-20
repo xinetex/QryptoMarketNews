@@ -110,6 +110,25 @@ export async function initDatabase() {
             )
         `;
 
+        // User Predictions
+        await sql`
+            CREATE TABLE IF NOT EXISTS user_predictions (
+                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                wallet_address VARCHAR(255) NOT NULL,
+                symbol VARCHAR(20) NOT NULL,
+                direction VARCHAR(10) NOT NULL,
+                timeframe VARCHAR(20) DEFAULT '24H',
+                entry_price DECIMAL(20, 8) NOT NULL,
+                target_price DECIMAL(20, 8),
+                close_price DECIMAL(20, 8),
+                status VARCHAR(20) DEFAULT 'OPEN',
+                points_awarded INTEGER DEFAULT 0,
+                rationale TEXT,
+                resolved_at TIMESTAMP,
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+        `;
+
         console.log('Database tables initialized');
         return true;
     } catch (error) {
