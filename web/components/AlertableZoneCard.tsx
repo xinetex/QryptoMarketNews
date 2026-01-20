@@ -60,6 +60,7 @@ export default function AlertableZoneCard({ zone, icon: IconComponent, gradientC
 
             // Auto-Revert after 5s
             setTimeout(() => {
+                if (!cardRef.current) return;
                 animate(cardRef.current, {
                     rotateY: 0,
                     duration: 800,
