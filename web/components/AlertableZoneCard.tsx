@@ -49,6 +49,8 @@ export default function AlertableZoneCard({ zone, icon: IconComponent, gradientC
             setAlert(evt);
             setIsFlipped(true);
 
+            if (!cardRef.current) return;
+
             // Flip Animation
             animate(cardRef.current, {
                 rotateY: 180,
@@ -129,12 +131,12 @@ export default function AlertableZoneCard({ zone, icon: IconComponent, gradientC
                 >
                     {/* Alert Background */}
                     <div className={`absolute inset-0 opacity-20 animate-pulse ${alert?.severity === 'critical' ? 'bg-red-500' :
-                            alert?.severity === 'warning' ? 'bg-orange-500' : 'bg-emerald-500'
+                        alert?.severity === 'warning' ? 'bg-orange-500' : 'bg-emerald-500'
                         }`} />
 
                     <div className="relative z-10 flex flex-col items-center">
                         <div className={`p-3 rounded-full mb-3 ${alert?.severity === 'critical' ? 'bg-red-500/20 text-red-500' :
-                                alert?.severity === 'warning' ? 'bg-orange-500/20 text-orange-400' : 'bg-emerald-500/20 text-emerald-400'
+                            alert?.severity === 'warning' ? 'bg-orange-500/20 text-orange-400' : 'bg-emerald-500/20 text-emerald-400'
                             }`}>
                             {alert?.type === 'WHALE' && <Activity size={24} />}
                             {alert?.type === 'VOLUME' && <TrendingUp size={24} />}
@@ -145,7 +147,7 @@ export default function AlertableZoneCard({ zone, icon: IconComponent, gradientC
                             {alert?.type} DETECTED
                         </div>
                         <div className={`text-[10px] font-mono ${alert?.severity === 'critical' ? 'text-red-300' :
-                                alert?.severity === 'warning' ? 'text-orange-300' : 'text-emerald-300'
+                            alert?.severity === 'warning' ? 'text-orange-300' : 'text-emerald-300'
                             }`}>
                             {alert?.message}
                         </div>
