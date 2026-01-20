@@ -199,5 +199,8 @@
         <Animation id="fadeAnimation" duration="0.4" repeat="false" easeFunction="inOut">
             <FloatFieldInterpolator id="fadeInterpolator" key="[0.0, 0.5, 1.0]" keyValue="[0.0, 1.0, 0.0]" fieldToInterp="transitionOverlay.opacity" />
         </Animation>
+
+        <!-- Device Linking Overlay (Hidden by default) -->
+        <DeviceLinkScene id="deviceLinkScene" visible="false" />
     </children>
 </component>

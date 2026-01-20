@@ -36,9 +36,20 @@ export interface CategoryTVL {
     change24h: number | null;
 }
 
-export interface ZoneEnhancedData {
-    id: string;
+
+export interface ZoneConfig {
+    id: string; // UUID
     name: string;
+    slug: string;
+    description: string | null;
+    icon: string;
+    color: string;
+    defillama_category: string | null;
+    coingecko_category_id: string | null;
+    sort_order: number;
+}
+
+export interface ZoneEnhancedData extends ZoneConfig {
     tvl: number;
     tvlFormatted: string;
     change24h: number | null;

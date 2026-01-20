@@ -55,11 +55,19 @@ export default function FlexConsole({ address, signals }: { address: string, sig
                     {balance ? parseFloat(balance.formatted).toFixed(4) : '0.000'}
                     <span className="text-[10px] text-zinc-500 font-normal mt-2">{balance?.symbol || 'ETH'}</span>
                 </div>
-                <div className="flex items-center gap-2 mt-2 p-1.5 bg-white/5 border border-white/5 rounded w-fit hover:bg-white/10 transition-colors cursor-pointer">
-                    <span className="text-[9px] font-mono text-zinc-400">
-                        {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'CONNECT'}
+                <div className="flex items-center gap-2 mt-2 p-1.5 bg-black/40 border border-white/5 rounded w-fit hover:border-emerald-500/30 transition-colors cursor-pointer group/addr">
+                    <span className="text-[9px] font-mono text-zinc-300">
+                        {address ? (
+                            <>
+                                <span className="text-emerald-400/80">{address.slice(0, 4)}</span>
+                                <span className="text-zinc-500">...</span>
+                                <span>{address.slice(-4)}</span>
+                            </>
+                        ) : (
+                            'CONNECT'
+                        )}
                     </span>
-                    <Copy size={8} className="text-zinc-500" />
+                    <Copy size={8} className="text-zinc-600 group-hover/addr:text-emerald-400 transition-colors" />
                 </div>
             </div>
 

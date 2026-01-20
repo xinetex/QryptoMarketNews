@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="DeviceTask" extends="Task">
+    <interface>
+        <field id="command" type="string" />
+        <field id="apiBaseUrl" type="string" />
+        <field id="rokuSerial" type="string" />
+        <field id="deviceName" type="string" />
+        
+        <!-- Inputs for checkStatus -->
+        <field id="activationCode" type="string" />
+        
+        <!-- Outputs -->
+        <field id="codeResult" type="assocarray" />
+        <field id="statusResult" type="assocarray" />
+    </interface>
+    
+    <script type="text/brightscript" uri="DeviceTask.brs" />
+</component>

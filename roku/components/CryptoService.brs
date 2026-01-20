@@ -136,7 +136,7 @@ end sub
 
 sub fetchZoneData()
     ' Use AgentCache QChannel zones endpoint for managed content
-    url = m.top.apiBaseUrl + "/api/qchannel/zones"
+    url = m.top.apiBaseUrl + "/api/defi/zones"
     response = makeApiRequest(url)
     
     if response <> invalid and response.data <> invalid

@@ -799,31 +799,38 @@ end sub
 
 
 sub launchActivationView()
-    if m.activationView = invalid
-        print "[MainScene] Creating ActivationView..."
-        m.activationView = m.top.createChild("ActivationView")
-        m.activationView.observeField("visible", "onActivationVisibleChanged")
-        m.activationView.observeField("activationComplete", "onActivationComplete")
+    if m.deviceLinkScene = invalid
+        m.deviceLinkScene = m.top.findNode("deviceLinkScene")
+        m.deviceLinkScene.observeField("visible", "onDeviceLinkVisibleChanged")
+        m.deviceLinkScene.observeField("linkComplete", "onDeviceLinkComplete")
     end if
     
-    print "[MainScene] Launching Activation View..."
-    m.activationView.visible = true
-    m.activationView.setFocus(true)
+    print "[MainScene] Launching Device Link Scene..."
+    m.deviceLinkScene.visible = true
+    m.deviceLinkScene.setFocus(true)
 end sub
 
-sub onActivationVisibleChanged()
-    if m.activationView <> invalid and not m.activationView.visible
-        ' Returned from activation logic
-        m.settingsScene.visible = true
-        m.settingsScene.setFocus(true)
+sub onDeviceLinkVisibleChanged()
+    if m.deviceLinkScene <> invalid and not m.deviceLinkScene.visible
+        ' Returned from linking logic (back/exit)
+        if m.settingsScene <> invalid and m.settingsScene.visible
+            m.settingsScene.setFocus(true)
+        else
+            m.zoneGrid.setFocus(true)
+        end if
     end if
 end sub
 
-sub onActivationComplete()
-    if m.activationView.activationComplete
+sub onDeviceLinkComplete()
+    if m.deviceLinkScene.linkComplete
         print "[MainScene] Device paired successfully"
-        ' Could show a success toast here
-        m.activationView.visible = false
+        user = m.deviceLinkScene.linkedUser
+        print "User: " + FormatJson(user)
+        
+        ' Hide scene
+        m.deviceLinkScene.visible = false
+        
+        ' TODO: Persist user session or update UI with points
     end if
 end sub
 

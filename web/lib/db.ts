@@ -30,20 +30,8 @@ export async function initDatabase() {
             )
         `;
 
-        // Zones table
-        await sql`
-            CREATE TABLE IF NOT EXISTS qchannel_zones (
-                id VARCHAR(50) PRIMARY KEY,
-                name VARCHAR(255) NOT NULL,
-                enabled BOOLEAN DEFAULT true,
-                sort_order INTEGER DEFAULT 0,
-                icon VARCHAR(10),
-                color VARCHAR(20),
-                coin_limit INTEGER DEFAULT 10,
-                coingecko_category VARCHAR(255),
-                updated_at TIMESTAMP DEFAULT NOW()
-            )
-        `;
+        // Zones table managed by Drizzle migration (004_qchannel)
+        // Table: qchannel_zones
 
         // Users table
         await sql`

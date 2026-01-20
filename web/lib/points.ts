@@ -73,6 +73,15 @@ export function getPoints(): UserPoints {
 }
 
 /**
+ * Clear user points (Logout)
+ */
+export function clearPoints(): void {
+    if (typeof window !== 'undefined') {
+        localStorage.removeItem(STORAGE_KEY);
+    }
+}
+
+/**
  * Get default points structure
  */
 function getDefaultPoints(): UserPoints {

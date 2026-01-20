@@ -1,5 +1,5 @@
 // DeFiLlama API Client
-import type { DeFiProtocol, DeFiChain, ZoneEnhancedData } from "./types/defi";
+import type { DeFiProtocol, DeFiChain, ZoneEnhancedData, ZoneConfig } from "./types/defi";
 
 const DEFILLAMA_API = "https://api.llama.fi";
 
@@ -77,93 +77,70 @@ export async function getL2Comparison(): Promise<{ name: string; tvl: number; fo
 /**
  * Get enhanced zone data with TVL from DeFiLlama
  */
-export async function getEnhancedZoneData(): Promise<ZoneEnhancedData[]> {
+
+/**
+ * Get enhanced zone data with TVL from DeFiLlama
+ */
+export async function getEnhancedZoneData(zoneConfigs: ZoneConfig[]): Promise<ZoneEnhancedData[]> {
     const [protocols, chains] = await Promise.all([
         getAllProtocols(),
         getChainsTVL(),
     ]);
 
-    const zones: ZoneEnhancedData[] = [];
+    const results: ZoneEnhancedData[] = [];
 
-    // DeFi Zone - aggregate DEXes, Lending, etc.
-    const defiProtocols = protocols.filter((p) =>
-        ["Dexes", "Lending", "Yield", "Derivatives", "CDP", "Liquid Staking"].includes(p.category)
-    );
-    const defiTVL = defiProtocols.reduce((sum, p) => sum + (p.tvl || 0), 0);
-    zones.push({
-        id: "defi",
-        name: "DeFi 2.0",
-        tvl: defiTVL,
-        tvlFormatted: formatTVL(defiTVL),
-        change24h: calculateAvgChange(defiProtocols),
-        topProtocols: getTopProtocols(defiProtocols, 5),
-    });
+    for (const zone of zoneConfigs) {
+        let zoneTVL = 0;
+        let change24h: number | null = null;
+        let topProtocols: any[] = [];
+        let matchingProtocols: DeFiProtocol[] = [];
 
-    // L2 Zone - aggregate L2 chain TVL
-    const l2TVL = L2_CHAINS.reduce((sum, l2Name) => {
-        const chain = chains.find((c) => c.name.toLowerCase() === l2Name.toLowerCase());
-        return sum + (chain?.tvl || 0);
-    }, 0);
-    zones.push({
-        id: "layer2",
-        name: "L2 Scaling",
-        tvl: l2TVL,
-        tvlFormatted: formatTVL(l2TVL),
-        change24h: null, // Chains don't have change data in free API
-        topProtocols: [], // We'll populate with L2 comparison instead
-    });
+        // Determine logic based on slug
+        switch (zone.slug) {
+            case 'layer2':
+                // Special handling for L2
+                zoneTVL = L2_CHAINS.reduce((sum, l2Name) => {
+                    const chain = chains.find((c) => c.name.toLowerCase() === l2Name.toLowerCase());
+                    return sum + (chain?.tvl || 0);
+                }, 0);
+                // L2 doesn't have protocol-level 24h change easily, maybe just leave null
+                topProtocols = []; // Or L2 comparison
+                break;
 
-    // RWA Zone
-    const rwaProtocols = protocols.filter((p) => p.category === "RWA");
-    const rwaTVL = rwaProtocols.reduce((sum, p) => sum + (p.tvl || 0), 0);
-    zones.push({
-        id: "rwa",
-        name: "Real World Assets",
-        tvl: rwaTVL,
-        tvlFormatted: formatTVL(rwaTVL),
-        change24h: calculateAvgChange(rwaProtocols),
-        topProtocols: getTopProtocols(rwaProtocols, 5),
-    });
+            case 'solana':
+                const solanaChain = chains.find((c) => c.name === "Solana");
+                zoneTVL = solanaChain?.tvl || 0;
+                matchingProtocols = protocols.filter((p) => p.chains?.includes("Solana"));
+                change24h = calculateAvgChange(matchingProtocols.slice(0, 20));
+                topProtocols = getTopProtocols(matchingProtocols, 5);
+                break;
 
-    // Gaming Zone
-    const gamingProtocols = protocols.filter((p) => p.category === "Gaming");
-    const gamingTVL = gamingProtocols.reduce((sum, p) => sum + (p.tvl || 0), 0);
-    zones.push({
-        id: "gaming",
-        name: "GameFi",
-        tvl: gamingTVL,
-        tvlFormatted: formatTVL(gamingTVL),
-        change24h: calculateAvgChange(gamingProtocols),
-        topProtocols: getTopProtocols(gamingProtocols, 5),
-    });
+            default:
+                // Category-based mapping
+                const categories = ZONE_CATEGORY_MAP[zone.slug];
+                if (categories) {
+                    matchingProtocols = protocols.filter((p) =>
+                        categories.includes(p.category)
+                    );
+                    zoneTVL = matchingProtocols.reduce((sum, p) => sum + (p.tvl || 0), 0);
+                    change24h = calculateAvgChange(matchingProtocols);
+                    topProtocols = getTopProtocols(matchingProtocols, 5);
+                } else {
+                    // Fallback or empty if unknown slug
+                    console.warn(`Unknown logic for zone slug: ${zone.slug}`);
+                }
+        }
 
-    // Solana Zone - filter by chain
-    const solanaChain = chains.find((c) => c.name === "Solana");
-    const solanaProtocols = protocols.filter((p) => p.chains?.includes("Solana"));
-    zones.push({
-        id: "solana",
-        name: "Solana Ecosystem",
-        tvl: solanaChain?.tvl || 0,
-        tvlFormatted: formatTVL(solanaChain?.tvl || 0),
-        change24h: calculateAvgChange(solanaProtocols.slice(0, 20)),
-        topProtocols: getTopProtocols(solanaProtocols, 5),
-    });
+        results.push({
+            ...zone,
+            tvl: zoneTVL,
+            tvlFormatted: formatTVL(zoneTVL),
+            change24h: change24h,
+            topProtocols: topProtocols,
+        });
+    }
 
-    // NFT Zone
-    const nftProtocols = protocols.filter((p) =>
-        ["NFT Lending", "NFT Marketplace"].includes(p.category)
-    );
-    const nftTVL = nftProtocols.reduce((sum, p) => sum + (p.tvl || 0), 0);
-    zones.push({
-        id: "nft",
-        name: "NFT Market",
-        tvl: nftTVL,
-        tvlFormatted: formatTVL(nftTVL),
-        change24h: calculateAvgChange(nftProtocols),
-        topProtocols: getTopProtocols(nftProtocols, 5),
-    });
-
-    return zones;
+    return results;
 }
 
 function getTopProtocols(protocols: DeFiProtocol[], count: number) {

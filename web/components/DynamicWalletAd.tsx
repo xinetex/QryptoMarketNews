@@ -18,7 +18,7 @@ import {
     Identity,
     EthBalance,
 } from '@coinbase/onchainkit/identity';
-import { syncPoints } from "@/lib/points";
+import { syncPoints, clearPoints } from "@/lib/points";
 import { fetchAdDecision, type AdCreative, trackImpression } from "@/lib/ad-network-client";
 
 /* 
@@ -40,7 +40,7 @@ export default function DynamicWalletAd() {
 
     // Sync Points & Fetch Ad on Connect
     useEffect(() => {
-        if (address) {
+        if (address && isConnected) {
             syncPoints(address).catch(console.error);
 
             // Fetch Prophet Ad
@@ -48,15 +48,15 @@ export default function DynamicWalletAd() {
                 if (decision && decision.ads.length > 0) {
                     setAd(decision.ads[0]);
                     trackImpression(decision.ads[0].id);
-                    // Optional: Auto-show ad initially? Let's leave it in 'console' mode but show a notification
-                    // Or setViewMode('ad') to force view?
-                    // User requested "Professional Grade", so start with Console.
-                    // Ad can be accessed via a tab or alert.
-                    // Let's stick to Console first.
                 }
             });
+        } else if (!address || !isConnected) {
+            // Handle cleanup on disconnect
+            // We clear local points so badges/UI reset to default
+            clearPoints();
+            setAd(null);
         }
-    }, [address]);
+    }, [address, isConnected]);
 
     // ... (fetch signals effect remains)
 
@@ -118,7 +118,7 @@ export default function DynamicWalletAd() {
                                 <Address />
                                 <EthBalance />
                             </Identity>
-                            <WalletDropdownDisconnect />
+                            <WalletDropdownDisconnect className="hover:bg-red-500/10 hover:text-red-400 text-zinc-400 text-[10px] font-bold uppercase tracking-wider transition-colors" />
                         </WalletDropdown>
                     </Wallet>
                 </div>

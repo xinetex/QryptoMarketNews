@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="DeviceLinkScene" extends="Scene">
+    <interface>
+        <!-- Fired when linking is complete -->
+        <field id="linkComplete" type="boolean" alwaysNotify="true" />
+        <field id="linkedUser" type="assocarray" />
+    </interface>
+    
+    <script type="text/brightscript" uri="DeviceLinkScene.brs" />
+    
+    <children>
+        <!-- Dark modern background -->
+        <Rectangle width="1920" height="1080" color="#050510" />
+        
+        <!-- Header -->
+        <Label 
+            translation="[0, 150]" 
+            width="1920" 
+            text="Link Your Account" 
+            horizAlign="center" 
+            font="font:LargeBoldSystemFont" 
+            color="#00f3ff" />
+            
+        <Label 
+            translation="[0, 220]" 
+            width="1920" 
+            text="Unlock full Prophet TV features, earn points, and sync your portfolio." 
+            horizAlign="center" 
+            font="font:MediumSystemFont" 
+            color="#bbbbbb" />
+            
+        <!-- QR Code Area (Center Left) -->
+        <Poster id="qrPoster" 
+            translation="[560, 350]" 
+            width="400" 
+            height="400" 
+            loadDisplayMode="scaleToFit" />
+            
+        <!-- Instructions Area (Center Right) -->
+        <Group translation="[1060, 380]">
+            <Label 
+                text="1. Scan the QR Code" 
+                font="font:MediumBoldSystemFont" 
+                color="#ffffff" />
+            
+            <Label 
+                translation="[0, 80]" 
+                text="OR" 
+                font="font:SmallBoldSystemFont" 
+                color="#888888" />
+                
+            <Label 
+                translation="[0, 160]" 
+                text="2. Go to qchannel.com/activate" 
+                font="font:MediumSystemFont" 
+                color="#ffffff" />
+                
+            <Label 
+                translation="[0, 220]" 
+                text="and enter code:" 
+                font="font:SmallSystemFont" 
+                color="#bbbbbb" />
+                
+            <Label id="codeLabel" 
+                translation="[0, 260]" 
+                text="LOADING..." 
+                font="font:LargeBoldSystemFont" 
+                color="#bc13fe" />
+        </Group>
+        
+        <!-- Status -->
+        <Label id="statusLabel" 
+            translation="[0, 850]" 
+            width="1920" 
+            text="Waiting for connection..." 
+            horizAlign="center" 
+            font="font:SmallSystemFont" 
+            color="#666666" />
+            
+        <!-- Task for API calls -->
+        <DeviceTask id="deviceTask" />
+        <Timer id="pollTimer" repeat="true" duration="3" />
+    </children>
+</component>
