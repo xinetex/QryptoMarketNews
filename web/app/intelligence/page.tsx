@@ -43,6 +43,15 @@ export default function IntelligencePage() {
                 <ProphetManual />
             </div>
 
+            {/* Persistent FlexConsole Sidebar (Fixed Right) */}
+            <div className="fixed right-6 top-24 bottom-12 w-80 hidden xl:block pointer-events-auto">
+                <div className="h-full rounded-xl overflow-hidden border border-white/10 shadow-2xl bg-zinc-950">
+                    <DynamicWalletAd />
+                </div>
+            </div>
+
         </div>
     );
 }
+
+import DynamicWalletAd from '@/components/DynamicWalletAd';

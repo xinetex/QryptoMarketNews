@@ -7,7 +7,10 @@ export interface NewsItem {
     source: string;
     published: string;
     category?: string;
-    sentiment?: "positive" | "negative" | "neutral";
+    sentiment?: "positive" | "negative" | "neutral" | "BULLISH" | "BEARISH";
+    alpha_score?: number; // 0-100 Prophet Score
+    key_assets?: string[]; // ["BTC", "SOL"]
+    actionable?: boolean;
 }
 
 export interface NewsApiResponse {
