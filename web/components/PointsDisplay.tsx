@@ -65,10 +65,10 @@ export default function PointsDisplay({ showDetails = false }: PointsDisplayProp
                     </div>
 
                     {/* Progress to next level */}
-                    {nextLevelInfo.nextLevel && (
+                    {nextLevelInfo.nextTier && (
                         <div className="mb-4">
                             <div className="flex justify-between text-xs text-zinc-400 mb-1">
-                                <span>Next: {nextLevelInfo.nextLevel}</span>
+                                <span>Next: {nextLevelInfo.nextTier}</span>
                                 <span>{nextLevelInfo.pointsNeeded} pts to go</span>
                             </div>
                             <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
