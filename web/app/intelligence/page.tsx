@@ -1,5 +1,8 @@
 import ProphetAgent from '@/components/agent/ProphetAgent';
 import ProphetManual from '@/components/ProphetManual';
+import RSVPDeck from '@/components/RSVPDeck';
+import NewsSlider from '@/components/NewsSlider';
+import { Activity } from 'lucide-react';
 
 export default function IntelligencePage() {
     return (
@@ -33,9 +36,34 @@ export default function IntelligencePage() {
                         <strong className="text-zinc-400 block mb-2">SENTINEL MODE</strong>
                         Passive scanning of 30d volatility and volume anomalies.
                     </div>
-                    <div className="p-4 border border-zinc-900 rounded bg-zinc-950/50">
-                        <strong className="text-zinc-400 block mb-2">RSVP DISPLAY</strong>
-                        400-800 WPM transmission for rapid insight ingestion.
+                    <div className="h-40 relative">
+                        <RSVPDeck
+                            autoPlay={true}
+                            items={[
+                                // Card 1: System Info
+                                <div key="system" className="p-4 h-full flex flex-col justify-center text-xs font-mono">
+                                    <strong className="text-zinc-400 block mb-2">RSVP DISPLAY</strong>
+                                    <p className="text-zinc-500">400-800 WPM transmission for rapid insight ingestion.</p>
+                                </div>,
+
+                                // Card 2: Market Pulse
+                                <div key="pulse" className="p-4 h-full flex flex-col justify-center">
+                                    <div className="flex items-center gap-2 mb-2 text-indigo-400">
+                                        <Activity size={14} />
+                                        <strong className="text-[10px] tracking-wider">MARKET PULSE</strong>
+                                    </div>
+                                    <div className="text-lg font-bold text-zinc-100 mb-1">Low Volatility</div>
+                                    <p className="text-[10px] text-zinc-500 leading-relaxed">
+                                        Market conditions are currently stable. Good for accumulation.
+                                    </p>
+                                </div>,
+
+                                // Card 3: News Feed
+                                <div key="news" className="h-full pt-2 px-2">
+                                    <NewsSlider autoPlay={false} />
+                                </div>
+                            ]}
+                        />
                     </div>
                 </div>
 
