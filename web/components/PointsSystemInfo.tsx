@@ -71,11 +71,11 @@ export default function PointsSystemInfo() {
                             </div>
 
                             {/* Progress */}
-                            {nextLevelInfo.nextLevel && (
+                            {nextLevelInfo.nextTier && (
                                 <div className="space-y-1.5">
                                     <div className="flex justify-between text-[10px] uppercase font-bold text-zinc-500">
                                         <span>Current</span>
-                                        <span>Next: {nextLevelInfo.nextLevel}</span>
+                                        <span>Next: {nextLevelInfo.nextTier}</span>
                                     </div>
                                     <div className="h-2 bg-zinc-900 rounded-full overflow-hidden border border-white/5">
                                         <div
@@ -104,8 +104,8 @@ export default function PointsSystemInfo() {
                                         <div
                                             key={tier.name}
                                             className={`flex items-center gap-3 p-2 rounded border ${isCurrent
-                                                    ? 'bg-white/5 border-white/20'
-                                                    : 'border-transparent opacity-60'
+                                                ? 'bg-white/5 border-white/20'
+                                                : 'border-transparent opacity-60'
                                                 }`}
                                         >
                                             <div className="w-6 h-6 flex items-center justify-center text-sm">
