@@ -15,192 +15,80 @@
     <script type="text/brightscript" uri="MainScene.brs" />
 
     <children>
-        <!-- Deep Space Background Gradient (Simulated with Dark Blue/Purple) -->
+        <!-- PROPHET OS: Background (Zinc 950) -->
         <Rectangle id="backgroundRect"
             width="1920"
             height="1080"
-            color="#050510" />
+            color="#09090b" />
             
-        <!-- Ambient Glow (Top Left) -->
-        <Rectangle id="ambientGlow"
-            width="1920"
-            height="500"
-            color="#1a1a2e"
-            opacity="0.5" />
+        <!-- SIDEBAR: FLEXNAV (Fixed Left, 320px) -->
+        <Rectangle 
+            width="320" 
+            height="1080" 
+            color="#18181b" 
+            translation="[0,0]" />
+        <!-- Sidebar Border -->
+        <Rectangle width="1" height="1080" color="#ffffff10" translation="[320,0]" />
 
-        <!-- Transition Animation -->
-        <Animation id="fadeContent" duration="0.3" repeat="false" easeFunction="linear">
-            <FloatFieldInterpolator id="fadeInterpolator" key="[0.0, 1.0]" keyValue="[1.0, 0.0]" fieldToInterp="headerBar.opacity" />
-        </Animation>
+        <!-- Sidebar Content -->
+        <Group id="sidebarGroup" translation="[40,60]">
+            <!-- Brand -->
+            <Label text="PROPHET" font="font:LargeBoldSystemFont" color="#ffffff" />
+            <Label text="INTELLIGENCE" font="font:SmallSystemFont" color="#a1a1aa" translation="[0,45]" />
 
+            <!-- Menu Items -->
+            <!-- Menu Items -->
+            <LabelList 
+                id="mainMenu"
+                translation="[0,150]"
+                itemSize="[320, 60]"
+                itemSpacing="[0,10]"
+                drawFocusFeedback="false"
+                focusedColor="#10b981"
+                color="#71717a"
+                vertFocusAnimationStyle="fixedFocusWrap" />
 
-        <!-- TOP HEADER BAR (80px) -->
-        <Group id="headerBar" translation="[0,40]">
-            <!-- Logo/Brand with Neon Effect -->
-            <Label id="heroTitle"
-                translation="[60,0]"
-                text="PROPHET TV"
-                font="font:LargeBoldSystemFont"
-                color="#00f3ff" />
-            <Label id="heroSubtitle"
-                translation="[60,45]"
-                text="Crypto Market Intelligence"
-                font="font:SmallSystemFont"
-                color="#bc13fe" />
-            
-            <!-- Live Indicator -->
-            <Group id="liveIndicator" translation="[1750,15]">
-                <Rectangle id="liveDot"
-                    width="12"
-                    height="12"
-                    color="#ff0000"
-                    translation="[0,6]" />
-                <Label id="liveText"
-                    translation="[20,0]"
-                    text="LIVE"
-                    font="font:SmallBoldSystemFont"
-                    color="#ffffff" />
-            </Group>
-            
-            <!-- Fear & Greed Widget -->
-            <Group id="fngWidget" translation="[1500, 10]">
-                 <Label id="fngLabel" 
-                    text="F&amp;G: --" 
-                    font="font:SmallSystemFont" 
-                    color="#ffffff80" />
+            <!-- Bottom Status -->
+            <Group translation="[0,850]">
+                <Label text="SYSTEM: ONLINE" font="font:SmallestSystemFont" color="#10b981" />
+                <Label text="v1.0.4-alpha" font="font:SmallestSystemFont" color="#52525b" translation="[0,25]" />
             </Group>
         </Group>
 
-        <!-- MARKET TICKER (60px) -->
-        <Group id="tickerSection" translation="[0,120]">
-            <!-- Glassmorphism Background -->
-            <Rectangle id="tickerBg"
-                width="1920"
-                height="60"
-                color="#ffffff10" />
-                
-            <Label id="tickerLabel"
-                translation="[60,15]"
-                text="▲ MARKETS"
-                font="font:SmallBoldSystemFont"
-                color="#00f3ff" />
-            <Label id="tickerContent"
-                translation="[200,15]"
-                text="Loading market data..."
-                font="font:SmallBoldSystemFont"
-                color="#ffffff" />
+        <!-- MAIN CONTENT AREA (Offset: 340px) -->
+        
+        <!-- Top HUD (Replaces Header) -->
+        <Group translation="[360, 40]">
+            <!-- Path / Breadcrumbs -->
+            <Label text="HOME // DASHBOARD" font="font:SmallBoldSystemFont" color="#52525b" />
+            
+            <!-- Alpha HUD (Top Right) -->
+            <AlphaHUD id="alphaHud" translation="[1120, 0]" />
         </Group>
 
-        <!-- MAIN CONTENT AREA -->
-        <!-- Left Panel: Featured Zone (Glass Style) -->
-        <Group id="heroSection" translation="[60,220]">
-            <Rectangle id="heroBg"
-                width="420"
-                height="540"
-                color="#ffffff05" />
+        <!-- Content Groups -->
+        <Group id="mainContent" translation="[360, 160]">
             
-            <!-- Zone Image -->
-            <Poster id="heroImage"
-                translation="[0,0]"
-                width="420"
-                height="240"
-                loadDisplayMode="scaleToFill"
-                uri="pkg:/images/zones/solana-hero.png" />
+            <!-- 1. RSVP Display (Featured Top) -->
+            <RSVPDisplay id="rsvpDisplay" translation="[0, 0]" />
 
-            <!-- Timers for Ad Injection -->
-            <Timer id="adTimer" repeat="true" duration="15" />
-            <Timer id="adRevertTimer" repeat="false" duration="8" />
+            <!-- 2. Zone Grid (Below RSVP) -->
+            <Label text="ACTIVE ZONES" font="font:SmallBoldSystemFont" color="#71717a" translation="[0, 340]" />
             
-            <!-- Zone Info Container -->
-            <Group id="spotlightContent" translation="[25,260]">
-                <Label id="spotlightZoneName"
-                    text="Solana Ecosystem"
-                    font="font:MediumBoldSystemFont"
-                    color="#ffffff"
-                    width="370" />
-                
-                <Label id="spotlightStats"
-                    translation="[0,45]"
-                    text="TVL $8.2B • 24h +5.2%"
-                    font="font:SmallBoldSystemFont"
-                    color="#10b981" />
-                    
-                <Label id="spotlightDesc"
-                    translation="[0,90]"
-                    text="High-performance blockchain with DeFi, NFTs, and meme coins"
-                    font="font:SmallSystemFont"
-                    color="#ffffff90"
-                    maxLines="4"
-                    width="370"
-                    lineSpacing="2"
-                    wrap="true" />
-            </Group>
-        </Group>
-
-        <!-- Right Panel: Zone Grid -->
-        <Group id="zonesSection" translation="[520,220]">
-            <Label id="zonesHeader"
-                text="EXPLORE ZONES"
-                font="font:SmallBoldSystemFont"
-                color="#ffffff50" 
-                translation="[0,-30]" />
-            
-            <!-- Zone Grid with better spacing -->
-            <!-- Zone Grid (Fixed Layout) -->
             <MarkupGrid id="zoneGrid"
-                translation="[0,0]"
+                translation="[0,380]"
                 itemComponentName="ZoneCard"
                 numColumns="4"
-                numRows="2"
+                numRows="1"
                 itemSize="[310,240]"
                 itemSpacing="[20,20]"
-                focusable="true"
-                drawFocusFeedback="false" />
+                focusable="true" />
         </Group>
 
-        <!-- BOTTOM NEWS TICKER -->
-        <Group id="newsSection" translation="[0,850]">
-            <Rectangle id="newsBg"
-                width="1920"
-                height="80"
-                color="#000000"
-                opacity="0.8" />
-            <Label id="newsIcon"
-                translation="[60,25]"
-                text="📰 NEWS"
-                font="font:SmallBoldSystemFont"
-                color="#bc13fe" />
-            <Label id="newsContent"
-                translation="[200,25]"
-                text="Loading news..."
-                font="font:SmallSystemFont"
-                color="#ffffff"
-                width="1600"
-                maxLines="1" />
-        </Group>
-
-        <!-- Footer Branding -->
-        <Label id="footerBrand"
-            translation="[1700,950]"
-            text="PROPHET TV"
-            font="font:SmallestSystemFont"
-            color="#ffffff30"
-            horizAlign="right" />
-
-        <!-- Crypto Data Service -->
+        <!-- Crypto Service (Invisible) -->
         <CryptoService id="cryptoService" />
 
-        <!-- NEW: Watchlist Style UI Layer (Phase 4) -->
-        <WatchlistLayer id="watchlistLayer" visible="false" />
-        
-        <!-- Transition Overlay (Fade to Black) -->
-        <Rectangle id="transitionOverlay" width="1920" height="1080" color="#000000" opacity="0.0" visible="false" />
-
-        <Animation id="fadeAnimation" duration="0.4" repeat="false" easeFunction="inOut">
-            <FloatFieldInterpolator id="fadeInterpolator" key="[0.0, 0.5, 1.0]" keyValue="[0.0, 1.0, 0.0]" fieldToInterp="transitionOverlay.opacity" />
-        </Animation>
-
-        <!-- Device Linking Overlay (Hidden by default) -->
+        <!-- Device Linking Overlay -->
         <DeviceLinkScene id="deviceLinkScene" visible="false" />
     </children>
 </component>

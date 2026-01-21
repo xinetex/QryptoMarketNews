@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Prophet Points: Oracle HUD Component for Roku -->
+<component name="OracleHUD" extends="Group">
+    <interface>
+        <!-- Profile Data Fields -->
+        <field id="totalPoints" type="integer" value="0" onChange="onDataChange" />
+        <field id="tier" type="string" value="Initiate" onChange="onDataChange" />
+        <field id="tierColor" type="string" value="#71717a" onChange="onDataChange" />
+        <field id="tierIcon" type="string" value="🌑" />
+        <field id="multiplier" type="float" value="1.0" />
+        <field id="prophetRating" type="integer" value="0" onChange="onDataChange" />
+        <field id="prophetGrade" type="string" value="-" onChange="onDataChange" />
+        <field id="currentStreak" type="integer" value="0" onChange="onDataChange" />
+        <field id="progressPercent" type="integer" value="0" onChange="onDataChange" />
+        <field id="pointsToNextTier" type="integer" value="500" />
+        
+        <!-- Point Animation Trigger -->
+        <field id="pointsAwarded" type="integer" value="0" onChange="onPointsAwarded" />
+        
+        <!-- State -->
+        <field id="isLoading" type="boolean" value="true" onChange="onLoadingChange" />
+        <field id="isExpanded" type="boolean" value="false" />
+    </interface>
+
+    <script type="text/brightscript" uri="OracleHUD.brs" />
+
+    <children>
+        <!-- Container -->
+        <Group id="hudContainer">
+            <!-- Background Panel (Glass Effect) -->
+            <Rectangle id="hudBg" 
+                width="420" 
+                height="140" 
+                color="#ffffff08" />
+            
+            <!-- Border Accent -->
+            <Rectangle id="hudBorder" 
+                width="420" 
+                height="4" 
+                translation="[0,136]" 
+                color="#71717a" />
+                
+            <!-- Loading State -->
+            <Group id="loadingGroup" visible="true">
+                <Label id="loadingLabel" 
+                    translation="[20, 55]" 
+                    text="CONNECTING..." 
+                    font="font:SmallBoldSystemFont" 
+                    color="#52525b" />
+            </Group>
+
+            <!-- Main Content (hidden when loading) -->
+            <Group id="contentGroup" visible="false">
+            
+                <!-- Row 1: Tier Badge + Points + Multiplier -->
+                <Group translation="[20, 15]">
+                    <!-- Tier Icon -->
+                    <Label id="tierIconLabel" 
+                        text="🌑" 
+                        font="font:MediumBoldSystemFont" 
+                        color="#ffffff" />
+                    
+                    <!-- Points Value -->
+                    <Label id="pointsLabel" 
+                        translation="[40, 0]" 
+                        text="0" 
+                        font="font:LargeBoldSystemFont" 
+                        color="#ffffff" />
+                    
+                    <Label translation="[40, 35]" 
+                        text="PROPHET POINTS" 
+                        font="font:SmallestSystemFont" 
+                        color="#71717a" />
+                    
+                    <!-- Multiplier Badge -->
+                    <Group id="multiplierBadge" translation="[280, 5]">
+                        <Rectangle width="80" height="30" color="#10b98120" />
+                        <Label id="multiplierLabel" 
+                            translation="[10, 4]" 
+                            text="1.0x" 
+                            font="font:SmallBoldSystemFont" 
+                            color="#10b981" />
+                    </Group>
+                </Group>
+                
+                <!-- Row 2: Prophet Rating + Streak -->
+                <Group translation="[20, 75]">
+                    <!-- Prophet Rating -->
+                    <Label text="RATING" 
+                        font="font:SmallestSystemFont" 
+                        color="#52525b" />
+                    <Label id="ratingLabel" 
+                        translation="[0, 15]" 
+                        text="0" 
+                        font="font:MediumBoldSystemFont" 
+                        color="#ffffff" />
+                    <Label id="gradeLabel" 
+                        translation="[50, 18]" 
+                        text="(-)" 
+                        font="font:SmallBoldSystemFont" 
+                        color="#71717a" />
+                    
+                    <!-- Streak -->
+                    <Group translation="[120, 0]">
+                        <Label text="STREAK" 
+                            font="font:SmallestSystemFont" 
+                            color="#52525b" />
+                        <Label id="streakLabel" 
+                            translation="[0, 15]" 
+                            text="0" 
+                            font="font:MediumBoldSystemFont" 
+                            color="#f59e0b" />
+                        <Label translation="[35, 18]" 
+                            text="🔥" 
+                            font="font:SmallSystemFont" />
+                    </Group>
+                    
+                    <!-- Tier -->
+                    <Group translation="[220, 0]">
+                        <Label text="TIER" 
+                            font="font:SmallestSystemFont" 
+                            color="#52525b" />
+                        <Label id="tierLabel" 
+                            translation="[0, 15]" 
+                            text="Initiate" 
+                            font="font:MediumBoldSystemFont" 
+                            color="#71717a" />
+                    </Group>
+                </Group>
+                
+                <!-- Progress Bar -->
+                <Group translation="[20, 120]">
+                    <Rectangle id="progressBg" width="380" height="6" color="#27272a" />
+                    <Rectangle id="progressBar" width="0" height="6" color="#8B5CF6" />
+                </Group>
+            </Group>
+            
+            <!-- Points Awarded Animation (Floating +XX) -->
+            <Label id="floatingPoints" 
+                translation="[350, 20]" 
+                text="" 
+                font="font:LargeBoldSystemFont" 
+                color="#10b981" 
+                opacity="0" />
+        </Group>
+    </children>
+</component>

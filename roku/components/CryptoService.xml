@@ -33,6 +33,16 @@
         <field id="briefingData" type="assocarray" />
         <field id="visualsData" type="array" />
         
+        <!-- Prophet OS Data -->
+        <field id="alphaVector" type="assocarray" />
+        <field id="newsHeadlines" type="string" />
+        
+        <!-- Prophet Points / Oracle System -->
+        <field id="oracleProfile" type="assocarray" />
+        <field id="watchTimeMinutes" type="integer" value="0" />
+        <field id="watchTimePointsAwarded" type="integer" value="0" />
+        <field id="deviceId" type="string" value="" />
+        
         <field id="prerollVastUrl" type="string" />
         <field id="apiBaseUrl" type="string" value="https://qryptomarket-news.vercel.app" />
 

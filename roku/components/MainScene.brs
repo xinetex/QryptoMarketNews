@@ -5,15 +5,7 @@ sub init()
     m.top.setFocus(true)
     
     ' Get node references
-    m.heroTitle = m.top.findNode("heroTitle")
-    m.spotlightZoneName = m.top.findNode("spotlightZoneName")
-    m.spotlightStats = m.top.findNode("spotlightStats")
-    m.spotlightDesc = m.top.findNode("spotlightDesc")
-    m.heroImage = m.top.findNode("heroImage")
-    m.tickerContent = m.top.findNode("tickerContent")
-    m.newsContent = m.top.findNode("newsContent")
     m.zoneGrid = m.top.findNode("zoneGrid")
-    m.liveDot = m.top.findNode("liveDot")
     
     ' Transition Components
     m.transitionOverlay = m.top.findNode("transitionOverlay")
@@ -29,16 +21,26 @@ sub init()
     m.cryptoService.observeField("newsData", "onNewsDataChanged")
     m.cryptoService.observeField("intelligenceData", "onIntelligenceDataChanged")
     m.cryptoService.observeField("briefingData", "onBriefingDataReceived")
+    
+    ' Prophet OS Observers
+    m.cryptoService.observeField("alphaVector", "onAlphaVectorChanged")
+    m.cryptoService.observeField("newsHeadlines", "onNewsHeadlinesChanged")
+    
     m.cryptoService.control = "run"
+    
+    ' Prophet OS Nodes
+    m.alphaHud = m.top.findNode("alphaHud")
+    m.rsvpDisplay = m.top.findNode("rsvpDisplay")
     
     ' Setup Ad Timers
     m.adTimer = m.top.findNode("adTimer")
     m.adRevertTimer = m.top.findNode("adRevertTimer")
     
-    m.adTimer.observeField("fire", "onAdTimerFired")
-    m.adRevertTimer.observeField("fire", "onAdRevertTimerFired")
-    
-    m.adTimer.control = "start"
+    ' (Optional) adTimer logic if nodes exist
+    if m.adTimer <> invalid
+        m.adTimer.observeField("fire", "onAdTimerFired")
+        m.adTimer.control = "start"
+    end if
     
     ' Track original data for reverting
     m.originalZoneData = invalid
@@ -54,26 +56,65 @@ sub init()
     m.zoneGrid.observeField("itemFocused", "onZoneFocused")
     m.zoneGrid.observeField("itemSelected", "onZoneSelected")
     
-    ' Start live indicator animation
-    startLiveAnimation()
+    ' Setup Sidebar Menu
+    m.mainMenu = m.top.findNode("mainMenu")
+    setupMainMenu()
     
     ' Load initial data
     loadZoneData()
 end sub
 
-sub startLiveAnimation()
-    ' Blink live dot animation
-    m.liveAnimation = m.top.createChild("Animation")
-    m.liveAnimation.repeat = true
-    m.liveAnimation.duration = 1.0
+sub setupMainMenu()
+    menuContent = CreateObject("roSGNode", "ContentNode")
     
-    alphaPair = m.liveAnimation.createChild("FloatFieldInterpolator")
-    alphaPair.key = [0.0, 0.5, 1.0]
-    alphaPair.keyValue = [1.0, 0.3, 1.0]
-    alphaPair.fieldToInterp = m.liveDot.id + ".opacity"
+    items = [
+        { title: "  ORACLE" },
+        { title: "  ZONES" },
+        { title: "  RSVP" },
+        { title: "  SETTINGS" }
+    ]
     
-    m.liveAnimation.control = "start"
+    for each item in items
+        node = menuContent.createChild("ContentNode")
+        node.title = item.title
+    end for
+    
+    m.mainMenu.content = menuContent
+    m.mainMenu.observeField("itemSelected", "onMenuSelected")
 end sub
+
+sub onMenuSelected()
+    idx = m.mainMenu.itemSelected
+    print "Menu Selected: " + str(idx)
+    
+    ' 0: ORACLE (Market Pulse / Briefing)
+    if idx = 0
+         if m.briefingScene = invalid or not m.briefingScene.visible
+             launchBriefingMode()
+         end if
+         
+    ' 1: ZONES (Grid)
+    else if idx = 1
+         ' Return focus to grid
+         m.zoneGrid.setFocus(true)
+         
+    ' 2: RSVP (Featured News)
+    else if idx = 2
+         ' Focus the RSVP Display for playback controls?
+         ' For now, just ensure we are on the main view
+         if m.rsvpDisplay <> invalid
+             ' Maybe toggle play/pause or focus it?
+             ' m.rsvpDisplay.setFocus(true) ' If it supports focus
+         end if
+         m.zoneGrid.setFocus(true)
+         
+    ' 3: SETTINGS
+    else if idx = 3
+         launchSettingsMode()
+    end if
+end sub
+
+
 
 sub loadZoneData()
     ' Define crypto zones with colors
@@ -208,20 +249,8 @@ sub onZoneFocused(event as object)
 end sub
 
 sub updateSpotlight(zone as object)
-    m.spotlightZoneName.text = zone.name
-    
-    ' Color the change indicator
-    changeColor = "#10b981"
-    if left(zone.change, 1) = "-"
-        changeColor = "#ef4444"
-    end if
-    
-    m.spotlightStats.text = "TVL " + zone.tvl + " • 24h " + zone.change
-    m.spotlightStats.color = changeColor
-    m.spotlightDesc.text = zone.description
-    
-    ' Update hero image
-    m.heroImage.uri = "pkg:/images/zones/" + zone.id + "-hero.png"
+    ' Legacy spotlight logic removed for Prophet OS
+    ' print "Focused: " + zone.name
 end sub
 
 sub onZoneSelected(event as object)
@@ -268,37 +297,10 @@ sub onZoneDetailVisibleChanged()
 end sub
 
 sub onTickerDataChanged()
+    ' Legacy ticker support - optional
     tickerData = m.cryptoService.tickerData
-    if tickerData <> invalid and tickerData.count() > 0
-        tickerText = ""
-        for each coin in tickerData
-            changeSign = "+"
-            ' Convert change24h to number for comparison (API may send as string)
-            changeVal = 0
-            if coin.change24h <> invalid
-                if type(coin.change24h) = "roString" or type(coin.change24h) = "String"
-                    changeVal = val(coin.change24h)
-                else
-                    changeVal = coin.change24h
-                end if
-            end if
-            
-            if changeVal < 0
-                changeSign = ""
-            end if
-            
-            priceVal = 0
-            if coin.price <> invalid
-                if type(coin.price) = "roString" or type(coin.price) = "String"
-                    priceVal = val(coin.price)
-                else
-                    priceVal = coin.price
-                end if
-            end if
-            
-            tickerText = tickerText + coin.symbol + " $" + formatPrice(priceVal) + " " + changeSign + formatPercent(changeVal) + " • "
-        end for
-        m.tickerContent.text = tickerText
+    if tickerData <> invalid and tickerData.count() > 0 and m.tickerContent <> invalid
+        ' Implementation removed/simplified since m.tickerContent is likely null
     end if
 end sub
 
@@ -374,16 +376,36 @@ end sub
 
 function formatPrice(price as float) as string
     if price >= 1000
-        return str(int(price)).trim()
+        return Int(price).toStr()
     else if price >= 1
-        return str(int(price * 100) / 100).trim()
+        ' Manual decimal formatting since toStr() is simple
+        p = Int(price * 100)
+        s = p.toStr()
+        if s.Len() > 2
+            return Left(s, s.Len() - 2) + "." + Right(s, 2)
+        else
+            return "0." + s
+        end if
     else
-        return str(int(price * 10000) / 10000).trim()
+        p = Int(price * 10000)
+        s = p.toStr()
+        ' Pad if needed (simple approximation for safety)
+        if s.Len() < 4
+             return "0.000" + s
+        else
+             return "0." + s
+        end if
     end if
 end function
 
 function formatPercent(pct as float) as string
-    return str(int(pct * 10) / 10).trim() + "%"
+    p = Int(pct * 10)
+    s = p.toStr()
+    if s.Len() > 1
+        return Left(s, s.Len() - 1) + "." + Right(s, 1) + "%"
+    else
+        return "0." + s + "%"
+    end if
 end function
 
 function onKeyEvent(key as string, press as boolean) as boolean
@@ -425,20 +447,54 @@ function onKeyEvent(key as string, press as boolean) as boolean
         launchPortfolioMode()
         return true
     end if
-    
     ' Debug focus state
-    if not m.zoneGrid.hasFocus()
-        print "[MainScene] Key received but Grid lost focus. Forcing focus to zoneGrid."
-        m.zoneGrid.setFocus(true)
-        ' We return true to consume this press, user needs to press again? 
-        ' Or we let it slide. Ideally we just fix focus.
-        ' If we return false, the grid won't get *this* event because it bubbled up.
-        ' So we must manually dispatch or just accept one "dead" click.
-        return true
+    if m.mainMenu.hasFocus()
+        if key = "right"
+            m.zoneGrid.setFocus(true)
+            return true
+        end if
+    else if m.zoneGrid.hasFocus()
+        if key = "left"
+            ' Check if we are on the left edge (Column 0)
+            if (m.zoneGrid.itemFocused MOD 4) = 0
+                m.mainMenu.setFocus(true)
+                return true
+            end if
+        else if key = "back"
+            ' Back from grid -> Menu
+            m.mainMenu.setFocus(true)
+            return true
+        end if
     end if
     
     return false
 end function
+sub onAlphaVectorChanged()
+    ' Received new component data from CryptoService
+    data = m.cryptoService.alphaVector
+    if data <> invalid and m.alphaHud <> invalid
+        print "[MainScene] Updating AlphaHUD: Risk=" + str(data.risk_score)
+        
+        ' Update fields (AlphaHUD observes these)
+        if data.risk_score <> invalid then m.alphaHud.riskScore = data.risk_score
+        if data.sentiment <> invalid then m.alphaHud.sentiment = data.sentiment
+        if data.momentum <> invalid then m.alphaHud.momentum = data.momentum
+    end if
+end sub
+
+sub onNewsHeadlinesChanged()
+    ' Received concatenated headlines string for RSVP
+    text = m.cryptoService.newsHeadlines
+    if text <> invalid and text <> "" and m.rsvpDisplay <> invalid
+        print "[MainScene] Sending " + str(len(text)) + " chars to RSVP."
+        m.rsvpDisplay.content = text
+        
+        ' Also update the legacy text ticker if it exists
+        if m.newsContent <> invalid
+             m.newsContent.text = "📰 " + text
+        end if
+    end if
+end sub
 
 ' ===== AMBIENT MODE =====
 sub setupIdleTimer()

@@ -129,9 +129,46 @@ sub fetchRokuFeed()
         end if
     end if
     
+    ' Call Alpha Fetch
+    fetchAlphaData()
+    
     ' Also fetch from AgentCache for enhanced data
     fetchAgentCacheNews()
     fetchAgentCacheIntelligence()
+end sub
+
+sub fetchAlphaData()
+    ' fetch Alpha Vector
+    url = m.top.apiBaseUrl + "/api/alpha/vector"
+    request = CreateObject("roUrlTransfer")
+    request.SetUrl(url)
+    request.SetCertificatesFile("common:/certs/ca-bundle.crt")
+    request.InitClientCertificates()
+    
+    response = request.GetToString()
+    if response <> invalid and response <> ""
+        json = ParseJson(response)
+        if json <> invalid and json.data <> invalid
+            m.top.alphaVector = json.data
+        end if
+    end if
+
+    ' fetch News (RSVP)
+    url = m.top.apiBaseUrl + "/api/news"
+    request.SetUrl(url)
+    response = request.GetToString()
+    
+    if response <> invalid and response <> ""
+        json = ParseJson(response)
+        if json <> invalid and json.data <> invalid
+             ' Format for RSVP: just concatenate titles
+             text = ""
+             for each item in json.data
+                 text = text + item.title + " • "
+             end for
+             m.top.newsHeadlines = text
+        end if
+    end if
 end sub
 
 sub fetchZoneData()

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="RSVPDisplay" extends="Group">
+    <interface>
+        <field id="content" type="string" onChange="onContentChange" />
+        <field id="wpm" type="integer" value="400" />
+        <field id="isPlaying" type="boolean" value="false" onChange="onPlayStateChange" />
+        <function name="reset" />
+    </interface>
+
+    <script type="text/brightscript" uri="RSVPDisplay.brs" />
+
+    <children>
+        <!-- Background Container (Glass) -->
+        <Rectangle 
+            width="800" 
+            height="300" 
+            color="#09090b" 
+            opacity="0.95" 
+            translation="[0,0]" />
+            
+        <!-- Border -->
+        <Rectangle 
+            width="800" 
+            height="300" 
+            color="#ffffff" 
+            opacity="0.1" 
+            fill="false" 
+            stroke="2" />
+
+        <!-- Status Indicator -->
+        <Label 
+            id="statusLabel" 
+            text="RSVP // READY" 
+            font="font:SmallSystemFont" 
+            color="#10b981" 
+            translation="[20,15]" />
+
+        <Label 
+            id="speedLabel" 
+            text="400 WPM" 
+            font="font:SmallSystemFont" 
+            color="#ffffff50" 
+            horizAlign="right"
+            translation="[680,15]" 
+            width="100"/>
+
+        <!-- Main Word Display -->
+        <Label 
+            id="wordLabel" 
+            text="INITIALIZING" 
+            width="800"
+            horizAlign="center"
+            vertAlign="center"
+            font="font:LargestSystemFont" 
+            color="#ffffff" 
+            translation="[0,110]" />
+            
+        <!-- Progress Bar -->
+        <Rectangle 
+            id="progressBar" 
+            width="0" 
+            height="4" 
+            color="#6366f1" 
+            translation="[0,296]" />
+
+        <Timer id="rsvpTimer" repeat="true" />
+    </children>
+</component>

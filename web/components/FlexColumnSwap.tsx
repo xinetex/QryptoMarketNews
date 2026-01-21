@@ -12,7 +12,7 @@ import {
 import Image from 'next/image';
 import FlexFeaturesCard from './FlexFeaturesCard';
 import HotMarketsSlider from './HotMarketsSlider';
-import DynamicWalletAd from './DynamicWalletAd';
+import FlexConsole from './FlexConsole';
 
 export default function FlexColumnSwap() {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -87,7 +87,7 @@ export default function FlexColumnSwap() {
                         {/* Marketing / Placeholder for more content */}
                         {/* Dynamic Wallet / Ad Space */}
                         <div className="flex-1 min-h-[180px]">
-                            <DynamicWalletAd />
+                            <FlexConsole />
                         </div>
                     </motion.div>
                 ) : (
