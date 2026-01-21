@@ -1,19 +1,27 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Trophy, Target, TrendingUp, Medal } from 'lucide-react';
-import { getLeaderboard, type LevelName } from '@/lib/points';
+import { getLeaderboard, type TierName } from '@/lib/points';
 import { usePoints } from '@/hooks/usePoints';
 
-const LEVEL_COLORS: Record<LevelName, string> = {
-    Bronze: '#CD7F32',
-    Silver: '#C0C0C0',
-    Gold: '#FFD700',
-    Prophet: '#8B5CF6',
+// No longer needed as we get color from API, but keeping fallback or we can remove
+const TIER_COLORS: Record<TierName, string> = {
+    'Initiate': '#71717a',
+    'Seer': '#CD7F32',
+    'Augur': '#C0C0C0',
+    'Oracle': '#FFD700',
+    'Prophet': '#8B5CF6',
+    'Arch-Prophet': '#EC4899',
 };
 
 export default function Leaderboard() {
-    const leaderboard = getLeaderboard();
+    const [leaderboard, setLeaderboard] = useState<any[]>([]);
     const { totalPoints } = usePoints();
+
+    useEffect(() => {
+        getLeaderboard().then(setLeaderboard);
+    }, []);
 
     // Find user's rank (mock - would be from API)
     const userRank = leaderboard.findIndex(u => u.points < totalPoints) + 1 || leaderboard.length + 1;
@@ -78,15 +86,15 @@ export default function Leaderboard() {
                         {/* Level Badge */}
                         <div
                             className="w-6 h-6 rounded flex items-center justify-center text-[10px] font-bold"
-                            style={{ backgroundColor: LEVEL_COLORS[user.level], color: '#000' }}
+                            style={{ backgroundColor: user.tierColor || TIER_COLORS[user.tier as TierName], color: '#000' }}
                         >
-                            {user.level[0]}
+                            {user.tier[0]}
                         </div>
 
                         {/* Username */}
                         <div className="flex-1">
-                            <p className="text-sm text-white font-medium">{user.username}</p>
-                            <p className="text-xs text-zinc-500">{user.level} Prophet</p>
+                            <p className="text-sm text-white font-medium">{user.displayName}</p>
+                            <p className="text-xs text-zinc-500">{user.tier} Prophet</p>
                         </div>
 
                         {/* Stats */}
@@ -96,7 +104,7 @@ export default function Leaderboard() {
                             </p>
                             <div className="flex items-center justify-end gap-1 text-xs text-emerald-400">
                                 <Target size={10} />
-                                <span>{user.accuracy}%</span>
+                                <span>{user.prophetRating}%</span>
                             </div>
                         </div>
                     </div>
