@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Trophy, Target, TrendingUp, Medal } from 'lucide-react';
-import { getLeaderboard, type TierName } from '@/lib/points';
+import { getLeaderboard, type TierName, type LeaderboardEntry } from '@/lib/points';
 import { usePoints } from '@/hooks/usePoints';
 
 // No longer needed as we get color from API, but keeping fallback or we can remove
@@ -16,7 +16,7 @@ const TIER_COLORS: Record<TierName, string> = {
 };
 
 export default function Leaderboard() {
-    const [leaderboard, setLeaderboard] = useState<any[]>([]);
+    const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
     const { totalPoints } = usePoints();
 
     useEffect(() => {
@@ -64,7 +64,7 @@ export default function Leaderboard() {
 
             {/* Leaderboard List */}
             <div className="divide-y divide-white/5">
-                {leaderboard.map((user, index) => (
+                {leaderboard.map((user: LeaderboardEntry, index: number) => (
                     <div
                         key={user.rank}
                         className={`px-4 py-3 flex items-center gap-4 hover:bg-white/5 transition ${index < 3 ? 'bg-white/[0.02]' : ''
