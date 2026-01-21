@@ -2,20 +2,20 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import {
-    getPoints,
+    getProfile,
     earnPoints,
-    getPointsToNextLevel,
-    type UserPoints,
+    getProgressToNextTier,
+    type OracleProfile,
     type PointEventType
 } from '@/lib/points';
 
 export function usePoints() {
-    const [points, setPoints] = useState<UserPoints | null>(null);
+    const [points, setPoints] = useState<OracleProfile | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     // Load points on mount
     useEffect(() => {
-        setPoints(getPoints());
+        setPoints(getProfile());
         setIsLoading(false);
     }, []);
 
@@ -24,14 +24,14 @@ export function usePoints() {
         eventType: PointEventType,
         metadata?: Record<string, unknown>
     ) => {
-        const result = earnPoints(eventType, metadata);
-        setPoints(getPoints()); // Refresh state
-        return result;
+        earnPoints(eventType, 'web', metadata).then(() => {
+            setPoints(getProfile()); // Refresh state
+        });
     }, []);
 
     // Get progress to next level
     const nextLevelInfo = points
-        ? getPointsToNextLevel(points.totalPoints)
+        ? getProgressToNextTier(points.totalPoints)
         : { nextLevel: null, pointsNeeded: 0, progress: 0 };
 
     return {
@@ -40,9 +40,9 @@ export function usePoints() {
         awardPoints,
         nextLevelInfo,
         totalPoints: points?.totalPoints ?? 0,
-        level: points?.level ?? 'Bronze',
-        levelColor: points?.levelColor ?? '#CD7F32',
-        accuracy: points?.predictions.accuracy ?? 0,
-        streak: points?.streak.current ?? 0,
+        level: points?.tier ?? 'Initiate',
+        levelColor: points?.tierColor ?? '#71717a',
+        accuracy: points?.prophetRating ?? 0,
+        streak: points?.currentStreak ?? 0,
     };
 }
