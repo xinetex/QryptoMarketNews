@@ -32,7 +32,7 @@ export function usePoints() {
     // Get progress to next level
     const nextLevelInfo = points
         ? getProgressToNextTier(points.totalPoints)
-        : { nextLevel: null, pointsNeeded: 0, progress: 0 };
+        : { nextTier: null, pointsNeeded: 0, progress: 0 };
 
     return {
         points,
