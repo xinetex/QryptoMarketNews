@@ -2,25 +2,25 @@
 
 import { useState, useEffect } from 'react';
 import { Trophy, Zap, ChevronRight, Star } from 'lucide-react';
-import { getPoints, getPointsToNextLevel, UserPoints } from '@/lib/points';
+import { getProfile, getProgressToNextTier, OracleProfile } from '@/lib/points';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ProphetBadge() {
-    const [points, setPoints] = useState<UserPoints | null>(null);
+    const [points, setPoints] = useState<OracleProfile | null>(null);
     const [nextLevel, setNextLevel] = useState<any>(null);
     const [isHovered, setIsHovered] = useState(false);
 
     useEffect(() => {
         // Hydrate points
-        const p = getPoints();
+        const p = getProfile();
         setPoints(p);
-        setNextLevel(getPointsToNextLevel(p.totalPoints));
+        setNextLevel(getProgressToNextTier(p.totalPoints));
 
         // Poll for updates (e.g. while watching TV)
         const interval = setInterval(() => {
-            const up = getPoints();
+            const up = getProfile();
             setPoints(up);
-            setNextLevel(getPointsToNextLevel(up.totalPoints));
+            setNextLevel(getProgressToNextTier(up.totalPoints));
         }, 5000);
 
         return () => clearInterval(interval);
@@ -31,15 +31,17 @@ export default function ProphetBadge() {
     // Level Color Logic
     const getLevelColor = (level: string) => {
         switch (level) {
-            case 'Bronze': return 'text-orange-400 bg-orange-400/20 border-orange-400/30';
-            case 'Silver': return 'text-zinc-300 bg-zinc-300/20 border-zinc-300/30';
-            case 'Gold': return 'text-yellow-400 bg-yellow-400/20 border-yellow-400/30';
+            case 'Initiate': return 'text-zinc-500 bg-zinc-500/20 border-zinc-500/30';
+            case 'Seer': return 'text-orange-400 bg-orange-400/20 border-orange-400/30';
+            case 'Augur': return 'text-zinc-300 bg-zinc-300/20 border-zinc-300/30';
+            case 'Oracle': return 'text-yellow-400 bg-yellow-400/20 border-yellow-400/30';
             case 'Prophet': return 'text-purple-400 bg-purple-400/20 border-purple-400/30';
+            case 'Arch-Prophet': return 'text-pink-500 bg-pink-500/20 border-pink-500/30';
             default: return 'text-zinc-400';
         }
     };
 
-    const colorClass = getLevelColor(points.level);
+    const colorClass = getLevelColor(points.tier);
 
     return (
         <motion.div
@@ -63,7 +65,7 @@ export default function ProphetBadge() {
                     {/* Text (Collapsed) */}
                     <motion.div layout="position" className="flex flex-col flex-1">
                         <span className={`text-[10px] lg:text-xs font-bold uppercase tracking-wider ${colorClass.split(' ')[0]}`}>
-                            {points.level} Prophet
+                            {points.tier} Prophet
                         </span>
                         {!isHovered && (
                             <span className="text-white font-mono text-xs leading-none">
@@ -101,7 +103,7 @@ export default function ProphetBadge() {
                             {/* Progress Bar logic */}
                             <div className="mb-4">
                                 <div className="flex justify-between text-[10px] text-zinc-400 mb-1 uppercase tracking-wider">
-                                    <span>Next: {nextLevel.nextLevel}</span>
+                                    <span>Next: {nextLevel.nextTier}</span>
                                     <span>{nextLevel.pointsNeeded} pts to go</span>
                                 </div>
                                 <div className="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
@@ -116,12 +118,12 @@ export default function ProphetBadge() {
                             <div className="grid grid-cols-2 gap-2 mb-4">
                                 <div className="p-2 bg-zinc-900/50 rounded-lg text-center border border-white/5">
                                     <span className="block text-[10px] text-zinc-500 uppercase">Accuracy</span>
-                                    <span className="text-emerald-400 font-bold">{points.predictions.accuracy}%</span>
+                                    <span className="text-emerald-400 font-bold">{points.prophetRating}%</span>
                                 </div>
                                 <div className="p-2 bg-zinc-900/50 rounded-lg text-center border border-white/5">
                                     <span className="block text-[10px] text-zinc-500 uppercase">Streak</span>
                                     <span className="text-orange-400 font-bold flex items-center justify-center gap-1">
-                                        <Zap size={10} fill="currentColor" /> {points.streak.current}d
+                                        <Zap size={10} fill="currentColor" /> {points.currentStreak}d
                                     </span>
                                 </div>
                             </div>
