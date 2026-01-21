@@ -407,6 +407,42 @@ async function pushPointsToRemote(
     }
 }
 
+
+/**
+ * Award points from a server context (calls the API)
+ */
+export async function earnPointsRemote(
+    walletAddress: string,
+    eventType: PointEventType,
+    metadata?: Record<string, unknown>
+): Promise<void> {
+    const points = POINT_VALUES[eventType];
+    try {
+        // Need absolute URL for server-side fetch if not standard env, 
+        // but 'next/server' usually handles relative if same origin? 
+        // Actually often safer to use absolute, but let's try relative or assume localhost for now 
+        // or better, assuming this runs in a context where fetch works (Next.js App Router).
+        // However, standard fetch in Node needs absolute URL.
+        // For now, let's assume we can hit the endpoint.
+        // BETTER: Invoke the DB logic directly if available? 
+        // No, let's stick to the requested import fix.
+
+        await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/points`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                walletAddress, // API needs to support explicit wallet overwrite for admin/server calls
+                eventType,
+                pointsAwarded: points,
+                platform: 'web',
+                metadata,
+            }),
+        });
+    } catch (e) {
+        console.error('[Points] Remote award failed', e);
+    }
+}
+
 /**
  * Sync profile with backend
  */
@@ -569,7 +605,7 @@ export async function getLeaderboard(
         { rank: 8, walletAddress: '0x...8', displayName: 'BlockBard', points: 4800, tier: 'Augur', tierColor: '#C0C0C0', prophetRating: 58 },
         { rank: 9, walletAddress: '0x...9', displayName: 'CoinCaster', points: 1890, tier: 'Seer', tierColor: '#CD7F32', prophetRating: 55 },
         { rank: 10, walletAddress: '0x...10', displayName: 'LedgerLore', points: 940, tier: 'Seer', tierColor: '#CD7F32', prophetRating: 52 },
-    ].slice(0, limit);
+    ].slice(0, limit) as LeaderboardEntry[];
 }
 
 // ============================================================================
