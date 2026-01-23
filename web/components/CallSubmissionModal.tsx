@@ -31,9 +31,9 @@ export default function CallSubmissionModal({ isOpen, onClose, signal }: CallSub
         setError(null);
 
         try {
-            // Mock user ID for now - normally from NextAuth
-            const userId = 'user_demo_1';
-            const username = 'DemoTrader';
+            // Use connected wallet or fallback
+            const userId = address || 'user_demo_1';
+            const username = address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'DemoTrader';
 
             const callData: CallSubmission = {
                 marketId: signal.market.id,
