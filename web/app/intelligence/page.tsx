@@ -4,6 +4,7 @@ import RSVPDeck from '@/components/RSVPDeck';
 import NewsSlider from '@/components/NewsSlider';
 import DislocationFeed from '@/components/DislocationFeed';
 import DerivativesPanel from '@/components/DerivativesPanel';
+import DailyBriefingCard from '@/components/DailyBriefingCard';
 import { Activity } from 'lucide-react';
 
 export default function IntelligencePage() {
@@ -27,6 +28,11 @@ export default function IntelligencePage() {
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-2xl bg-indigo-900/20 blur-3xl rounded-full pointer-events-none" />
 
                     <ProphetAgent />
+                </div>
+
+                {/* Daily Briefing - The "What Changed" */}
+                <div className="mt-8 max-w-3xl mx-auto">
+                    <DailyBriefingCard />
                 </div>
 
                 {/* Market Intelligence Grid */}
