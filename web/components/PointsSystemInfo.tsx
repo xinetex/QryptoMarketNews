@@ -141,13 +141,17 @@ export default function PointsSystemInfo() {
                             <div className="space-y-4">
                                 <div>
                                     <h4 className="flex items-center gap-2 text-xs font-bold text-indigo-400 uppercase tracking-wider mb-2">
-                                        <Zap size={12} /> Prediction
+                                        <Zap size={12} /> Prediction Game
                                     </h4>
+                                    <p className="text-[10px] text-zinc-500 mb-3 leading-relaxed">
+                                        Spot dislocations in the market. Click <strong>"CALL IT"</strong> to stake your reputation.
+                                        Earn massive points for high-confidence calls that pay off.
+                                    </p>
                                     <div className="space-y-1">
-                                        <RuleRow label="Make Prediction" points={POINT_VALUES.PREDICTION_MADE} />
+                                        <RuleRow label="Make a Prediction" points={POINT_VALUES.PREDICTION_MADE} />
                                         <RuleRow label="Correct Call" points={POINT_VALUES.PREDICTION_CORRECT} highlight />
-                                        <RuleRow label="Contrarian Win" points={POINT_VALUES.PREDICTION_AGAINST_CROWD_WIN} />
-                                        <RuleRow label="Streaks" points={POINT_VALUES.PREDICTION_STREAK_BONUS} />
+                                        <RuleRow label="Contrarian Win (vs Crowd)" points={POINT_VALUES.PREDICTION_AGAINST_CROWD_WIN} highlight />
+                                        <RuleRow label="3x Win Streak" points={POINT_VALUES.PREDICTION_STREAK_BONUS} />
                                     </div>
                                 </div>
 
@@ -156,8 +160,9 @@ export default function PointsSystemInfo() {
                                         <Star size={12} /> Engagement
                                     </h4>
                                     <div className="space-y-1">
+                                        <RuleRow label="Read Daily Briefing" points={50} highlight />
                                         <RuleRow label="Daily Login" points={POINT_VALUES.DAILY_LOGIN} />
-                                        <RuleRow label="7-Day Streak" points={POINT_VALUES.STREAK_WEEK_BONUS} highlight />
+                                        <RuleRow label="7-Day Streak" points={POINT_VALUES.STREAK_WEEK_BONUS} />
                                         <RuleRow label="Watch / min" points={POINT_VALUES.WATCH_MINUTE} />
                                         <RuleRow label="Social Share" points={POINT_VALUES.SHARE_SOCIAL} />
                                     </div>
