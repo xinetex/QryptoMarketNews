@@ -21,7 +21,7 @@ import { fetchAdDecision, type AdCreative, trackImpression } from "@/lib/ad-netw
 import PointsSystemInfo from "./PointsSystemInfo";
 import LeaderboardWidget from "./LeaderboardWidget";
 import NotificationsPanel from "./NotificationsPanel";
-import { useNotifications } from "@/hooks/useNotifications";
+import { useNotifications } from "../hooks/useNotifications";
 
 /* 
   FlexConsole Component
