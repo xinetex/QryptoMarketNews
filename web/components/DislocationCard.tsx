@@ -1,15 +1,19 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, ExternalLink, Clock, Zap } from 'lucide-react';
+import { TrendingUp, TrendingDown, ExternalLink, Clock, Zap, Target } from 'lucide-react';
 import type { DislocationSignal } from '@/lib/types/dislocation';
+import { useState } from 'react';
+import CallSubmissionModal from './CallSubmissionModal';
 
 interface DislocationCardProps {
     signal: DislocationSignal;
     index?: number;
 }
 
+
 export default function DislocationCard({ signal, index = 0 }: DislocationCardProps) {
+    const [isCallModalOpen, setIsCallModalOpen] = useState(false);
     const isBullish = signal.direction === 'BULLISH_GAP';
 
     // Color coding based on score
@@ -113,10 +117,26 @@ export default function DislocationCard({ signal, index = 0 }: DislocationCardPr
 
                 {/* Actionable Window */}
                 <div className="flex items-center justify-between pt-2 border-t border-zinc-800">
-                    <span className="text-[10px] text-zinc-500">Actionable window:</span>
-                    <span className="text-[10px] font-mono text-amber-400">{signal.actionableWindow}</span>
+                    <div className="flex items-center gap-2">
+                        <span className="text-[10px] text-zinc-500">Actionable window:</span>
+                        <span className="text-[10px] font-mono text-amber-400">{signal.actionableWindow}</span>
+                    </div>
+
+                    <button
+                        onClick={() => setIsCallModalOpen(true)}
+                        className="flex items-center gap-1.5 px-3 py-1 bg-zinc-100 hover:bg-white text-zinc-900 rounded-md text-[10px] font-bold transition-colors shadow-lg shadow-white/5"
+                    >
+                        <Target size={12} />
+                        CALL IT
+                    </button>
                 </div>
             </div>
+
+            <CallSubmissionModal
+                isOpen={isCallModalOpen}
+                onClose={() => setIsCallModalOpen(false)}
+                signal={signal}
+            />
         </motion.div>
     );
 }
