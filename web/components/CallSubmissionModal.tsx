@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useAccount } from 'wagmi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Target, Info, CheckCircle, AlertTriangle } from 'lucide-react';
 import type { DislocationSignal } from '@/lib/types/dislocation';
@@ -13,6 +14,7 @@ interface CallSubmissionModalProps {
 }
 
 export default function CallSubmissionModal({ isOpen, onClose, signal }: CallSubmissionModalProps) {
+    const { address } = useAccount();
     const [direction, setDirection] = useState<CallDirection>(
         signal.direction === 'BULLISH_GAP' ? 'YES' : 'NO'
     );
@@ -119,8 +121,8 @@ export default function CallSubmissionModal({ isOpen, onClose, signal }: CallSub
                                     <button
                                         onClick={() => setDirection('YES')}
                                         className={`p-4 rounded-xl border flex flex-col items-center gap-2 transition-all ${direction === 'YES'
-                                                ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400'
-                                                : 'bg-zinc-900 border-zinc-800 text-zinc-500 hover:border-zinc-700'
+                                            ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400'
+                                            : 'bg-zinc-900 border-zinc-800 text-zinc-500 hover:border-zinc-700'
                                             }`}
                                     >
                                         <span className="font-black text-xl">YES</span>
@@ -129,8 +131,8 @@ export default function CallSubmissionModal({ isOpen, onClose, signal }: CallSub
                                     <button
                                         onClick={() => setDirection('NO')}
                                         className={`p-4 rounded-xl border flex flex-col items-center gap-2 transition-all ${direction === 'NO'
-                                                ? 'bg-red-500/20 border-red-500 text-red-400'
-                                                : 'bg-zinc-900 border-zinc-800 text-zinc-500 hover:border-zinc-700'
+                                            ? 'bg-red-500/20 border-red-500 text-red-400'
+                                            : 'bg-zinc-900 border-zinc-800 text-zinc-500 hover:border-zinc-700'
                                             }`}
                                     >
                                         <span className="font-black text-xl">NO</span>
