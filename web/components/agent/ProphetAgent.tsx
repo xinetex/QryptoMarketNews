@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { RSVPViewport } from './RSVPViewport';
 import { StreamingViewport } from './StreamingViewport';
 import { AttunementLoader } from './AttunementLoader';
@@ -16,7 +16,7 @@ export default function ProphetAgent() {
     const [streamText, setStreamText] = useState<string | null>(null);
     const [isThinking, setIsThinking] = useState(false);
     const [wpm, setWpm] = useState(450);
-    const [wpm, setWpm] = useState(450);
+
     const [displayMode, setDisplayMode] = useState<'rsvp' | 'stream'>('stream');
     const { points } = usePoints();
     const [hasWelcomed, setHasWelcomed] = useState(false);
