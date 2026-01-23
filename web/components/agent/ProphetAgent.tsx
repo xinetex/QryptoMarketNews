@@ -9,7 +9,7 @@ import { useAccount } from 'wagmi';
 import { agentMemory } from '@/lib/agent-memory';
 import { generateProphecy } from '@/lib/prophecy-engine';
 import { usePoints } from '@/hooks/usePoints';
-import { useNotifications } from '@/hooks/useNotifications';
+import { useNotifications } from '../../hooks/useNotifications';
 
 export default function ProphetAgent() {
     const { address } = useAccount();
