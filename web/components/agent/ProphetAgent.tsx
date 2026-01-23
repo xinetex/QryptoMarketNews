@@ -9,6 +9,7 @@ import { useAccount } from 'wagmi';
 import { agentMemory } from '@/lib/agent-memory';
 import { generateProphecy } from '@/lib/prophecy-engine';
 import { usePoints } from '@/hooks/usePoints';
+import { useNotifications } from '@/hooks/useNotifications';
 
 export default function ProphetAgent() {
     const { address } = useAccount();
@@ -19,6 +20,7 @@ export default function ProphetAgent() {
 
     const [displayMode, setDisplayMode] = useState<'rsvp' | 'stream'>('stream');
     const { points } = usePoints();
+    const { addNotification } = useNotifications();
     const [hasWelcomed, setHasWelcomed] = useState(false);
 
     // Initial Onboarding Welcome
@@ -26,6 +28,14 @@ export default function ProphetAgent() {
         if (points && points.predictionsTotal === 0 && !hasWelcomed) {
             const welcomeMsg = "Welcome, Initiate. The timeline is shifting. I sense potential in you. Read the Daily Briefing above for context, then scroll down to the Dislocation Feed. When you see an edge, click 'CALL IT' to stake your reputation. Your journey to Oracle status begins now.";
             setStreamText(welcomeMsg);
+
+            addNotification({
+                type: 'info',
+                title: 'Welcome to the Network',
+                message: 'Your initialization sequence is complete. Start building your reputation.',
+                link: '/intelligence' // Scroll to feed?
+            });
+
             setHasWelcomed(true);
         }
     }, [points, hasWelcomed]);

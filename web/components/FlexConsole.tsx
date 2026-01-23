@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Wallet as WalletIcon, ExternalLink, LogOut, Trophy, Activity } from "lucide-react";
+import { Wallet as WalletIcon, ExternalLink, LogOut, Trophy, Activity, Bell } from "lucide-react";
 import { useAccount, useDisconnect } from 'wagmi';
 import {
     ConnectWallet,
@@ -20,6 +20,8 @@ import { syncWithBackend as syncPoints, clearProfile as clearPoints } from "@/li
 import { fetchAdDecision, type AdCreative, trackImpression } from "@/lib/ad-network-client";
 import PointsSystemInfo from "./PointsSystemInfo";
 import LeaderboardWidget from "./LeaderboardWidget";
+import NotificationsPanel from "./NotificationsPanel";
+import { useNotifications } from "@/hooks/useNotifications";
 
 /* 
   FlexConsole Component
@@ -35,7 +37,8 @@ export default function FlexConsole() {
     const { disconnect } = useDisconnect();
 
     // Global Console State
-    const [activeTab, setActiveTab] = useState<'wallet' | 'signals' | 'oracle'>('wallet');
+    const [activeTab, setActiveTab] = useState<'wallet' | 'signals' | 'oracle' | 'alerts'>('wallet');
+    const { unreadCount } = useNotifications();
 
     // Wallet/Ad State
     const [ad, setAd] = useState<AdCreative | null>(null);
@@ -120,6 +123,20 @@ export default function FlexConsole() {
                             }`}
                     >
                         <WalletIcon size={12} />
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('alerts')}
+                        className={`relative px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${activeTab === 'alerts'
+                            ? 'bg-red-500/20 text-red-300 shadow-sm'
+                            : 'text-zinc-500 hover:text-zinc-300 hover:bg-white/5'
+                            }`}
+                    >
+                        <Bell size={12} />
+                        {unreadCount > 0 && (
+                            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border border-black flex items-center justify-center text-[7px] text-white">
+                                {unreadCount}
+                            </span>
+                        )}
                     </button>
                 </div>
 
@@ -240,6 +257,10 @@ export default function FlexConsole() {
                     <div className="h-full flex flex-col p-2">
                         <LeaderboardWidget />
                     </div>
+                )}
+
+                {activeTab === 'alerts' && (
+                    <NotificationsPanel />
                 )}
 
                 {activeTab === 'oracle' && (
