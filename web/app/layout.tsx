@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import DynamicIsland from "@/components/DynamicIsland";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +37,10 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <OnchainProvider>
-          <Providers>{children}</Providers>
+          <Providers>
+            <DynamicIsland />
+            {children}
+          </Providers>
         </OnchainProvider>
       </body>
     </html>
