@@ -2,6 +2,7 @@ import ProphetAgent from '@/components/agent/ProphetAgent';
 import ProphetManual from '@/components/ProphetManual';
 import RSVPDeck from '@/components/RSVPDeck';
 import NewsSlider from '@/components/NewsSlider';
+import DislocationFeed from '@/components/DislocationFeed';
 import { Activity } from 'lucide-react';
 
 export default function IntelligencePage() {
@@ -25,6 +26,14 @@ export default function IntelligencePage() {
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-2xl bg-indigo-900/20 blur-3xl rounded-full pointer-events-none" />
 
                     <ProphetAgent />
+                </div>
+
+                {/* Market Dislocation Detector - The Edge */}
+                <div className="relative mt-12">
+                    <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-orange-500/5 to-red-500/5 blur-3xl rounded-3xl pointer-events-none" />
+                    <div className="relative p-6 rounded-2xl border border-amber-500/20 bg-zinc-950/80 backdrop-blur-sm">
+                        <DislocationFeed maxItems={5} autoRefresh={true} refreshInterval={60000} />
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono text-zinc-600 pt-12 border-t border-zinc-900">

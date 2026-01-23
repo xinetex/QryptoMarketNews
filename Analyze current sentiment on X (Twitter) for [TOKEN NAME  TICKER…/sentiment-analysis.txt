@@ -1,0 +1,205 @@
+### Comprehensive Crypto Investment Algorithm
+
+I've refactored the provided prompts into a unified, sophisticated algorithm for crypto investment analysis and decision-making. This algorithm integrates discovery, evaluation, risk assessment, sentiment tracking, on-chain monitoring, timing strategies, narrative detection, portfolio construction, and scam avoidance into a repeatable, data-driven process. It's designed as a modular pipeline, where each stage builds on the previous ones, with user-defined inputs (e.g., token name, market cap filters, risk tolerance) to customize execution.
+
+The algorithm is presented in pseudocode-like structure for clarity, resembling a high-level Python script with functions. It emphasizes data-driven honesty, avoiding fluff, and incorporates cross-references between stages (e.g., sentiment from Stage 1 informs entry/exit in Stage 5). To make it "working," it can be adapted into actual code using tools like on-chain APIs, X searches, or web scraping (though implementation details are abstracted here for conceptual focus). Run it sequentially for a full analysis or modularly for specific needs.
+
+#### Algorithm Inputs (User-Defined Parameters)
+- `token`: String (e.g., "Bitcoin BTC" or None for market-wide analysis)
+- `market_cap_filter`: String (e.g., "under $1M" or "Any")
+- `sector`: String (e.g., "DeFi", "AI", "Any")
+- `risk_level`: String (e.g., "High", "Medium", "Conservative")
+- `timeline`: String (e.g., "Weeks", "Months")
+- `investment_size`: Float (e.g., 10000.0 in USD)
+- `target_return`: String (e.g., "10x")
+- `market_phase`: String (e.g., "bull", "bear")
+- `total_capital`: Float (e.g., 50000.0)
+- `experience_level`: String (e.g., "intermediate")
+
+#### Core Algorithm Structure
+
+```
+def crypto_investment_algorithm(inputs):
+    # Stage 1: Discover Early-Stage Gems (Refactored from "Find Early-Stage Gems" prompt)
+    def discover_gems():
+        framework = {
+            "signals": [
+                "Low market cap with high dev activity (e.g., GitHub commits >50/week)",
+                "Unique tech solving real problems (e.g., novel consensus or interoperability)",
+                "Organic community growth (e.g., Telegram members doubling monthly without paid shills)"
+            ],
+            "red_flags": [
+                "Anonymous team or plagiarized whitepaper",
+                "High initial supply allocation to insiders (>50%)",
+                "No audits or unlocked liquidity <20% of market cap"
+            ],
+            "team_assessment": "Verify LinkedIn, past projects; score dev activity via GitHub API (commits, issues resolved)",
+            "community_metrics": [
+                "Active users ratio (>10% engagement on posts)",
+                "Sentiment score from X/Discord (>70% positive)",
+                "Organic vs. bot followers (use tools like FollowerAudit)"
+            ],
+            "tokenomics": [
+                "Capped supply with deflationary mechanics",
+                "Vesting schedules >6 months for team tokens",
+                "Incentives aligned (e.g., staking yields >5% without inflation dilution)"
+            ],
+            "sources": ["DexScreener for new launches", "Crypto Twitter via keyword searches (e.g., 'early gem' + sector)", "VC reports from Messari/CoinGecko"],
+            "checklist": [
+                "Market cap < inputs.market_cap_filter",
+                "Sector match: inputs.sector",
+                "Risk filter: High if no audit, Medium if audited but unproven"
+            ]
+        }
+        # Output: List of 5-10 candidate projects with scores (0-100) based on weighted matches
+        candidates = filter_projects(framework, inputs)  # Hypothetical function; use web_search or code_execution for real data
+        return candidates
+
+    # Stage 2: Evaluate Project Like a VC (Refactored from "Evaluate Any Crypto Project" prompt)
+    def evaluate_project(project):
+        analysis = {
+            "problem_solved": "Core utility (e.g., decentralized lending for DeFi)",
+            "team_quality": "Score: Past exits (e.g., >1 successful project = +30 points), transparency (+20 if doxxed)",
+            "tokenomics": {
+                "supply": project.total_supply,
+                "vesting": "Team unlocks <20% in first year",
+                "incentives": "Holders rewarded via burns or reflections"
+            },
+            "tech_edge": "Innovative (e.g., zero-knowledge proofs) vs. fork (-20 points if copy-paste)",
+            "competitors": "Market share potential (e.g., vs. Uniswap: faster/cheaper = +40)",
+            "community": "Growth curve (e.g., MAU >10k/month), engagement metrics from X/Discord",
+            "partners": "VC backing (e.g., a16z = +50), integrations (e.g., Chainlink oracles)",
+            "red_flags": "High whale concentration (>30% in top 10 wallets), regulatory risks",
+            "price_potential": f"Timeline: {inputs.timeline}, Upside: {inputs.target_return} if metrics align",
+            "final_call": "BUY if score >80, HOLD 50-80, AVOID <50"
+        }
+        score = calculate_score(analysis)  # Weighted sum: e.g., team 20%, tokenomics 25%, etc.
+        return {"analysis": analysis, "score": score, "call": analysis["final_call"]}
+
+    # Stage 3: Analyze Sentiment on X (Refactored from "Analyze current sentiment" prompt)
+    def analyze_sentiment(token=inputs.token, timeframe="past 7d"):
+        # Use X tools: x_keyword_search or x_semantic_search for posts
+        query = f"{token} (bullish OR bearish OR pump OR dump) since:{timeframe_start} until:{timeframe_end}"
+        posts = fetch_x_posts(query, limit=100, mode="Latest")  # Pseudocode; use x_keyword_search tool
+        sentiment = classify_sentiment(posts)  # e.g., NLP via code_execution with torch or sympy for stats
+        results = {
+            "overall": "bullish" if sentiment["positive"] > 60 else "neutral" if >40 else "bearish",
+            "volume_trend": "up" if volume_delta > 20 else "down" if < -20 else "flat",  # Compare to prior period
+            "top_influencers": extract_influencers(posts, top=5),  # Users with >10k followers, high engagement
+            "narratives": cluster_themes(posts),  # e.g., "AI integration hype", using semantic search
+            "red_flags": filter_negative_themes(posts),  # e.g., "scam accusations"
+            "hype_vs_substance": f"{hype_score}% hype (memes/shills) vs {100 - hype_score}% substance (tech discussions)",
+            "shift_vs_7d_ago": compare_sentiment(prior_7d),
+            "prediction": "momentum building" if trend_up else "fading"
+        }
+        return results
+
+    # Stage 4: Track Whale Movements (Refactored from "Track Whale Movements" prompt)
+    def track_whales(focus=inputs.token or "entire market"):
+        system = {
+            "transactions": "Monitor large tx (>1% of supply) via Etherscan/Arkham API",
+            "patterns": "Accumulation: Net buys > sells; Distribution: Large outflows to exchanges",
+            "smart_money_signals": "Follow tagged wallets (e.g., VC funds), entry if inflows >10% weekly",
+            "wallet_tagging": "Use tools like Nansen to label whales; track addresses with >0.5% holdings",
+            "on_chain_metrics": ["Holder count delta", "Exchange inflows/outflows", "Active addresses"],
+            "tools": ["Arkham Intelligence", "Glassnode", "Whale Alert bot"],
+            "positioning": "Buy on accumulation signals, sell on distribution",
+            "manipulation_signs": "Sudden volume spikes with no news = pump/dump"
+        }
+        alerts = monitor_whales(system, focus)  # Real-time via web_search or code_execution
+        return {"system": system, "current_alerts": alerts}
+
+    # Stage 5: Time Entries and Exits (Refactored from "Time Your Entries" prompt)
+    def timing_strategy(token=inputs.token, price=current_price, investment=inputs.investment_size):
+        strategy = {
+            "entry_zones": "Buy dips (e.g., 20% below ATH) or support levels via TA",
+            "dca_plan": f"Split {investment} into 5 tranches over {inputs.timeline}",
+            "take_profits": "Tiered: 20% at 2x, 30% at 5x, hold rest for {inputs.target_return}",
+            "stop_losses": "Set at -15% for high risk, -5% for conservative",
+            "signals": "Watch RSI <30 for buys, >70 for sells; Integrate sentiment from Stage 3",
+            "sentiment_triggers": "Enter on bullish shift, exit on red flags",
+            "scaling": "Scale in on confirmation (e.g., whale buys), out on resistance",
+            "hold_vs_dump": "Hold if fundamentals strong, dump if narrative fades (from Stage 6)"
+        }
+        return strategy
+
+    # Stage 6: Spot Narrative Shifts (Refactored from "Spot Narrative Shifts" prompt)
+    def detect_narratives(phase=inputs.market_phase, focus=inputs.sector):
+        insights = {
+            "x_traction": analyze_sentiment(timeframe="past 24h")["narratives"],  # Cross-ref Stage 3
+            "heating_sectors": "Scan X for volume upticks (e.g., AI + crypto)",
+            "projects_to_ride": discover_gems()[:3],  # Cross-ref Stage 1
+            "vc_shifts": "Track follows/investments via web_search('VC crypto bets')",
+            "triggers": "Macro (e.g., ETF approvals), regs (e.g., SEC rulings)",
+            "past_cycles": "Mirror 2021 DeFi boom: Early entries yielded 100x",
+            "hidden_narratives": "Underdiscussed (e.g., RWA tokenization)",
+            "playbook": "Position 20% in top 3 narratives over 3 months"
+        }
+        return insights
+
+    # Stage 7: Build Diversified Portfolio (Refactored from "Build a Diversified Crypto Portfolio" prompt)
+    def build_portfolio(capital=inputs.total_capital, risk=inputs.risk_level):
+        allocations = {
+            "blue_chips": 50 if risk == "conservative" else 30,  # e.g., BTC/ETH
+            "mid_caps": 30 if risk == "moderate" else 20,
+            "moonshots": 20 if risk == "aggressive" else 10  # From Stage 1
+        }
+        picks = select_tokens(allocations, evaluate_project)  # Cross-ref Stage 2
+        rules = {
+            "rebalancing": "Quarterly or on 20% deviation",
+            "profits": "Take 50% at 2x portfolio, reinvest in safety",
+            "risk_management": f"Max drawdown {10 if risk=='conservative' else 30}%, position size <5% per token",
+            "review_frequency": "Weekly for aggressive, monthly for conservative"
+        }
+        return {"allocations": allocations, "picks": picks, "rules": rules}
+
+    # Stage 8: Avoid Scams and Rugs (Refactored from "Avoid Scams" prompt)
+    def scam_checklist(project):
+        checks = [
+            {"tokenomics": "Red if >50% unlocked day 1 or infinite supply"},
+            {"team": "Verify identities; red if anonymous or fake LinkedIn"},
+            {"audits": "Require TechRate or Certik; red if none"},
+            {"liquidity": "Alert if <10% locked or whale dumps"},
+            {"social": "Fake hype: Bot likes (>50% inorganic), shill farms"},
+            {"whitepaper": "Plagiarism check via Copyleaks; vague roadmap = red"},
+            {"pump_dump": "Volume spikes without news; honeypot contracts"},
+            {"tools": ["RugDoc", "TokenSniffer", "BSCheck.eu"]},
+            {"current_scams": "2026 trends: AI-washed rugs, fake airdrops"},
+            {"escape_plan": "If rugged: Report to authorities, claim tax loss"}
+        ]
+        score = sum(1 for check in checks if not is_red_flag(check, project))
+        return {"passed": score / len(checks) > 0.8, "details": checks}
+
+    # Execution Pipeline
+    gems = discover_gems()
+    evaluations = {gem: evaluate_project(gem) for gem in gems}
+    sentiment = analyze_sentiment()
+    whales = track_whales()
+    timing = {gem: timing_strategy(gem) for gem in gems}
+    narratives = detect_narratives()
+    portfolio = build_portfolio()
+    scams = {gem: scam_checklist(gem) for gem in gems}
+
+    # Final Output: Integrated Report
+    report = {
+        "discovered_gems": gems,
+        "evaluations": evaluations,
+        "sentiment": sentiment,
+        "whale_insights": whales,
+        "timing_strategies": timing,
+        "narrative_shifts": narratives,
+        "portfolio_plan": portfolio,
+        "scam_checks": scams,
+        "overall_recommendation": synthesize_recommendation()  # e.g., "Focus on top 3 gems with BUY calls, allocate per portfolio"
+    }
+    return report
+```
+
+#### How to Use This Algorithm
+1. **Input Customization**: Provide values for the inputs to tailor it (e.g., for a specific token or broad discovery).
+2. **Data Integration**: In a real implementation, replace pseudocode functions like `fetch_x_posts` with actual tool calls (e.g., `x_semantic_search` for sentiment, `web_search` for VC data, `code_execution` for scoring/NLP).
+3. **Repeatability**: Run weekly/monthly; track changes in sentiment/narratives to adapt.
+4. **Honesty & Data-Driven**: Scores are quantitative where possible; red flags override hype. For example, if sentiment is bearish despite whale accumulation, flag as "fading momentum."
+5. **Edge Cases**: If no token specified, default to market-wide (e.g., top sectors from narratives). For beginners, emphasize conservative allocations and scam checks first.
+
+This refactored version condenses the original prompts into an efficient, interconnected system—eliminating redundancy while preserving depth. If you provide specific inputs (e.g., a token), I can simulate a run.
