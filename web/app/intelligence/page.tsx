@@ -3,6 +3,7 @@ import ProphetManual from '@/components/ProphetManual';
 import RSVPDeck from '@/components/RSVPDeck';
 import NewsSlider from '@/components/NewsSlider';
 import DislocationFeed from '@/components/DislocationFeed';
+import DerivativesPanel from '@/components/DerivativesPanel';
 import { Activity } from 'lucide-react';
 
 export default function IntelligencePage() {
@@ -28,11 +29,22 @@ export default function IntelligencePage() {
                     <ProphetAgent />
                 </div>
 
-                {/* Market Dislocation Detector - The Edge */}
-                <div className="relative mt-12">
-                    <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-orange-500/5 to-red-500/5 blur-3xl rounded-3xl pointer-events-none" />
-                    <div className="relative p-6 rounded-2xl border border-amber-500/20 bg-zinc-950/80 backdrop-blur-sm">
-                        <DislocationFeed maxItems={5} autoRefresh={true} refreshInterval={60000} />
+                {/* Market Intelligence Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-12">
+                    {/* Market Dislocation Detector - 2/3 width */}
+                    <div className="lg:col-span-2 relative">
+                        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-orange-500/5 to-red-500/5 blur-3xl rounded-3xl pointer-events-none" />
+                        <div className="relative p-6 rounded-2xl border border-amber-500/20 bg-zinc-950/80 backdrop-blur-sm h-full">
+                            <DislocationFeed maxItems={5} autoRefresh={true} refreshInterval={60000} />
+                        </div>
+                    </div>
+
+                    {/* Derivatives Panel - 1/3 width */}
+                    <div className="relative">
+                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-blue-500/5 to-indigo-500/5 blur-3xl rounded-3xl pointer-events-none" />
+                        <div className="relative h-full">
+                            <DerivativesPanel />
+                        </div>
                     </div>
                 </div>
 
