@@ -8,6 +8,7 @@ import { Send, Eye, BrainCircuit } from 'lucide-react';
 import { useAccount } from 'wagmi';
 import { agentMemory } from '@/lib/agent-memory';
 import { generateProphecy } from '@/lib/prophecy-engine';
+import { usePoints } from '@/hooks/usePoints';
 
 export default function ProphetAgent() {
     const { address } = useAccount();
@@ -15,7 +16,19 @@ export default function ProphetAgent() {
     const [streamText, setStreamText] = useState<string | null>(null);
     const [isThinking, setIsThinking] = useState(false);
     const [wpm, setWpm] = useState(450);
+    const [wpm, setWpm] = useState(450);
     const [displayMode, setDisplayMode] = useState<'rsvp' | 'stream'>('stream');
+    const { points } = usePoints();
+    const [hasWelcomed, setHasWelcomed] = useState(false);
+
+    // Initial Onboarding Welcome
+    useEffect(() => {
+        if (points && points.predictionsTotal === 0 && !hasWelcomed) {
+            const welcomeMsg = "Welcome, Initiate. The timeline is shifting. I sense potential in you. Read the Daily Briefing above for context, then scroll down to the Dislocation Feed. When you see an edge, click 'CALL IT' to stake your reputation. Your journey to Oracle status begins now.";
+            setStreamText(welcomeMsg);
+            setHasWelcomed(true);
+        }
+    }, [points, hasWelcomed]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
