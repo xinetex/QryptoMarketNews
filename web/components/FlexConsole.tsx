@@ -19,12 +19,14 @@ import {
 import { syncWithBackend as syncPoints, clearProfile as clearPoints } from "@/lib/points";
 import { fetchAdDecision, type AdCreative, trackImpression } from "@/lib/ad-network-client";
 import PointsSystemInfo from "./PointsSystemInfo";
+import LeaderboardWidget from "./LeaderboardWidget";
 
 /* 
   FlexConsole Component
   - Disconnected: Prompts to connect
-  - Connected: Tabbed Interface (Wallet | Oracle)
-    - Wallet Tab: Displays Ad/Signals logic (Legacy DynamicWalletAd)
+  - Connected: Tabbed Interface (Wallet | Signals | Oracle)
+    - Wallet Tab: Displays Ad/Pulse
+    - Signals Tab: Displays Leaderboard
     - Oracle Tab: Displays PointsSystemInfo
 */
 
@@ -33,7 +35,7 @@ export default function FlexConsole() {
     const { disconnect } = useDisconnect();
 
     // Global Console State
-    const [activeTab, setActiveTab] = useState<'wallet' | 'oracle'>('wallet');
+    const [activeTab, setActiveTab] = useState<'wallet' | 'signals' | 'oracle'>('wallet');
 
     // Wallet/Ad State
     const [ad, setAd] = useState<AdCreative | null>(null);
@@ -99,7 +101,16 @@ export default function FlexConsole() {
                             }`}
                     >
                         <Activity size={12} />
-                        Wallet
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('signals')}
+                        className={`px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${activeTab === 'signals'
+                            ? 'bg-amber-500/20 text-amber-300 shadow-sm'
+                            : 'text-zinc-500 hover:text-zinc-300 hover:bg-white/5'
+                            }`}
+                    >
+                        <Trophy size={12} />
+                        Signals
                     </button>
                     <button
                         onClick={() => setActiveTab('oracle')}
@@ -108,8 +119,7 @@ export default function FlexConsole() {
                             : 'text-zinc-500 hover:text-zinc-300 hover:bg-white/5'
                             }`}
                     >
-                        <Trophy size={12} />
-                        Oracle
+                        <WalletIcon size={12} />
                     </button>
                 </div>
 
@@ -223,6 +233,12 @@ export default function FlexConsole() {
                                 </div>
                             ) : null}
                         </div>
+                    </div>
+                )}
+
+                {activeTab === 'signals' && (
+                    <div className="h-full flex flex-col p-2">
+                        <LeaderboardWidget />
                     </div>
                 )}
 
