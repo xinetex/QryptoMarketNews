@@ -60,6 +60,22 @@ export default function DislocationCard({ signal, index = 0 }: DislocationCardPr
                                 <span className="text-[9px] font-bold text-purple-400">HIGH</span>
                             </div>
                         )}
+
+                        {/* Trend Alignment */}
+                        {signal.trend && (
+                            <div className={`flex items-center gap-1 px-1.5 py-0.5 rounded ${(isBullish && signal.trend.direction === 'BEARISH') || (!isBullish && signal.trend.direction === 'BULLISH')
+                                    ? 'bg-amber-500/20 border-amber-500/30 text-amber-400'
+                                    : 'bg-indigo-500/20 border-indigo-500/30 text-indigo-400'
+                                }`}>
+                                <Target size={10} />
+                                <span className="text-[9px] font-bold">
+                                    {(isBullish && signal.trend.direction === 'BEARISH') || (!isBullish && signal.trend.direction === 'BULLISH')
+                                        ? 'TREND DEFYING'
+                                        : 'TREND ALIGNED'
+                                    }
+                                </span>
+                            </div>
+                        )}
                     </div>
 
                     {/* Freshness */}

@@ -38,6 +38,13 @@ export interface DislocationSignal {
     conviction: 'HIGH' | 'MEDIUM' | 'LOW';
     actionableWindow: string; // e.g., "~2 hours before market catches up"
 
+    // Trending Bias (TSMOM)
+    trend?: {
+        direction: 'BULLISH' | 'BEARISH' | 'NEUTRAL';
+        score: number;
+        consensus: number;
+    };
+
     // Matching metadata
     matchedKeywords: string[];
     correlationConfidence: number; // 0-1 how confident we are in the news-market link

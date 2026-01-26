@@ -11,6 +11,7 @@
 import { DislocationSignal, DislocationMeta, DislocationResponse, MarketMatcher } from './types/dislocation';
 import { getLatestNews } from './news';
 import { getTopMarkets, PolyMarket } from './polymarket';
+import { calculateTSMOM } from './trend-engine';
 import type { NewsItem } from './types/news';
 
 // Weights for dislocation scoring
@@ -43,7 +44,7 @@ export async function detectDislocations(): Promise<DislocationResponse> {
         const correlations = correlateNewsToMarkets(newsItem, matchers, markets);
 
         for (const correlation of correlations) {
-            const signal = calculateDislocationSignal(newsItem, correlation.market, correlation.subMarket, correlation.confidence, correlation.keywords);
+            const signal = await calculateDislocationSignal(newsItem, correlation.market, correlation.subMarket, correlation.confidence, correlation.keywords);
 
             if (signal && signal.score >= WEIGHTS.DISLOCATION_THRESHOLD) {
                 signals.push(signal);
@@ -159,35 +160,67 @@ function correlateNewsToMarkets(
 /**
  * Calculate dislocation signal between news and market
  */
-function calculateDislocationSignal(
+async function calculateDislocationSignal(
     news: NewsItem,
     market: PolyMarket,
     subMarket: PolyMarket['markets'][0],
     correlationConfidence: number,
     matchedKeywords: string[]
-): DislocationSignal | null {
+): Promise<DislocationSignal | null> {
     // 1. Get news sentiment (-1 to +1)
     const newsSentiment = sentimentToScore(news.sentiment);
 
     // 2. Get market implied sentiment from YES price
     const yesPrices = subMarket.outcomePrices || ['0.5', '0.5'];
     const yesPrice = parseFloat(yesPrices[0]) || 0.5;
-    const noPrice = parseFloat(yesPrices[1]) || 0.5;
+    const noPrice = parseFloat(yesPrices[1]) || (1 - yesPrice);
 
     // Map price to sentiment: 0.9 YES = very bullish (+0.8), 0.1 YES = very bearish (-0.8)
     const marketSentiment = (yesPrice - 0.5) * 2;
 
-    // 3. Calculate raw dislocation
+    // 3. Optional: Get TSMOM Trend Confirmation
+    let trendFactor = 1;
+    let trendData: any = undefined;
+
+    // Try to find an asset to check trend for (e.g., first keyword if it's a known coin)
+    const knownCoins = ['bitcoin', 'ethereum', 'solana', 'btc', 'eth', 'sol'];
+    const assetKeyword = matchedKeywords.find(k => knownCoins.includes(k.toLowerCase()));
+
+    if (assetKeyword) {
+        const coinId = assetKeyword.toLowerCase() === 'btc' ? 'bitcoin' :
+            assetKeyword.toLowerCase() === 'eth' ? 'ethereum' :
+                assetKeyword.toLowerCase() === 'sol' ? 'solana' : assetKeyword.toLowerCase();
+
+        const trend = await calculateTSMOM(coinId);
+        if (trend) {
+            trendData = {
+                direction: trend.direction,
+                score: trend.score,
+                consensus: trend.confidence
+            };
+
+            // If News sentiment diverges from 12m TSMOM trend, increase dislocation score
+            // e.g., Bullish news on Bearish trend = Higher dislocation
+            const isDivergent = (newsSentiment > 0 && trend.direction === 'BEARISH') ||
+                (newsSentiment < 0 && trend.direction === 'BULLISH');
+
+            if (isDivergent) {
+                trendFactor = 1.35; // 35% boost to dislocation score for trend-defying news
+            }
+        }
+    }
+
+    // 4. Calculate raw dislocation
     const rawDislocation = Math.abs(newsSentiment - marketSentiment);
 
-    // 4. Apply weights
+    // 5. Apply weights
     const freshnessMinutes = calculateFreshnessMinutes(news.published);
     const freshnessWeight = Math.max(0.2, 1 - (freshnessMinutes * WEIGHTS.FRESHNESS_DECAY / 60));
 
     const volumeWeight = market.volume > 1000000 ? WEIGHTS.VOLUME_BOOST : 1;
 
-    // 5. Final score (0-100)
-    const score = Math.min(100, Math.round(rawDislocation * 50 * freshnessWeight * volumeWeight * (1 + correlationConfidence)));
+    // 6. Final score (0-100)
+    const score = Math.min(100, Math.round(rawDislocation * 50 * freshnessWeight * volumeWeight * trendFactor * (1 + correlationConfidence)));
 
     if (score < 10) return null;
 
@@ -232,6 +265,7 @@ function calculateDislocationSignal(
         actionableWindow,
         matchedKeywords,
         correlationConfidence,
+        trend: trendData
     };
 }
 
