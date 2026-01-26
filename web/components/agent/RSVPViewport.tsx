@@ -23,6 +23,8 @@ export function RSVPViewport({
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
 
+    const [flashColor, setFlashColor] = useState<string | null>(null);
+
     const timeoutRef = useRef<NodeJS.Timeout>(null);
 
     // Initialize text
@@ -44,6 +46,7 @@ export function RSVPViewport({
     const reset = () => {
         setCurrentIndex(0);
         setIsPlaying(true);
+        setFlashColor(null);
     };
 
     // Animation Loop
@@ -57,6 +60,20 @@ export function RSVPViewport({
         }
 
         const currentWord = words[currentIndex];
+
+        // Subliminal Flash Logic
+        const lower = currentWord.toLowerCase().replace(/[^a-z]/g, '');
+        if (['bull', 'bullish', 'moon', 'pump', 'green', 'up', 'accumulate'].includes(lower)) {
+            setFlashColor('bg-emerald-500/30');
+            setTimeout(() => setFlashColor(null), 150);
+        } else if (['bear', 'bearish', 'crash', 'dump', 'red', 'down', 'sell', 'risk'].includes(lower)) {
+            setFlashColor('bg-red-500/30');
+            setTimeout(() => setFlashColor(null), 150);
+        } else if (['gold', 'bitcoin', 'solana', 'money'].includes(lower)) {
+            setFlashColor('bg-yellow-500/20');
+            setTimeout(() => setFlashColor(null), 150);
+        }
+
         const delay = calculateDelay(currentWord, wpm);
 
         timeoutRef.current = setTimeout(() => {
@@ -73,6 +90,11 @@ export function RSVPViewport({
 
     return (
         <div className="relative w-full max-w-2xl mx-auto rounded-xl overflow-hidden bg-black/80 border border-zinc-800 shadow-2xl backdrop-blur-xl">
+            {/* Subliminal Flash Overlay */}
+            {flashColor && (
+                <div className={`absolute inset-0 ${flashColor} pointer-events-none z-10 transition-colors duration-75`} />
+            )}
+
             {/* Focal Lines (Guides) */}
             <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
@@ -81,12 +103,12 @@ export function RSVPViewport({
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-px h-6 bg-red-500/20" />
 
             {/* Viewport Area */}
-            <div className="h-64 flex flex-col items-center justify-center relative">
+            <div className="h-64 flex flex-col items-center justify-center relative z-20">
                 <WordDisplay word={currentWord} fontSize="xl" />
             </div>
 
             {/* Controls & Progress */}
-            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 to-transparent p-4 flex items-center justify-between gap-4">
+            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 to-transparent p-4 flex items-center justify-between gap-4 z-30">
                 <div className="flex items-center gap-2">
                     <button
                         onClick={isPlaying ? pause : play}

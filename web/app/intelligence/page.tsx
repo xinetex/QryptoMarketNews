@@ -5,6 +5,7 @@ import NewsSlider from '@/components/NewsSlider';
 import DislocationFeed from '@/components/DislocationFeed';
 import DerivativesPanel from '@/components/DerivativesPanel';
 import DailyBriefingCard from '@/components/DailyBriefingCard';
+import MarketPulseCard from '@/components/MarketPulseCard';
 import { Activity } from 'lucide-react';
 
 export default function IntelligencePage() {
@@ -73,16 +74,9 @@ export default function IntelligencePage() {
                                     <p className="text-zinc-500">400-800 WPM transmission for rapid insight ingestion.</p>
                                 </div>,
 
-                                // Card 2: Market Pulse
-                                <div key="pulse" className="p-4 h-full flex flex-col justify-center">
-                                    <div className="flex items-center gap-2 mb-2 text-indigo-400">
-                                        <Activity size={14} />
-                                        <strong className="text-[10px] tracking-wider">MARKET PULSE</strong>
-                                    </div>
-                                    <div className="text-lg font-bold text-zinc-100 mb-1">Low Volatility</div>
-                                    <p className="text-[10px] text-zinc-500 leading-relaxed">
-                                        Market conditions are currently stable. Good for accumulation.
-                                    </p>
+                                // Card 2: Market Pulse (Dynamic)
+                                <div key="pulse" className="h-full">
+                                    <MarketPulseCard />
                                 </div>,
 
                                 // Card 3: News Feed
