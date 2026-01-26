@@ -68,18 +68,12 @@ export default function IntelligencePage() {
                         <RSVPDeck
                             autoPlay={true}
                             items={[
-                                // Card 1: System Info
-                                <div key="system" className="p-4 h-full flex flex-col justify-center text-xs font-mono">
-                                    <strong className="text-zinc-400 block mb-2">RSVP DISPLAY</strong>
-                                    <p className="text-zinc-500">400-800 WPM transmission for rapid insight ingestion.</p>
-                                </div>,
-
-                                // Card 2: Market Pulse (Dynamic)
+                                // Card 1: Market Pulse (Dynamic)
                                 <div key="pulse" className="h-full">
                                     <MarketPulseCard />
                                 </div>,
 
-                                // Card 3: News Feed
+                                // Card 2: News Feed
                                 <div key="news" className="h-full pt-2 px-2">
                                     <NewsSlider autoPlay={false} />
                                 </div>
