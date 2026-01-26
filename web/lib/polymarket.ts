@@ -7,7 +7,9 @@ export interface PolyMarket {
     title: string;
     slug: string;
     category: string;
+    startDate: string;
     endDate: string;
+    image: string;
     volume: number;
     markets: {
         id: string;
@@ -35,7 +37,9 @@ export async function getTopMarkets(limit: number = 20): Promise<PolyMarket[]> {
             title: event.title,
             slug: event.slug,
             category: event.category || "General",
+            startDate: event.startDate || event.creationDate || new Date().toISOString(),
             endDate: event.endDate,
+            image: event.image,
             volume: parseFloat(event.volume) || 0,
             markets: (event.markets || []).map((m: any) => ({
                 id: m.id,
@@ -67,7 +71,9 @@ export async function getPredictionMarkets(keyword: string): Promise<PolyMarket[
             title: event.title,
             slug: event.slug,
             category: event.category || "General",
+            startDate: event.startDate || event.creationDate || new Date().toISOString(),
             endDate: event.endDate,
+            image: event.image,
             volume: parseFloat(event.volume) || 0,
             markets: (event.markets || []).map((m: any) => ({
                 id: m.id,
