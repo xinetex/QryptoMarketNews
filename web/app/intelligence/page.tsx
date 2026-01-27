@@ -1,3 +1,5 @@
+'use client';
+
 import ProphetAgent from '@/components/agent/ProphetAgent';
 import ProphetManual from '@/components/ProphetManual';
 import RSVPDeck from '@/components/RSVPDeck';

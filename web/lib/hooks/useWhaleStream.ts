@@ -1,5 +1,7 @@
+'use client';
+
 import { useState, useEffect } from 'react';
-import { WhaleAlert } from '../whale-engine/types';
+import { WhaleAlert } from '@/lib/whale-engine/types';
 
 export function useWhaleStream(pollInterval = 30000) {
     const [alerts, setAlerts] = useState<WhaleAlert[]>([]);
