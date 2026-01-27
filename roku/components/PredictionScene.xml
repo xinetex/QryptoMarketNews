@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Prophet TV Prediction Scene - Professional Market List -->
-<component name="PredictionScene" extends="Scene">
+<component name="PredictionScene" extends="Group">
     <interface>
         <field id="exitRequested" type="boolean" value="false" />
     </interface>

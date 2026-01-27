@@ -83,16 +83,16 @@ async function fetchMarketPulse() {
 }
 
 // Roku Feed API - Returns configuration and live data for Roku app
-import { getPredictions } from '@/lib/predictions';
+import { getTopMarkets } from '@/lib/polymarket';
 
 export async function GET() {
     try {
-        const [settings, zones, tickerData, marketPulse, predictions] = await Promise.all([
+        const [settings, zones, tickerData, marketPulse, polyMarkets] = await Promise.all([
             getSettings(),
             getZones(),
             fetchTickerData(),
             fetchMarketPulse(),
-            getPredictions(),
+            getTopMarkets(20),
         ]);
 
         // Filter and sort enabled zones
@@ -129,14 +129,15 @@ export async function GET() {
             // Live ticker data for CryptoTicker component
             ticker: tickerData.slice(0, 15),
 
-            // Prediction Markets (NEW)
-            predictions: predictions.slice(0, 20).map(m => ({
+            // Prediction Markets (Real Polymarket Data)
+            predictions: polyMarkets.map(m => ({
                 id: m.id,
-                question: m.question,
-                yesOdds: m.yesOdds,
-                noOdds: m.noOdds,
-                volume: m.totalVolume,
-                endDate: m.endDate
+                question: m.title, // Use title as main question
+                yesOdds: m.markets[0]?.outcomePrices[0] || "0.50",
+                noOdds: m.markets[0]?.outcomePrices[1] || "0.50",
+                volume: m.volume,
+                endDate: m.endDate,
+                image: m.image
             })),
 
             // Zone definitions for Roku

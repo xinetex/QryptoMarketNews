@@ -88,7 +88,30 @@
         <!-- Crypto Service (Invisible) -->
         <CryptoService id="cryptoService" />
 
+        <!-- Sentinel Alert Overlay -->
+        <TVAlert id="tvAlert" />
+
         <!-- Device Linking Overlay -->
         <DeviceLinkScene id="deviceLinkScene" visible="false" />
+
+        <!-- Transition Overlay -->
+        <Rectangle 
+            id="transitionOverlay" 
+            width="1920" 
+            height="1080" 
+            color="#000000" 
+            opacity="0.0" 
+            visible="false" />
+
+        <!-- Watchlist Layer -->
+        <WatchlistLayer id="watchlistLayer" visible="false" />
+
+        <!-- Fade Animation -->
+        <Animation id="fadeAnimation" duration="0.4" easeFunction="linear">
+            <FloatFieldInterpolator 
+                key="[0.0, 0.5, 1.0]" 
+                keyValue="[0.0, 1.0, 0.0]" 
+                fieldToInterp="transitionOverlay.opacity" />
+        </Animation>
     </children>
 </component>

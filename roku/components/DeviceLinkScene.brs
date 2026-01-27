@@ -41,7 +41,10 @@ sub onCodeReceived()
         ' Generate QR Code URL
         ' Activation URL: https://qchannel.com/activate?code=XYZ
         targetUrl = "https://qchannel.com/activate?code=" + m.currentCode
-        qrApi = "https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=" + targetUrl.Escape()
+        
+        ' Use roUrlTransfer for escaping
+        ut = CreateObject("roUrlTransfer")
+        qrApi = "https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=" + ut.Escape(targetUrl)
         
         m.qrPoster.uri = qrApi
         

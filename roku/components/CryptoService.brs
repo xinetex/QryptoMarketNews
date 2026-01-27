@@ -74,6 +74,12 @@ sub runLoop()
             tickerTimer = 0
             zoneTimer = 0
         end if
+        
+        ' Alert Poll every 10 seconds (100 * 100ms)
+        if (tickerTimer MOD 100) = 0
+             fetchAlerts()
+             fetchWhaleAlerts()
+        end if
     end while
 end sub
 
@@ -132,9 +138,48 @@ sub fetchRokuFeed()
     ' Call Alpha Fetch
     fetchAlphaData()
     
+    ' Call Alert Fetch (Sentinel)
+    fetchAlerts()
+    
+    ' Call Whale Fetch (Deep Sounder)
+    fetchWhaleAlerts()
+    
     ' Also fetch from AgentCache for enhanced data
     fetchAgentCacheNews()
     fetchAgentCacheIntelligence()
+end sub
+
+' Fetch Whale Alerts
+sub fetchWhaleAlerts()
+    url = m.top.apiBaseUrl + "/api/whale-alerts"
+    response = makeApiRequest(url)
+    
+    if response <> invalid and response.alerts <> invalid
+        m.top.whaleAlerts = response.alerts
+    end if
+end sub
+
+' Fetch Sentinel Alerts
+sub fetchAlerts()
+    url = m.top.apiBaseUrl + "/api/device/alert"
+    
+    ' Use a short timeout context if we could, but for now simple request.
+    response = makeApiRequest(url)
+    
+    if response <> invalid
+        ' Check if this is a new alert
+        if response.id <> invalid and response.id <> m.top.lastAlertId
+             print "[CryptoService] >>> NEW SENTINEL ALERT DETECTED <<<"
+             print "[CryptoService] ID: " + response.id
+             print "[CryptoService] Title: " + response.title
+             
+             m.top.lastAlertId = response.id
+             m.top.alertData = response
+        end if
+    else
+        ' Silently fail on network error to avoid log spam, 
+        ' or print only every N failures.
+    end if
 end sub
 
 sub fetchAlphaData()

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Prophet TV Portfolio Dashboard -->
-<component name="PortfolioScene" extends="Scene">
+<component name="PortfolioScene" extends="Group">
     <interface>
         <field id="exitRequested" type="boolean" value="false" />
     </interface>

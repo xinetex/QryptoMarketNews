@@ -6,9 +6,27 @@ import DislocationFeed from '@/components/DislocationFeed';
 import DerivativesPanel from '@/components/DerivativesPanel';
 import DailyBriefingCard from '@/components/DailyBriefingCard';
 import MarketPulseCard from '@/components/MarketPulseCard';
+import WhaleFeed from '@/components/WhaleFeed';
+import QuantumSlider from '@/components/QuantumSlider';
+import { useWhaleStream } from '@/lib/hooks/useWhaleStream';
 import { Activity } from 'lucide-react';
 
 export default function IntelligencePage() {
+    const { alerts: whaleAlerts } = useWhaleStream();
+
+    // Transform Whale Alerts into RSVP Items
+    const sliderItems = whaleAlerts.length > 0 ? whaleAlerts.map(alert => ({
+        title: `WHALE ${alert.type.includes('INFLOW') ? 'INFLOW' : 'OUTFLOW'}`,
+        type: 'whale',
+        narrative: alert.narrative,
+        transaction: alert.transaction,
+        data: alert // Pass full object if needed
+    })) : [
+        // Fallback items while loading or if empty
+        { title: 'SCANNING DEEP NET', type: 'market', summary: 'Initializing wideband scan for whale anomalies...' },
+        { title: 'MARKET PULSE', type: 'market', summary: 'Global liquidity conditions remain stable.' }
+    ];
+
     return (
         <div className="min-h-screen bg-black text-zinc-100 flex flex-col items-center pt-24 pb-12 px-4">
 
@@ -36,8 +54,14 @@ export default function IntelligencePage() {
                     <DailyBriefingCard />
                 </div>
 
+                {/* High Density Data Stream (Quantum Slider) */}
+                <div className="w-full -mx-4 overflow-hidden mb-8 border-y border-zinc-900 bg-zinc-950/50 py-4">
+                    {/* Live Data Stream */}
+                    <QuantumSlider items={sliderItems} speed={40} />
+                </div>
+
                 {/* Market Intelligence Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-12">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Market Dislocation Detector - 2/3 width */}
                     <div className="lg:col-span-2 relative">
                         <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-orange-500/5 to-red-500/5 blur-3xl rounded-3xl pointer-events-none" />
@@ -51,6 +75,14 @@ export default function IntelligencePage() {
                         <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-blue-500/5 to-indigo-500/5 blur-3xl rounded-3xl pointer-events-none" />
                         <div className="relative h-full">
                             <DerivativesPanel />
+                        </div>
+                    </div>
+
+                    {/* Whale Radar (New Row) - Full Width */}
+                    <div className="lg:col-span-3 relative mt-6">
+                        <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 via-purple-500/5 to-pink-500/5 blur-3xl rounded-3xl pointer-events-none" />
+                        <div className="relative p-6 rounded-2xl border border-indigo-500/20 bg-zinc-950/80 backdrop-blur-sm">
+                            <WhaleFeed />
                         </div>
                     </div>
                 </div>

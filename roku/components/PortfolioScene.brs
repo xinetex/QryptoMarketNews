@@ -17,20 +17,40 @@ sub init()
 end sub
 
 sub loadMockPortfolio()
-    ' In Phase 16, we will fetch from API
-    ' For now, static mock data to visualize the design
+    ' Fetch from API
+    url = "http://192.168.4.34:3000/api/roku/portfolio"
     
+    request = CreateObject("roUrlTransfer")
+    request.setUrl(url)
+    request.setCertificatesFile("common:/certs/ca-bundle.crt")
+    request.initClientCertificates()
+    
+    response = request.getToString()
+    
+    if response <> invalid and response <> ""
+        json = ParseJson(response)
+        if json <> invalid
+             updateUI(json)
+        end if
+    end if
+end sub
+
+sub updateUI(data as object)
     ' Header
-    m.totalBalance.text = "$12,450.00"
-    m.totalPnl.text = "+$2,450.00 (24.5%)"
+    m.totalBalance.text = data.totalBalance
+    m.totalPnl.text = data.pnlFormatted + " (" + data.pnlPercent + ")"
+    if data.isPositive
+        m.totalPnl.color = "#10b981"
+    else
+        m.totalPnl.color = "#ef4444"
+    end if
     
     ' Holdings
     content = CreateObject("roSGNode", "ContentNode")
     
-    addHolding(content, "BTC", "Bitcoin", "0.45", "$42,500.00", "+12%", true)
-    addHolding(content, "ETH", "Ethereum", "4.2", "$12,400.00", "+5%", true)
-    addHolding(content, "SOL", "Solana", "150", "$21,000.00", "+45%", true)
-    addHolding(content, "DOGE", "Dogecoin", "50000", "$4,200.00", "-2%", false)
+    for each h in data.holdings
+        addHolding(content, h.symbol, h.name, h.amount, h.value, h.pnl, h.isPositive)
+    end for
     
     m.holdingsGrid.content = content
     m.holdingsGrid.setFocus(true)
@@ -38,14 +58,10 @@ sub loadMockPortfolio()
     ' Leaderboard
     lContent = CreateObject("roSGNode", "ContentNode")
     
-    l1 = lContent.createChild("ContentNode")
-    l1.title = "1. @ElonMusk ($42B)"
-    
-    l2 = lContent.createChild("ContentNode")
-    l2.title = "2. @Satoshi ($1B)"
-    
-    l3 = lContent.createChild("ContentNode")
-    l3.title = "3. @Vitalik ($500M)"
+    for each l in data.leaderboard
+        node = lContent.createChild("ContentNode")
+        node.title = str(l.rank).trim() + ". " + l.name + " (" + l.score + ")"
+    end for
     
     m.leaderList.content = lContent
 end sub
@@ -59,7 +75,7 @@ sub addHolding(parent, symbol, name, amount, value, pnl, isPos)
         valueFormatted: value,
         pnlFormatted: pnl,
         isPositive: isPos,
-        HDPOSTERURL: "pkg:/images/icons/" + lcase(symbol) + ".png" ' Placeholder
+        HDPOSTERURL: "pkg:/images/icons/" + lcase(symbol) + ".png" 
     })
 end sub
 

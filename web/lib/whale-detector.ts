@@ -1,5 +1,17 @@
 
 import { AlphaSignal } from "./types/alpha";
+import { getPredictionMarkets } from "./polymarket";
+
+export interface ShadowSignal {
+    asset: string;
+    type: 'SHADOW_LONG' | 'SHADOW_SHORT';
+    whaleAction: string;
+    marketConsensus: string;
+    shadowGap: number; // 0-100 score of divergence
+    confidence: number;
+    narrative: string;
+}
+
 
 // Types
 interface WhaleMovement {
@@ -68,4 +80,75 @@ export async function detectWhaleMovements(): Promise<AlphaSignal[]> {
     }
 
     return signals.sort((a, b) => b.confidence - a.confidence);
+}
+
+/**
+ * The Whale Shadow: Detects when Smart Money disagrees with the Crowd (Polymarket).
+ * 
+ * Logic:
+ * 1. Get simulated Whale Signals (e.g., "Binance 14 bought $5M ETH").
+ * 2. Get Polymarket odds for that asset (e.g., "Will ETH hit $3k?").
+ * 3. Calculate Divergence:
+ *    - Whale BUY + Polymarket BEARISH = HIGH ALPHA (Shadow Long)
+ *    - Whale SELL + Polymarket BULLISH = HIGH ALPHA (Shadow Short)
+ */
+export async function detectWhaleShadow(): Promise<ShadowSignal[]> {
+    const whaleSignals = await detectWhaleMovements();
+    const shadowSignals: ShadowSignal[] = [];
+
+    for (const signal of whaleSignals) {
+        // Find relevant prediction markets
+        const markets = await getPredictionMarkets(signal.asset);
+
+        // Find a market that represents "Price Direction" (e.g. Will SOL hit X?)
+        // Heuristic: Looking for 'High' 'Hit' 'reach' or 'Above' in title
+        const priceMarket = markets.find(m =>
+            m.markets.some(sub =>
+            (sub.question.toLowerCase().includes('hit') ||
+                sub.question.toLowerCase().includes('above') ||
+                sub.question.toLowerCase().includes('reach'))
+            )
+        );
+
+        if (!priceMarket) continue;
+
+        // Calculate "Crowd Bullishness" from the YES price
+        // Assuming the main market is "Will [Asset] Go Up?"
+        // We take the highest volume sub-market
+        // If outcomePrices is empty or invalid, fallback to 0.5
+        const mainMarket = priceMarket.markets[0];
+        const yesPriceStr = (mainMarket.outcomePrices && mainMarket.outcomePrices.length > 0)
+            ? mainMarket.outcomePrices[0]
+            : "0.5";
+
+        const crowdBullishness = parseFloat(yesPriceStr); // 0.0 to 1.0
+
+        // Calculate Divergence
+        let type: 'SHADOW_LONG' | 'SHADOW_SHORT' | null = null;
+        let gap = 0;
+
+        if (signal.direction === 'LONG' && crowdBullishness < 0.45) {
+            // Whale Buying, Crowd Bearish (<45%)
+            type = 'SHADOW_LONG';
+            gap = (0.5 - crowdBullishness) + 0.5; // Scale gap
+        } else if (signal.direction === 'SHORT' && crowdBullishness > 0.55) {
+            // Whale Selling, Crowd Bullish (>55%)
+            type = 'SHADOW_SHORT';
+            gap = (crowdBullishness - 0.5) + 0.5;
+        }
+
+        if (type) {
+            shadowSignals.push({
+                asset: signal.asset,
+                type,
+                whaleAction: signal.reason,
+                marketConsensus: `Crowd only ${Math.round(crowdBullishness * 100)}% bullish on PolyMarket`,
+                shadowGap: Math.round(gap * 100),
+                confidence: Math.round((signal.confidence + (gap * 100)) / 2),
+                narrative: `WHALE DIVERGENCE: Smart money is ${signal.direction === 'LONG' ? 'accumulating' : 'dumping'} ${signal.asset} while the prediction market crowd is betting ${type === 'SHADOW_LONG' ? 'against it' : 'on a pump'}.`
+            });
+        }
+    }
+
+    return shadowSignals.sort((a, b) => b.shadowGap - a.shadowGap);
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Prophet TV Briefing Scene - Daily Market Summary & Podcasts -->
-<component name="BriefingScene" extends="Scene">
+<component name="BriefingScene" extends="Group">
     <interface>
         <field id="exitRequested" type="boolean" value="false" />
     </interface>

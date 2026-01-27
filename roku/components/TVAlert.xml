@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="TVAlert" extends="Group">
+    <interface>
+        <!-- 'BULL' (Green) or 'BEAR' (Red) -->
+        <field id="alertType" type="string" onChange="onTypeChanged" />
+        <field id="title" type="string" alias="titleLabel.text" />
+        <field id="message" type="string" alias="messageLabel.text" />
+        <function name="show" />
+        <function name="hide" />
+    </interface>
+
+    <script type="text/brightscript" uri="TVAlert.brs" />
+
+    <children>
+        <!-- Overlay Background -->
+        <Rectangle 
+            id="background" 
+            width="1920" 
+            height="1080" 
+            color="#000000" 
+            opacity="0.95" />
+
+        <!-- Pulse Ring -->
+        <Poster 
+            id="pulseRing"
+            uri="pkg:/images/glow_ring.png"
+            width="800"
+            height="800"
+            translation="[560, 140]" 
+            opacity="0.5" />
+
+        <!-- Content Container -->
+        <Group translation="[0, 300]">
+            <!-- Icon -->
+            <Label 
+                id="iconLabel" 
+                text="⚠️" 
+                width="1920" 
+                horizAlign="center" 
+                font="font:LargeBoldSystemFont" 
+                translation="[0, -100]" />
+
+            <Label 
+                id="titleLabel" 
+                text="ALERT TITLE" 
+                width="1920" 
+                horizAlign="center" 
+                font="font:LargeBoldSystemFont" 
+                color="#ffffff" />
+            
+            <Label 
+                id="messageLabel" 
+                text="Alert Message goes here..." 
+                width="1920" 
+                horizAlign="center" 
+                font="font:MediumSystemFont" 
+                color="#cccccc" 
+                translation="[0, 80]" />
+        </Group>
+
+        <!-- Animation -->
+        <!-- Animation -->
+        <Animation id="pulseAnimation" duration="1" repeat="true">
+            <FloatFieldInterpolator key="[0.0, 0.5, 1.0]" keyValue="[0.5, 1.0, 0.5]" fieldToInterp="pulseRing.opacity" />
+            <Vector2DFieldInterpolator key="[0.0, 0.5, 1.0]" keyValue="[[1.0, 1.0], [1.1, 1.1], [1.0, 1.0]]" fieldToInterp="pulseRing.scale" />
+        </Animation>
+    </children>
+</component>

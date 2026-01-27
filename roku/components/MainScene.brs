@@ -25,12 +25,15 @@ sub init()
     ' Prophet OS Observers
     m.cryptoService.observeField("alphaVector", "onAlphaVectorChanged")
     m.cryptoService.observeField("newsHeadlines", "onNewsHeadlinesChanged")
+    m.cryptoService.observeField("alertData", "onAlertReceived")
+    m.cryptoService.observeField("whaleAlerts", "onWhaleAlertsReceived")
     
     m.cryptoService.control = "run"
     
     ' Prophet OS Nodes
     m.alphaHud = m.top.findNode("alphaHud")
     m.rsvpDisplay = m.top.findNode("rsvpDisplay")
+    m.tvAlert = m.top.findNode("tvAlert")
     
     ' Setup Ad Timers
     m.adTimer = m.top.findNode("adTimer")
@@ -496,6 +499,15 @@ sub onNewsHeadlinesChanged()
     end if
 end sub
 
+sub onWhaleAlertsReceived()
+    alerts = m.cryptoService.whaleAlerts
+    if alerts <> invalid and alerts.count() > 0
+        print "[MainScene] >>> WHALE SONAR ACTIVE: " + str(alerts.count()) + " signals detected."
+        ' Future: Pass to a specific visual component
+        ' For now, we confirm the data pipeline is open.
+    end if
+end sub
+
 ' ===== AMBIENT MODE =====
 sub setupIdleTimer()
     m.idleTimer = m.top.createChild("Timer")
@@ -894,9 +906,33 @@ end sub
 sub launchWatchlistMode()
     if m.watchlistLayer = invalid
         m.watchlistLayer = m.top.findNode("watchlistLayer")
-        ' Pass crypto service reference if needed
+        m.watchlistLayer.observeField("visible", "onWatchlistVisibleChanged")
     end if
     
     m.watchlistLayer.visible = true
     m.watchlistLayer.setFocus(true)
+end sub
+
+sub onWatchlistVisibleChanged()
+    if not m.watchlistLayer.visible
+        m.zoneGrid.setFocus(true)
+    end if
+end sub
+
+sub onAlertReceived()
+    alert = m.cryptoService.alertData
+    if alert <> invalid and m.tvAlert <> invalid
+        print "[MainScene] Alert Data Received: " + FormatJson(alert)
+        
+        ' Validate required fields
+        if alert.type <> invalid and alert.title <> invalid and alert.message <> invalid
+            print "[MainScene] Valid Alert. Triggering UI..."
+            m.tvAlert.alertType = alert.type
+            m.tvAlert.title = alert.title
+            m.tvAlert.message = alert.message
+            m.tvAlert.callFunc("show")
+        else
+            print "[MainScene] Error: Invalid alert data structure."
+        end if
+    end if
 end sub

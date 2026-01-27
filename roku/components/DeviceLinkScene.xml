@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<component name="DeviceLinkScene" extends="Scene">
+<component name="DeviceLinkScene" extends="Group">
     <interface>
         <!-- Fired when linking is complete -->
         <field id="linkComplete" type="boolean" alwaysNotify="true" />
