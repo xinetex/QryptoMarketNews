@@ -24,6 +24,8 @@ export const metadata: Metadata = {
 
 import { Providers } from "./providers";
 import { OnchainProvider } from "@/components/providers/OnchainProvider";
+import { GlobalErrorBoundary } from '@/components/GlobalErrorBoundary';
+import { Toaster } from "@/components/ui/toaster"
 
 export default function RootLayout({
   children,
@@ -37,10 +39,11 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <OnchainProvider>
-          <Providers>
-            <DynamicIsland />
+          <GlobalErrorBoundary>
             {children}
-          </Providers>
+          </GlobalErrorBoundary>
+          <FlexConsole />
+          <Toaster />
         </OnchainProvider>
       </body>
     </html>

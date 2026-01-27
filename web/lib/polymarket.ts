@@ -13,6 +13,7 @@ export interface PolyMarket {
     volume: number;
     markets: {
         id: string;
+        conditionId: string;
         question: string;
         outcomes: string[];
         outcomePrices: string[];
@@ -43,6 +44,7 @@ export async function getTopMarkets(limit: number = 20): Promise<PolyMarket[]> {
             volume: parseFloat(event.volume) || 0,
             markets: (event.markets || []).map((m: any) => ({
                 id: m.id,
+                conditionId: m.conditionId,
                 question: m.question,
                 outcomes: JSON.parse(m.outcomes || "[]"),
                 outcomePrices: JSON.parse(m.outcomePrices || "[]"),

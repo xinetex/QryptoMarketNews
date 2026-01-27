@@ -109,16 +109,18 @@ function generateId(): string {
     return `prophecy-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }
 
+import { analyzeMarketWhales } from './polymarket-analyzer';
+
 /**
  * Analyze market factors (simplified heuristic version)
  * In production, this would call an LLM API
  */
-function analyzeFactors(market: {
-    question: string;
+async function analyzeFactors(market: {
+    id: string;
     yesPrice: number;
     noPrice: number;
     volume24h?: number;
-}): ProphecyFactor[] {
+}): Promise<ProphecyFactor[]> {
     const factors: ProphecyFactor[] = [];
 
     // Price momentum factor
@@ -158,6 +160,21 @@ function analyzeFactors(market: {
             weight: 0.15,
             description: 'Price near 50¢ indicates market uncertainty',
         });
+    }
+
+    // Smart Money / Whale Factor
+    try {
+        const whaleSignal = await analyzeMarketWhales(market.id);
+        if (whaleSignal.whaleCount > 0 && whaleSignal.sentiment !== 'neutral') {
+            factors.push({
+                name: 'Smart Money Signal',
+                sentiment: whaleSignal.sentiment,
+                weight: 0.4, // High weight for whales
+                description: `Detected ${whaleSignal.whaleCount} whales moving volume. ${whaleSignal.description}`,
+            });
+        }
+    } catch (e) {
+        // Ignore failure
     }
 
     return factors;
@@ -212,7 +229,7 @@ export async function generateProphecy(market: {
     endDate?: string;
 }): Promise<Prophecy> {
     // Analyze factors
-    const factors = analyzeFactors(market);
+    const factors = await analyzeFactors(market);
 
     // Determine prediction
     let prediction: 'YES' | 'NO' | 'NEUTRAL';

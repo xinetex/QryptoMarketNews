@@ -56,11 +56,11 @@ export async function fetchAdDecision(walletAddress?: string): Promise<AdDecisio
         // We will pretend we are the "Venue" asking for an ad for a user.
         // We'll pass a dummy venueId.
 
-        const response = await fetch(`${AD_NETWORK_URL}/api/decision`, {
+        const response = await fetch(`/api/ad-proxy`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'x-api-key': API_KEY
+                // API Key is handled by the proxy now, but we can keep it clean
             },
             body: JSON.stringify({
                 limit: 1,
