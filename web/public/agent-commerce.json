@@ -1,0 +1,31 @@
+{
+    "agent_protocol": "1.0.0",
+    "identity": {
+        "name": "QCrypto Channel (Prophet TV)",
+        "description": "AI-First Crypto Market Intelligence & Swarm Detection",
+        "homepage": "https://qryptomarket-news.vercel.app",
+        "moltbook": "https://moltbook.com/u/QCrypto"
+    },
+    "payment": {
+        "accepted_assets": [
+            "USDC",
+            "ETH",
+            "SOL"
+        ],
+        "receivers": {
+            "base": "0xYOUR_BASE_WALLET_ADDRESS_HERE",
+            "solana": "6cUW1tH3KuACfft7ic7n1tRtd4GBHhQXBVNbPQW9nL2Z"
+        },
+        "pricing": {
+            "data_access_tip": {
+                "amount": 0.1,
+                "currency": "USDC",
+                "description": "Recommended tip for consuming Prophet Intelligence data reports."
+            }
+        }
+    },
+    "endpoints": {
+        "intelligence_report": "/intelligence",
+        "api_docs": "/docs"
+    }
+}
