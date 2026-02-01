@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import DynamicIsland from "@/components/DynamicIsland";
+// import DynamicIsland from "@/components/DynamicIsland";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,7 +25,8 @@ export const metadata: Metadata = {
 import { Providers } from "./providers";
 import { OnchainProvider } from "@/components/providers/OnchainProvider";
 import { GlobalErrorBoundary } from '@/components/GlobalErrorBoundary';
-import { Toaster } from "@/components/ui/toaster"
+// Toaster import removed
+import FlexConsole from "@/components/FlexConsole";
 
 export default function RootLayout({
   children,
@@ -43,7 +44,7 @@ export default function RootLayout({
             {children}
           </GlobalErrorBoundary>
           <FlexConsole />
-          <Toaster />
+          {/* Toaster removed */}
         </OnchainProvider>
       </body>
     </html>

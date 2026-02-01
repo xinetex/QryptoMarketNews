@@ -12,6 +12,7 @@ import BreakingNews from "./BreakingNews";
 import { useCryptoPrices } from "@/lib/hooks/useCrypto";
 import { formatPrice, formatChange } from "@/lib/coingecko";
 import ProphetBadge from "./ProphetBadge";
+import AEOContent from "./AEOContent";
 
 export default function TVOverlay() {
     const overlayRef = useRef<HTMLDivElement>(null);
@@ -211,6 +212,9 @@ export default function TVOverlay() {
                     </div>
                 </div>
             </div>
+
+            {/* AEO Search Authority Content */}
+            <AEOContent />
         </div>
     );
 }

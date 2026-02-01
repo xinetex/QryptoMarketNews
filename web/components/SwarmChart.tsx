@@ -32,7 +32,7 @@ export function SwarmChart({ data, marketTitle }: SwarmChartProps) {
         const width = 600;
         const height = 400;
 
-        const simulation = d3.forceSimulation<Particle, undefined>()
+        const simulation = d3.forceSimulation<Particle>()
             .force("charge", d3.forceManyBody().strength(-5)) // Repel slightly
             .force("center", d3.forceCenter(width / 2, height / 2)) // Gravitate to center
             .force("collide", d3.forceCollide().radius(d => (d as Particle).r + 1).iterations(2))

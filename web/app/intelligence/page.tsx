@@ -11,6 +11,7 @@ import MarketPulseCard from '@/components/MarketPulseCard';
 import WhaleFeed from '@/components/WhaleFeed';
 import QuantumSlider from '@/components/QuantumSlider';
 import { useWhaleStream } from '@/lib/hooks/useWhaleStream';
+import ProphetAuthorityReport from '@/components/ProphetAuthorityReport';
 import { Activity } from 'lucide-react';
 
 export default function IntelligencePage() {
@@ -115,6 +116,9 @@ export default function IntelligencePage() {
                         />
                     </div>
                 </div>
+
+                {/* GEO Authority Report (SEO/AI Optimized) */}
+                <ProphetAuthorityReport />
 
                 {/* System Manual / Help Section */}
                 <ProphetManual />
