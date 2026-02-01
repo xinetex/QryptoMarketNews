@@ -96,6 +96,8 @@ export async function getEnhancedZoneData(zoneConfigs: ZoneConfig[]): Promise<Zo
         let matchingProtocols: DeFiProtocol[] = [];
 
         // Determine logic based on slug
+        if (!zone.slug) continue;
+
         switch (zone.slug) {
             case 'layer2':
                 // Special handling for L2

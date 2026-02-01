@@ -20,7 +20,7 @@ const ScoredNewsSchema = z.object({
 });
 
 export class ProphetParser {
-    private model = google('gemini-1.5-flash');
+    private model = google('gemini-1.5-flash-001');
 
     /**
      * Analyze a batch of news items and return scores

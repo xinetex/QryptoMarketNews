@@ -9,7 +9,6 @@ const parser = new Parser();
 const CHANNELS = [
     { id: 'UC4NGTMTk1bq4ldBaT6my7yA', name: 'Bankless' }, // Bankless
     { id: 'UCqK_GSMbpiV8spgD3ZGloSw', name: 'Coin Bureau' }, // Coin Bureau
-    { id: 'UCj6hW9y8_p254P1n8GjT9g', name: 'The Daily Gwei' }, // The Daily Gwei
 ];
 
 export async function GET() {
