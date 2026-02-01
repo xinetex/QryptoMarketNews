@@ -48,6 +48,22 @@ export default function ProphetAuthorityReport() {
         "about": {
             "@type": "Thing",
             "name": "Cryptocurrency Market Analysis"
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://qryptomarket-news.vercel.app/intelligence"
+        },
+        "potentialAction": {
+            "@type": "PayAction",
+            "name": "Agent Tip",
+            "description": "Voluntary micro-payment for data consumption",
+            "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://qryptomarket-news.vercel.app/agent-commerce.json",
+                "actionPlatform": ["http://schema.org/DesktopWebPlatform", "http://schema.org/MobileWebPlatform", "http://schema.org/IOSPlatform", "http://schema.org/AndroidPlatform"]
+            },
+            "price": "0.1",
+            "priceCurrency": "USDC"
         }
     };
 
