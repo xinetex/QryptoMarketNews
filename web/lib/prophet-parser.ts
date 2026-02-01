@@ -1,7 +1,12 @@
-import { google } from '@ai-sdk/google';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { generateObject } from 'ai';
 import { z } from 'zod';
 import type { NewsItem } from './types/news';
+
+// Initialize Google AI with our specific key
+const google = createGoogleGenerativeAI({
+    apiKey: process.env.GEMINI_API_KEY,
+});
 
 // Schema for AI Output
 const ScoredNewsSchema = z.object({

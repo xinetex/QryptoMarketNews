@@ -21,6 +21,8 @@ export default function TVOverlay() {
     const { settings } = useAdminSettings();
     const [time, setTime] = useState<Date | null>(null);
 
+    const [showInfo, setShowInfo] = useState(false);
+
     useEffect(() => {
         setTime(new Date()); // Set initial client time
         const timer = setInterval(() => setTime(new Date()), 1000);
@@ -145,6 +147,13 @@ export default function TVOverlay() {
                     <div className="hidden xl:block"><MarketPulse /></div>
                     <div className="h-10 w-px bg-white/20 mx-2 hidden xl:block"></div>
 
+                    <button
+                        onClick={() => setShowInfo(true)}
+                        className="px-6 py-2 bg-glass border border-white/10 rounded-full backdrop-blur-md text-sm font-bold tracking-wide hover:bg-white/10 transition-colors cursor-pointer flex items-center gap-2 text-zinc-400 hover:text-white"
+                    >
+                        <span>ℹ️</span> INFO
+                    </button>
+
                     <Link href="/galaxy" className="px-6 py-2 bg-glass border border-white/10 rounded-full backdrop-blur-md text-sm font-bold tracking-wide hover:bg-white/10 transition-colors cursor-pointer flex items-center gap-2">
                         <span>🌌</span> GALAXY
                     </Link>
@@ -160,6 +169,12 @@ export default function TVOverlay() {
                         {time ? formatTime(time as Date) : "..."}
                     </div>
                     <div className="flex gap-2">
+                        <button
+                            onClick={() => setShowInfo(true)}
+                            className="px-3 py-1.5 bg-glass border border-white/10 rounded-full text-xs font-bold hover:bg-white/10 text-zinc-400"
+                        >
+                            ℹ️
+                        </button>
                         <Link href="/galaxy" className="px-3 py-1.5 bg-glass border border-white/10 rounded-full text-xs font-bold hover:bg-white/10">
                             🌌 GALAXY
                         </Link>
@@ -213,8 +228,8 @@ export default function TVOverlay() {
                 </div>
             </div>
 
-            {/* AEO Search Authority Content */}
-            <AEOContent />
+            {/* AEO Search Authority Modal */}
+            <AEOContent isOpen={showInfo} onClose={() => setShowInfo(false)} />
         </div>
     );
 }

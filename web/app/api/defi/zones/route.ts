@@ -17,7 +17,6 @@ export async function GET() {
 
         const zones = await sql`
             SELECT * FROM qchannel_zones 
-            WHERE is_active = true 
             ORDER BY sort_order ASC
         ` as unknown as ZoneConfig[];
 
