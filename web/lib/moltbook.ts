@@ -84,6 +84,42 @@ export class MoltbookService {
     async getSubmoltFeed(submolt: string, limit: number = 10) {
         return this.request(`/submolts/${submolt}/posts?limit=${limit}`);
     }
+
+    /**
+     * Semantic Search (AI-Powered)
+     */
+    async search(query: string, type: 'posts' | 'comments' | 'all' = 'all', limit: number = 10) {
+        const params = new URLSearchParams({
+            q: query,
+            type,
+            limit: limit.toString()
+        });
+        return this.request(`/search?${params.toString()}`);
+    }
+
+    /**
+     * Vote on a post or comment
+     */
+    async vote(id: string, type: 'post' | 'comment', direction: 'up' | 'down') {
+        const action = direction === 'up' ? 'upvote' : 'downvote';
+        const endpoint = type === 'post' ? 'posts' : 'comments';
+        return this.request(`/${endpoint}/${id}/${action}`, {
+            method: 'POST'
+        });
+    }
+
+    /**
+     * Add a comment to a post
+     */
+    async comment(postId: string, content: string, parentId?: string) {
+        const body: any = { content };
+        if (parentId) body.parent_id = parentId;
+
+        return this.request(`/posts/${postId}/comments`, {
+            method: 'POST',
+            body: JSON.stringify(body)
+        });
+    }
 }
 
 // Singleton instance for server-side usage

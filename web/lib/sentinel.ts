@@ -64,12 +64,23 @@ export class SentinelService {
      */
     private async tryPost(submolt: string, title: string, content: string, url?: string, dedupKey?: string) {
         try {
-            // 1. Fetch recent posts to avoid spamming the same thing
-            const recent = await moltbook.getSubmoltFeed(submolt, 10);
-            const isDuplicate = recent.posts.some((p: any) => p.title === title);
+            // 1. Semantic Check (Anti-Duplicate & Context Awareness)
+            // Instead of just checking exact titles, we search for the concept.
+            const searchResults = await moltbook.search(title, 'posts', 5);
 
-            if (isDuplicate) {
-                console.log(`[Sentinel] Skipping duplicate: ${title}`);
+            // Check if any result is highly similar (> 0.85) AND recent
+            // Note: In a real implementation we would check dates, but for now we trust the semantic match
+            // If similar content exists, we skip to avoid noise.
+            const similarPost = searchResults.results?.find((r: any) => r.similarity > 0.85);
+
+            if (similarPost) {
+                console.log(`[Sentinel] Skipping duplicate/similar topic: ${title} (Matches: ${similarPost.title}, Sim: ${similarPost.similarity})`);
+
+                // OPTIONAL: If it's a really high alpha event, we might UPVOTE the existing one instead!
+                if (dedupKey?.startsWith('shadow')) {
+                    console.log(`[Sentinel] Upvoting existing Alpha: ${similarPost.id}`);
+                    await moltbook.vote(similarPost.id, 'post', 'up');
+                }
                 return;
             }
 
