@@ -31,14 +31,16 @@ export class ProphetParser {
         const prompt = `
       Analyze the following crypto news headlines for MARKET IMPACT.
       
+      Act as a cynical, high-stakes trader. Most news is noise.
+      
       For each item, determine:
       1. Sentiment: BULLISH, BEARISH, or neutral.
       2. Alpha Score (0-100): 
-         - 0-30: Noise, irrelevant, or minimal impact.
-         - 31-60: Standard news, moderate interest.
-         - 61-85: Significant market mover, actionable info.
-         - 86-100: CRITICAL ALPHA (Major adoption, hacks, regulation, massive pumps).
+         - 0-50: NOISE. Generic updates, minor price moves, fluff, opinion pieces. -> IGNORE.
+         - 51-75: INTERESTING. Defi launches, partnerships, significant stats. -> KEEP.
+         - 76-100: CRITICAL ALPHA. Exploits/Hacks, SEC/Regulatory Action, Massive Adoption, Tokenomics Changes, Mainnet Launches. -> ALERT.
       3. Key Assets: Extract tickers (e.g. BTC, ETH, SOL).
+      4. Reasoning: Brief (1 sentence) explanation of why this matters (or why it doesn't).
       
       News Items:
       ${newsItems.map(item => `[ID: ${item.id}] Title: ${item.title}`).join('\n')}

@@ -11,6 +11,7 @@ export interface NewsItem {
     alpha_score?: number; // 0-100 Prophet Score
     key_assets?: string[]; // ["BTC", "SOL"]
     actionable?: boolean;
+    reasoning?: string;
 }
 
 export interface NewsApiResponse {
