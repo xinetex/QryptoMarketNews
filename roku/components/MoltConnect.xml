@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="MoltConnect" extends="Group">
+    <interface>
+        <field id="submolt" type="string" onChange="onSubmoltChanged" />
+        <field id="status" type="string" value="DISCONNECTED" />
+    </interface>
+
+    <script type="text/brightscript" uri="MoltConnect.brs" />
+
+    <children>
+        <!-- Background Panel -->
+        <Rectangle 
+            width="1920" 
+            height="180" 
+            color="#09090b" 
+            opacity="0.95" 
+            translation="[0,900]" />
+            
+        <!-- Top Border (Neon Pulse) -->
+        <Rectangle 
+            id="pulseBorder"
+            width="1920" 
+            height="2" 
+            color="#10b981" 
+            translation="[0,900]" />
+
+        <!-- Label: MoltConnect Status -->
+        <Label 
+            id="statusLabel"
+            text="MOLT-CONNECT // WAITING" 
+            font="font:SmallBoldSystemFont" 
+            color="#10b981" 
+            translation="[40,920]" />
+
+        <!-- Label: Current Ticker Message -->
+        <Label 
+            id="messageLabel"
+            text="Connecting to Agent Network..." 
+            width="1400"
+            font="font:MediumSystemFont" 
+            color="#ffffff" 
+            translation="[40,960]" />
+            
+        <!-- Agent Avatar / Icon -->
+        <Poster 
+            uri="pkg:/images/prophet-icon.png" 
+            width="100" 
+            height="100" 
+            translation="[1780,940]" />
+            
+        <!-- Timer for Ticker Rotation -->
+        <Timer id="tickerTimer" repeat="true" duration="8" />
+        
+        <!-- Timer for Data Polling -->
+        <Timer id="pollTimer" repeat="true" duration="60" />
+        
+        <!-- API Task -->
+        <Task id="fetchTask" />
+    </children>
+</component>

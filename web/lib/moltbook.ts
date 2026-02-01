@@ -77,6 +77,13 @@ export class MoltbookService {
             body: JSON.stringify(body),
         });
     }
+
+    /**
+     * Get feed from a specific Submolt.
+     */
+    async getSubmoltFeed(submolt: string, limit: number = 10) {
+        return this.request(`/submolts/${submolt}/posts?limit=${limit}`);
+    }
 }
 
 // Singleton instance for server-side usage

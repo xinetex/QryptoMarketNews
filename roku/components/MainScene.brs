@@ -65,6 +65,12 @@ sub init()
     
     ' Load initial data
     loadZoneData()
+
+    ' Initialize MoltConnect (Agent Interface)
+    m.moltConnect = m.top.findNode("moltConnect")
+    if m.moltConnect <> invalid
+        m.moltConnect.submolt = "qcrypto"
+    end if
 end sub
 
 sub setupMainMenu()

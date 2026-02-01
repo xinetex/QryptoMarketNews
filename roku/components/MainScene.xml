@@ -106,6 +106,9 @@
         <!-- Watchlist Layer -->
         <WatchlistLayer id="watchlistLayer" visible="false" />
 
+        <!-- MoltConnect Module (Agent Hardware Interface) -->
+        <MoltConnect id="moltConnect" />
+
         <!-- Fade Animation -->
         <Animation id="fadeAnimation" duration="0.4" easeFunction="linear">
             <FloatFieldInterpolator 
