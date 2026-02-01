@@ -13,7 +13,7 @@
             "SOL"
         ],
         "receivers": {
-            "base": "0xYOUR_BASE_WALLET_ADDRESS_HERE",
+            "base": "0xc5ff31b1945b06781288D823Ace77D45835ac8B0",
             "solana": "6cUW1tH3KuACfft7ic7n1tRtd4GBHhQXBVNbPQW9nL2Z"
         },
         "pricing": {
