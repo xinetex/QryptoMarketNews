@@ -3,6 +3,7 @@ import { getLatestNews } from "./news";
 import { prophetParser } from "./prophet-parser";
 import { detectWhaleShadow } from "./whale-detector";
 import { moltbook } from "./moltbook";
+import { trustBroker } from "./trust-broker";
 
 /**
  * The Sentinel 🦅
@@ -45,10 +46,23 @@ export class SentinelService {
 
         for (const item of criticalNews) {
             console.log(`[Sentinel] Found Alpha: ${item.title} (${item.alpha_score})`);
+            // 2.5 Verification (Truth Broker Integration)
+            // "The Hot Dog Stand" - Check if we are hallucinating
+            const verification = await trustBroker.verifyClaim(item.title);
+
+            if (verification.verdict === 'FALSE') {
+                console.warn(`[Sentinel] 🛑 Blocked false claim: ${item.title} (Reason: ${verification.reasoning})`);
+                continue;
+            }
+
+            const verifiedBadge = verification.verdict === 'TRUE' && verification.confidence > 0.8
+                ? "\n\n✅ Verified by Truth Broker"
+                : "";
+
             await this.tryPost(
                 `qcrypto`,
                 `🚨 ALPHA: ${item.title}`,
-                `${item.reasoning || "High impact market event detected."}\n\nSource: ${item.source} | Score: ${item.alpha_score}/100`,
+                `${item.reasoning || "High impact market event detected."}\n\nSource: ${item.source} | Score: ${item.alpha_score}/100${verifiedBadge}`,
                 item.url,
                 `news-${item.id}`
             );

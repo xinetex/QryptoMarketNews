@@ -4,8 +4,10 @@ import { z } from 'zod';
 import type { NewsItem } from './types/news';
 
 // Initialize Google AI with our specific key
+// Initialize Google AI with our specific key
+// Initialize Google AI with our specific key
 const google = createGoogleGenerativeAI({
-    apiKey: process.env.GEMINI_API_KEY,
+    apiKey: process.env.GOOGLE_GEMINI_API || process.env.GEMINI_API_KEY,
 });
 
 // Schema for AI Output
@@ -20,7 +22,7 @@ const ScoredNewsSchema = z.object({
 });
 
 export class ProphetParser {
-    private model = google('gemini-1.5-flash-001');
+    private model = google('gemini-2.0-flash');
 
     /**
      * Analyze a batch of news items and return scores
