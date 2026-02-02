@@ -13,11 +13,36 @@ sub execute()
         fetchWatchlist()
     else if requestType = "nfts"
         fetchNFTs()
+    else if requestType = "url"
+        fetchUrl()
+    end if
+end sub
+
+sub fetchUrl()
+    url = m.top.url
+    if url = "" or url = invalid then return
+    
+    request = CreateObject("roUrlTransfer")
+    request.SetCertificatesFile("common:/certs/ca-bundle.crt")
+    request.InitClientCertificates()
+    request.SetUrl(url)
+    
+    response = request.GetToString()
+    
+    if response <> ""
+        m.top.contentResult = response ' Strings can be passed if field type compatible? 
+        ' Wait, contentResult is type "node". We cannot pass a string to it.
+        ' We must wrap it in a ContentNode or change interface.
+        ' Changing interface is risky. Wrapping in ContentNode with a field?
+        
+        result = CreateObject("roSGNode", "ContentNode")
+        result.addFields({ jsonString: response }) 
+        m.top.contentResult = result
     end if
 end sub
 
 sub fetchNFTs()
-    baseUrl = "http://192.168.4.108:3000/api/content/nfts"
+    baseUrl = "https://qryptomarket-news.vercel.app/api/content/nfts"
     modes = ["trending", "bluechip", "aesthetic", "generative"]
     titles = ["Trending Collections", "Blue Chip Assets", "Aesthetic Curated", "Generative Art"]
     
@@ -62,8 +87,8 @@ sub fetchNFTs()
 end sub
 
 sub fetchWatchlist()
-    ' Use local dev server for user-specific data
-    url = "http://192.168.4.34:3000/api/user/watchlist"
+    ' Use production server for user-specific data
+    url = "https://qryptomarket-news.vercel.app/api/user/watchlist"
     
     request = CreateObject("roUrlTransfer")
     request.SetCertificatesFile("common:/certs/ca-bundle.crt")

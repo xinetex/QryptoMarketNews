@@ -35,22 +35,23 @@
         <Rectangle translation="[0, 500]" width="1920" height="580" color="#000000" opacity="0.9" />
 
         <!-- Curation Tabs (Top Center) -->
+        <!-- Curation Tabs (Top Center) -->
         <Group id="filterTabs" translation="[600, 40]">
-            <LayoutGroup orientation="horizontal" itemSpacings="[20]">
+            <LayoutGroup layoutDirection="horiz" itemSpacings="[20]">
                 <Group id="tab1" >
-                    <Rectangle id="tab1Bg" width="220" height="40" color="#bc13fe" cornerRadius="20" />
+                    <Rectangle id="tab1Bg" width="220" height="40" color="#bc13fe" />
                     <Label id="tab1Label" translation="[0,8]" width="220" horizAlign="center" text="Trending" font="font:SmallBoldSystemFont" color="#ffffff" />
                 </Group>
                 <Group id="tab2">
-                    <Rectangle id="tab2Bg" width="220" height="40" color="#ffffff20" cornerRadius="20" />
+                    <Rectangle id="tab2Bg" width="220" height="40" color="#ffffff20" />
                     <Label id="tab2Label" translation="[0,8]" width="220" horizAlign="center" text="Blue Chip" font="font:SmallBoldSystemFont" color="#ffffff80" />
                 </Group>
                 <Group id="tab3">
-                    <Rectangle id="tab3Bg" width="220" height="40" color="#ffffff20" cornerRadius="20" />
+                    <Rectangle id="tab3Bg" width="220" height="40" color="#ffffff20" />
                     <Label id="tab3Label" translation="[0,8]" width="220" horizAlign="center" text="Aesthetic" font="font:SmallBoldSystemFont" color="#ffffff80" />
                 </Group>
                 <Group id="tab4">
-                    <Rectangle id="tab4Bg" width="220" height="40" color="#ffffff20" cornerRadius="20" />
+                    <Rectangle id="tab4Bg" width="220" height="40" color="#ffffff20" />
                     <Label id="tab4Label" translation="[0,8]" width="220" horizAlign="center" text="Generative" font="font:SmallBoldSystemFont" color="#ffffff80" />
                 </Group>
             </LayoutGroup>
@@ -70,7 +71,7 @@
                 font="font:MediumSystemFont"
                 color="#bc13fe" />
                 
-            <LayoutGroup translation="[0, 110]" orientation="horizontal" itemSpacings="[40]">
+            <LayoutGroup translation="[0, 110]" layoutDirection="horiz" itemSpacings="[40]">
                  <Label id="featuredPrice" text="" font="font:MediumBoldSystemFont" color="#10b981" />
                  <Label id="statVolume" text="" font="font:MediumSystemFont" color="#ffffff70" />
                  <Label id="statOwners" text="" font="font:MediumSystemFont" color="#ffffff70" />
@@ -83,8 +84,7 @@
             itemSize="[260, 200]"
             numColumns="6"
             numRows="1"
-            spacing="[20, 20]"
-            posterShape="16x9"
+            itemSpacing="[20, 20]"
             caption1NumLines="1"
             caption2NumLines="1"
             basePosterSize="[260, 200]" 

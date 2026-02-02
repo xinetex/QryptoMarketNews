@@ -11,14 +11,14 @@ sub init()
     m.qrCode = m.top.findNode("qrCode")
     
     ' Generate QR Code dynamically
-    m.qrCode.uri = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + "http://192.168.4.34:3000/portfolio"
+    m.qrCode.uri = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + "https://qryptomarket-news.vercel.app/portfolio"
     
     loadMockPortfolio()
 end sub
 
 sub loadMockPortfolio()
     ' Fetch from API
-    url = "http://192.168.4.34:3000/api/roku/portfolio"
+    url = "https://qryptomarket-news.vercel.app/api/roku/portfolio"
     
     request = CreateObject("roUrlTransfer")
     request.setUrl(url)

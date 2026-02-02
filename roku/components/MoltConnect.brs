@@ -32,16 +32,17 @@ sub fetchData()
     ' We will create a ContentTask on the fly just for this fetch
     
     task = CreateObject("roSGNode", "ContentTask")
-    task.uri = "https://qryptomarket-news.vercel.app/api/roku/molt-bridge?submolt=" + m.top.submolt
-    task.observeField("content", "onDataReceived")
+    task.requestType = "url"
+    task.url = "https://qryptomarket-news.vercel.app/api/roku/molt-bridge?submolt=" + m.top.submolt
+    task.observeField("contentResult", "onDataReceived")
     task.control = "RUN"
 end sub
 
 sub onDataReceived(event as object)
-    content = event.getData()
+    result = event.getData()
     
-    if content <> invalid
-        json = ParseJson(content)
+    if result <> invalid and result.jsonString <> invalid
+        json = ParseJson(result.jsonString)
         if json <> invalid and json.items <> invalid
             m.feedItems = json.items
             updateStatus("ONLINE // SYNCED")

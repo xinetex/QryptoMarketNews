@@ -30,7 +30,6 @@ sub init()
     
     ' Initialize crypto service
     m.cryptoService = m.top.findNode("cryptoService")
-    m.cryptoService.apiBaseUrl = "http://192.168.4.34:3000" ' Ensure this matches your dev server
     
     updateDate()
     updateGreeting()

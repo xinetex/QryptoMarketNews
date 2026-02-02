@@ -5,7 +5,7 @@ sub init()
     ' Get node references
     m.cardContainer = m.top.findNode("cardContainer")
     m.cardBg = m.top.findNode("cardBg")
-    m.focusBorder = m.top.findNode("focusBorder")
+    m.focusGlow = m.top.findNode("focusGlow")
     m.iconImage = m.top.findNode("iconImage")
     m.tvlLabel = m.top.findNode("tvlLabel")
     m.titleLabel = m.top.findNode("titleLabel")
@@ -67,10 +67,9 @@ sub onContentSet()
         end if
     end if
     
-    ' Set accent bar color
     if content.zoneColor <> invalid
         m.accentBar.color = content.zoneColor
-        m.focusBorder.color = content.zoneColor
+        if m.focusGlow <> invalid then m.focusGlow.blendColor = content.zoneColor
     end if
 end sub
 
@@ -78,24 +77,29 @@ sub onFocusChanged()
     focusPct = m.top.focusPercent
     
     if focusPct > 0
-        ' Scale up slightly when focused
-        scale = 1.0 + (0.03 * focusPct)
+        ' Punchy scale up (10%) when focused
+        ' Card size: 310x240
+        ' Max Growth: 31x24
+        ' Center Shift: -15.5, -12
+        
+        scale = 1.0 + (0.10 * focusPct)
         m.cardContainer.scale = [scale, scale]
         
-        ' Show focus border
-        m.focusBorder.opacity = focusPct
+        ' Show focus glow
+        m.focusGlow.opacity = focusPct * 0.8
         
-        ' Brighten background
-        m.cardBg.color = "#1a1a25"
+        ' Brighten background significantly
+        m.cardBg.color = "#27272a" ' Zinc 800
         
-        ' Shift position to scale from center
-        shift = -5 * focusPct
-        m.cardContainer.translation = [shift, shift]
+        ' Precise shift to scale from center
+        shiftX = -15.5 * focusPct
+        shiftY = -12.0 * focusPct
+        m.cardContainer.translation = [shiftX, shiftY]
     else
         ' Reset to normal
         m.cardContainer.scale = [1.0, 1.0]
-        m.focusBorder.opacity = 0
-        m.cardBg.color = "#12121a"
+        if m.focusGlow <> invalid then m.focusGlow.opacity = 0
+        m.cardBg.color = "#18181b" ' Zinc 900
         m.cardContainer.translation = [0, 0]
     end if
 end sub

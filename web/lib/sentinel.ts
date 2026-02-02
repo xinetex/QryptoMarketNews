@@ -20,7 +20,7 @@ export class SentinelService {
         // 1. Shadow Divergence (Whales vs Crowd)
         // High Signal, Low Frequency
         const shadows = await detectWhaleShadow();
-        const criticalShadows = shadows.filter(s => s.shadowGap > 30 || s.confidence > 80);
+        const criticalShadows = shadows.filter(s => s.shadowGap > 15 || s.confidence > 65);
 
         for (const shadow of criticalShadows) {
             console.log(`[Sentinel] Found Shadow: ${shadow.asset} Gap: ${shadow.shadowGap}`);
@@ -41,7 +41,7 @@ export class SentinelService {
         // (if we used the updated version which does batch scoring).
         // Let's verify we filter for high score.
 
-        const criticalNews = news.filter(n => (n.alpha_score || 0) >= 80);
+        const criticalNews = news.filter(n => (n.alpha_score || 0) >= 60);
 
         for (const item of criticalNews) {
             console.log(`[Sentinel] Found Alpha: ${item.title} (${item.alpha_score})`);
@@ -71,7 +71,7 @@ export class SentinelService {
             // Check if any result is highly similar (> 0.85) AND recent
             // Note: In a real implementation we would check dates, but for now we trust the semantic match
             // If similar content exists, we skip to avoid noise.
-            const similarPost = searchResults.results?.find((r: any) => r.similarity > 0.85);
+            const similarPost = searchResults.results?.find((r: any) => r.similarity > 0.92);
 
             if (similarPost) {
                 console.log(`[Sentinel] Skipping duplicate/similar topic: ${title} (Matches: ${similarPost.title}, Sim: ${similarPost.similarity})`);

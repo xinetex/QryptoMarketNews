@@ -10,20 +10,16 @@
 
     <children>
         <!-- Background: Pill Shape -->
-        <Rectangle 
-            width="400" 
-            height="80" 
-            color="#09090b" 
-            opacity="0.9" 
+        <Rectangle id="hudBg"
+            width="280"
+            height="80"
+            color="#00000080"
             translation="[0,0]" />
             
         <Rectangle 
             width="400" 
             height="80" 
-            color="#ffffff" 
-            opacity="0.1" 
-            fill="false" 
-            stroke="1" />
+            color="#ffffff" />
 
         <!-- Vertical Divider -->
         <Rectangle width="1" height="40" color="#ffffff20" translation="[130,20]" />

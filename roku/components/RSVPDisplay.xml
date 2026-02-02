@@ -23,9 +23,7 @@
             width="800" 
             height="300" 
             color="#ffffff" 
-            opacity="0.1" 
-            fill="false" 
-            stroke="2" />
+            opacity="0.1" />
 
         <!-- Status Indicator -->
         <Label 

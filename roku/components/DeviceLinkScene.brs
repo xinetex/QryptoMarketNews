@@ -12,8 +12,8 @@ sub init()
     m.deviceTask.observeField("codeResult", "onCodeReceived")
     m.deviceTask.observeField("statusResult", "onStatusReceived")
     
-    ' API Base URL (hardcoded for dev, effectively same as CryptoService default)
-    m.deviceTask.apiBaseUrl = "http://192.168.4.110:3000"
+    ' API Base URL
+    m.deviceTask.apiBaseUrl = "https://qryptomarket-news.vercel.app"
     ' In production, would be dynamic. For now using placeholder IP.
     
     ' Start flow

@@ -7,31 +7,46 @@ sub Main(args as Dynamic)
     m.port = CreateObject("roMessagePort")
     screen.setMessagePort(m.port)
     
-    ' Create input handler for voice/ECP
-    m.input = CreateObject("roInput")
-    m.input.setMessagePort(m.port)
-    
-    ' Create the main scene
-    scene = screen.CreateScene("MainScene")
-    screen.show()
-    
-    ' Pass any deep link arguments (voice search, content launch)
-    if args.contentId <> invalid and args.mediaType <> invalid
-        scene.deepLink = {
-            contentId: args.contentId,
-            mediaType: args.mediaType
-        }
+    ' Check for launch type (Normal vs Screensaver)
+    ' Roku passes 'source' = 'screensaver' when launching as a screensaver
+    launchType = "normal"
+    if args.source <> invalid and LCase(args.source) = "screensaver"
+        launchType = "screensaver"
     end if
     
-    ' Handle voice search from launch
-    if args.query <> invalid
-        scene.voiceQuery = args.query
+    if launchType = "screensaver"
+        ' Launch strictly as a screensaver
+        scene = screen.CreateScene("ScreensaverScene")
+        screen.show()
+    else
+        ' Normal Application Launch
+        
+        ' Create input handler for voice/ECP (Only needed for main app)
+        m.input = CreateObject("roInput")
+        m.input.setMessagePort(m.port)
+        
+        ' Create the main scene
+        scene = screen.CreateScene("MainScene")
+        screen.show()
+        
+        ' Pass any deep link arguments (voice search, content launch)
+        if args.contentId <> invalid and args.mediaType <> invalid
+            scene.deepLink = {
+                contentId: args.contentId,
+                mediaType: args.mediaType
+            }
+        end if
+        
+        ' Handle voice search from launch
+        if args.query <> invalid
+            scene.voiceQuery = args.query
+        end if
+        
+        ' Generate device pairing token for second screen
+        deviceInfo = CreateObject("roDeviceInfo")
+        scene.deviceId = deviceInfo.getChannelClientId()
+        scene.pairingToken = generatePairingToken(deviceInfo)
     end if
-    
-    ' Generate device pairing token for second screen
-    deviceInfo = CreateObject("roDeviceInfo")
-    scene.deviceId = deviceInfo.getChannelClientId()
-    scene.pairingToken = generatePairingToken(deviceInfo)
     
     ' Main event loop
     while true
@@ -44,7 +59,10 @@ sub Main(args as Dynamic)
             end if
         else if msgType = "roInputEvent"
             ' Handle ECP input (second screen commands, voice)
-            handleInputEvent(msg, scene)
+            ' Only needed if scene supports it (MainScene)
+            if launchType = "normal"
+                handleInputEvent(msg, scene)
+            end if
         end if
     end while
 end sub

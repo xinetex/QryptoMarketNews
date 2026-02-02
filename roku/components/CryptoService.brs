@@ -79,8 +79,42 @@ sub runLoop()
         if (tickerTimer MOD 100) = 0
              fetchAlerts()
              fetchWhaleAlerts()
+             ' Poll for Live Bot Commands
+             fetchLiveState()
         end if
     end while
+end sub
+
+sub fetchLiveState()
+    ' Poll the live bot endpoint
+    url = m.top.apiBaseUrl + "/api/bot/live"
+    response = makeApiRequest(url)
+    
+    if response <> invalid and response.status = "active"
+        ' Check for active zone override
+        if response.activeZone <> invalid and response.activeZone <> ""
+             ' Pass to MainScene via a new field or existing mechanism
+             ' For now let's use 'requestZoneCoins' as a proxy or add a new field
+             ' Ideally we'd have 'activeOverride' field.
+             ' Let's print for now, user needs to map it in MainScene if they want auto-navigation.
+             print "[CryptoService] Live Command: Set Zone -> " + response.activeZone
+             
+             ' If we had an 'overrideZone' field on interface:
+             ' m.top.overrideZone = response.activeZone
+        end if
+        
+        ' Check for Bot Alert
+        if response.alert <> invalid and response.alert.id <> m.top.lastAlertId
+             print "[CryptoService] >>> LIVE BOT ALERT <<<"
+             m.top.lastAlertId = response.alert.id
+             m.top.alertData = response.alert
+        end if
+        
+        ' Check for Headline Override
+        if response.customHeadline <> invalid
+             m.top.newsHeadlines = "🔴 LIVE: " + response.customHeadline
+        end if
+    end if
 end sub
 
 sub fetchTickerData()

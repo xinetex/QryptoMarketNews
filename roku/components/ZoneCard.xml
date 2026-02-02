@@ -11,19 +11,20 @@
     <children>
         <!-- Card Container Scaler -->
         <Group id="cardContainer">
-            <!-- Glass Background -->
+            <!-- Glass Background (Zinc 900) -->
             <Rectangle id="cardBg"
                 width="310"
                 height="240"
-                color="#ffffff10" />
+                color="#18181b" />
             
-            <!-- Focus Border Glow (Dynamic) -->
-            <Rectangle id="focusBorder"
-                width="318"
-                height="248"
-                translation="[-4,-4]"
-                color="#00f3ff"
-                opacity="0" />
+            <!-- Cinematic Focus Glow (Prophet OS Style) -->
+            <Poster id="focusGlow"
+                uri="pkg:/images/glow_ring.png"
+                width="450"
+                height="380"
+                translation="[-70,-70]"
+                opacity="0"
+                blendColor="#00f3ff" />
 
             <!-- Zone Icon with Glow -->
             <Group id="iconContainer" translation="[20,20]">

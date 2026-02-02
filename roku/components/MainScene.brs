@@ -11,6 +11,11 @@ sub init()
     m.transitionOverlay = m.top.findNode("transitionOverlay")
     m.fadeAnimation = m.top.findNode("fadeAnimation")
     
+    ' Main UI Groups for visibility toggling
+    m.sidebarGroup = m.top.findNode("sidebarGroup")
+    m.headerGroup = m.top.findNode("headerGroup")
+    m.mainContent = m.top.findNode("mainContent")
+    
     ' Zone detail scene reference
     m.zoneDetailScene = invalid
     
@@ -71,6 +76,23 @@ sub init()
     if m.moltConnect <> invalid
         m.moltConnect.submolt = "qcrypto"
     end if
+    
+    m.uiSound = m.top.findNode("uiSound")
+end sub
+
+sub playUISound(id as string)
+    if m.uiSound = invalid then return
+    
+    ' Map IDs to wave files (once added to pkg:/sounds/)
+    source = ""
+    if id = "focus" then source = "pkg:/sounds/nav_focus.wav"
+    if id = "select" then source = "pkg:/sounds/nav_select.wav"
+    if id = "back" then source = "pkg:/sounds/nav_back.wav"
+    
+    if source <> ""
+        m.uiSound.uri = source
+        m.uiSound.control = "start"
+    end if
 end sub
 
 sub setupMainMenu()
@@ -93,6 +115,7 @@ sub setupMainMenu()
 end sub
 
 sub onMenuSelected()
+    playUISound("select")
     idx = m.mainMenu.itemSelected
     print "Menu Selected: " + str(idx)
     
@@ -250,6 +273,7 @@ sub loadZoneData()
 end sub
 
 sub onZoneFocused(event as object)
+    playUISound("focus")
     itemIndex = event.getData() ' Returns flat index for MarkupGrid
     
     if m.zones <> invalid and itemIndex < m.zones.count()
@@ -263,6 +287,7 @@ sub updateSpotlight(zone as object)
 end sub
 
 sub onZoneSelected(event as object)
+    playUISound("select")
     itemIndex = event.getData() ' Flat index for MarkupGrid
     
     if m.zones <> invalid and itemIndex < m.zones.count()
@@ -300,7 +325,11 @@ end sub
 
 sub onZoneDetailVisibleChanged()
     if m.zoneDetailScene <> invalid and not m.zoneDetailScene.visible
-        ' Returned from zone detail, restore focus
+        ' Returned from zone detail, nuke it to save memory
+        m.top.removeChild(m.zoneDetailScene)
+        m.zoneDetailScene = invalid
+        
+        ' Restore focus to grid
         m.zoneGrid.setFocus(true)
     end if
 end sub
@@ -344,7 +373,9 @@ sub onNewsDataChanged()
         end for
         
         if headlines.count() > 0
-            m.newsContent.text = "📰 " + headlines[0]
+            if m.newsContent <> invalid
+                m.newsContent.text = "📰 " + headlines[0]
+            end if
             
             ' Store for cycling
             m.newsHeadlines = headlines
@@ -471,6 +502,7 @@ function onKeyEvent(key as string, press as boolean) as boolean
             end if
         else if key = "back"
             ' Back from grid -> Menu
+            playUISound("back")
             m.mainMenu.setFocus(true)
             return true
         end if
@@ -543,19 +575,9 @@ sub launchAmbientMode()
     end if
     
     ' Hide Main Content to prevent overlap
-    m.headerBar = m.top.findNode("headerBar")
-    m.tickerSection = m.top.findNode("tickerSection")
-    m.heroSection = m.top.findNode("heroSection")
-    m.zonesSection = m.top.findNode("zonesSection")
-    m.newsSection = m.top.findNode("newsSection")
-    
-    if m.headerBar <> invalid then m.headerBar.visible = false
-    if m.tickerSection <> invalid then m.tickerSection.visible = false
-    if m.heroSection <> invalid then m.heroSection.visible = false
-    if m.zonesSection <> invalid then m.zonesSection.visible = false
-    if m.newsSection <> invalid then m.newsSection.visible = false
-    
-    print "[MainScene] Ambient scene set up complete"
+    if m.sidebarGroup <> invalid then m.sidebarGroup.visible = false
+    if m.headerGroup <> invalid then m.headerGroup.visible = false
+    if m.mainContent <> invalid then m.mainContent.visible = false
     
     ' Trigger Fade Transition
     performTransition(m.ambientScene)
@@ -595,11 +617,9 @@ end sub
 sub onTransitionSwap()
     if m.pendingTargetScene <> invalid
         ' Hide Main
-        if m.headerBar <> invalid then m.headerBar.visible = false
-        if m.tickerSection <> invalid then m.tickerSection.visible = false
-        if m.heroSection <> invalid then m.heroSection.visible = false
-        if m.zonesSection <> invalid then m.zonesSection.visible = false
-        if m.newsSection <> invalid then m.newsSection.visible = false
+        if m.headerGroup <> invalid then m.headerGroup.visible = false
+        if m.mainContent <> invalid then m.mainContent.visible = false
+        if m.sidebarGroup <> invalid then m.sidebarGroup.visible = false
         
         ' Show Target
         m.pendingTargetScene.visible = true
@@ -611,13 +631,13 @@ end sub
 sub onAmbientExitRequested()
     if m.ambientScene <> invalid
         m.ambientScene.visible = false
+        m.top.removeChild(m.ambientScene)
+        m.ambientScene = invalid
         
         ' Restore Main Content
-        if m.headerBar <> invalid then m.headerBar.visible = true
-        if m.tickerSection <> invalid then m.tickerSection.visible = true
-        if m.heroSection <> invalid then m.heroSection.visible = true
-        if m.zonesSection <> invalid then m.zonesSection.visible = true
-        if m.newsSection <> invalid then m.newsSection.visible = true
+        if m.headerGroup <> invalid then m.headerGroup.visible = true
+        if m.mainContent <> invalid then m.mainContent.visible = true
+        if m.sidebarGroup <> invalid then m.sidebarGroup.visible = true
         
         m.zoneGrid.setFocus(true)
         m.idleSeconds = 0

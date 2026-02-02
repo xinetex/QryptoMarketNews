@@ -70,62 +70,30 @@ function makeRequest(url as string, payload as object) as object
     request.addHeader("Content-Type", "application/json")
     request.addHeader("Accept", "application/json")
     
-    jsonPayload = FormatJson(payload)
-    if request.postFromString(jsonPayload)
-        responseStr = request.getString() ' Note: postFromString returns boolean, response is retrieved via getString/getToString? 
-        ' Wait, postFromString returns response code (200, 404 etc) or string? 
-        ' Actually roUrlTransfer.postFromString returns output string if RetainBody(true) ? No.
-        ' Let's double check standard pattern.
-        
-        ' Correction: postFromString returns Int (response code) or String depending on sync/async.
-        ' In sync mode (no message port), it returns the response code.
-        ' We need to use Async functions normally, but this is a Task, so synchronous blocking is fine.
-        ' Standard pattern:
-        ' request.postFromString(data) -> returns response code.
-        ' Then response = request.getString() ?? No.
-        
-        ' Let's stick to the reliable pattern using RetainBody is tricky.
-        ' Better pattern for POST and get response:
-        
-        ' Re-creating request to be safe with standard sync pattern
-        req = CreateObject("roUrlTransfer")
-        req.setUrl(url)
-        req.setCertificatesFile("common:/certs/ca-bundle.crt")
-        req.initClientCertificates()
-        req.addHeader("Content-Type", "application/json")
-        req.addHeader("Accept", "application/json")
-        
-        response = req.postFromString(jsonPayload)
-        
-        ' Wait, this is still potentially wrong for getting body.
-        ' Correct synchronous pattern usually involves writing to a temp file or using async wait.
-        ' Simplest reliable way in a Task:
-        
-        ' Let's use the one that definitely works for basic JSON APIs:
-        ' The return value of postFromString is the HTTP status code (e.g. 200).
-        ' Use request.GetToString() doesn't work after PostFromString?
-        
-        ' Let's switch to standard usage:
-        ' request.AsyncPostFromString(payload)
-        ' then wait for msg
-    end if
-    
-    ' Actually simplest working pattern for sync POST with response body:
-    ' request.postFromString(data) returns response code.
-    ' But we can't easily get the body purely synchronously without async/wait loop if RetainBody logic is annoying.
-    
-    ' Let's implement a clean wait loop.
+    ' Use message port for reliable response handling
     port = CreateObject("roMessagePort")
     request.setMessagePort(port)
-    if request.asyncPostFromString(jsonPayload)
-        msg = wait(10000, port) ' 10s timeout
+    
+    jsonPayload = FormatJson(payload)
+    
+    if request.AsyncPostFromString(jsonPayload)
+        msg = wait(10000, port) ' 10 second timeout
         if type(msg) = "roUrlEvent"
-            if msg.getResponseCode() = 200
+            code = msg.getResponseCode()
+            if code = 200 or code = 201
                 resBody = msg.getString()
-                return ParseJson(resBody)
+                if resBody <> invalid and resBody <> ""
+                    return ParseJson(resBody)
+                end if
+            else
+                print "[DeviceTask] API Error: " + str(code)
             end if
+        else
+            print "[DeviceTask] Request timed out"
         end if
+    else
+        print "[DeviceTask] Failed to initiate request"
     end if
-
+    
     return invalid
 end function
