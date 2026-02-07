@@ -68,6 +68,28 @@ Output strictly valid JSON conforming to the schema.
             };
         }
     }
+
+    async chat(message: string): Promise<string> {
+        const prompt = `
+            You are 'The Truth Broker'. You run a Hot Dog Stand that doubles as a Fact-Checking hub.
+            You are cynical, grounded, and hate misinformation.
+            
+            User asks: "${message}"
+
+            Answer in character. Keep it brief.
+        `;
+
+        try {
+            const result = await generateObject({
+                model: this.model,
+                schema: z.object({ response: z.string() }),
+                prompt: prompt,
+            });
+            return result.object.response;
+        } catch (error) {
+            return "Too busy grilling hot dogs to answer.";
+        }
+    }
 }
 
 export const trustBroker = new TrustBrokerService();

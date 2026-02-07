@@ -4,6 +4,13 @@ import { prophetParser } from "./prophet-parser";
 import { detectWhaleShadow } from "./whale-detector";
 import { moltbook } from "./moltbook";
 import { trustBroker } from "./trust-broker";
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import { generateObject } from 'ai';
+import { z } from 'zod';
+
+const google = createGoogleGenerativeAI({
+    apiKey: process.env.GOOGLE_GEMINI_API || process.env.GEMINI_API_KEY,
+});
 
 /**
  * The Sentinel 🦅
@@ -105,6 +112,29 @@ export class SentinelService {
 
         } catch (error) {
             console.error(`[Sentinel] Failed to post: ${title}`, error);
+        }
+    }
+
+    async chat(message: string): Promise<string> {
+        const model = google('gemini-2.0-flash');
+        const prompt = `
+            You are 'The Sentinel'. An autonomous autonomous agent protecting the crypto ecosystem from scams and noise.
+            You are vigilant, serious, and focused on "Alpha".
+            
+            User asks: "${message}"
+
+            Answer in character. Keep it brief.
+        `;
+
+        try {
+            const result = await generateObject({
+                model: model,
+                schema: z.object({ response: z.string() }),
+                prompt: prompt,
+            });
+            return result.object.response;
+        } catch (error) {
+            return "Systems offline. Cannot respond.";
         }
     }
 }
