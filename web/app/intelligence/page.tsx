@@ -12,6 +12,7 @@ import WhaleFeed from '@/components/WhaleFeed';
 import QuantumSlider from '@/components/QuantumSlider';
 import { useWhaleStream } from '@/lib/hooks/useWhaleStream';
 import ProphetAuthorityReport from '@/components/ProphetAuthorityReport';
+import IntelligenceMorphGrid from '@/components/IntelligenceMorphGrid';
 import { Activity } from 'lucide-react';
 
 export default function IntelligencePage() {
@@ -63,32 +64,8 @@ export default function IntelligencePage() {
                     <QuantumSlider items={sliderItems} speed={40} />
                 </div>
 
-                {/* Market Intelligence Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Market Dislocation Detector - 2/3 width */}
-                    <div className="lg:col-span-2 relative">
-                        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-orange-500/5 to-red-500/5 blur-3xl rounded-3xl pointer-events-none" />
-                        <div className="relative p-6 rounded-2xl border border-amber-500/20 bg-zinc-950/80 backdrop-blur-sm h-full">
-                            <DislocationFeed maxItems={5} autoRefresh={true} refreshInterval={60000} />
-                        </div>
-                    </div>
-
-                    {/* Derivatives Panel - 1/3 width */}
-                    <div className="relative">
-                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-blue-500/5 to-indigo-500/5 blur-3xl rounded-3xl pointer-events-none" />
-                        <div className="relative h-full">
-                            <DerivativesPanel />
-                        </div>
-                    </div>
-
-                    {/* Whale Radar (New Row) - Full Width */}
-                    <div className="lg:col-span-3 relative mt-6">
-                        <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 via-purple-500/5 to-pink-500/5 blur-3xl rounded-3xl pointer-events-none" />
-                        <div className="relative p-6 rounded-2xl border border-indigo-500/20 bg-zinc-950/80 backdrop-blur-sm">
-                            <WhaleFeed />
-                        </div>
-                    </div>
-                </div>
+                {/* Market Intelligence Grid (Morphing Enabled) */}
+                <IntelligenceMorphGrid />
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono text-zinc-600 pt-12 border-t border-zinc-900">
                     <div className="p-4 border border-zinc-900 rounded bg-zinc-950/50">
