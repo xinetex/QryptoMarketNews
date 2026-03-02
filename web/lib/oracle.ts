@@ -8,6 +8,7 @@
 // Types
 export interface Prophecy {
     id: string;
+    questionId?: string; // Gnosis CTF Question ID
     marketId: string;
     marketTitle: string;
     prediction: 'YES' | 'NO' | 'NEUTRAL';
@@ -17,6 +18,7 @@ export interface Prophecy {
     createdAt: string;
     expiresAt: string;
     outcome?: 'CORRECT' | 'INCORRECT' | 'PENDING';
+    onChainHash?: string; // Transaction hash if submitted on-chain
 }
 
 export interface ProphecyFactor {
@@ -109,7 +111,61 @@ function generateId(): string {
     return `prophecy-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }
 
-import { analyzeMarketWhales } from './polymarket-analyzer';
+import { analyzeMarketWhales, analyzeSwarmActivity } from './polymarket-analyzer';
+
+async function fetchBinanceSpotPrice(symbol: string): Promise<number | null> {
+    try {
+        const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`);
+        if (!res.ok) return null;
+        const data = await res.json();
+        return parseFloat(data.price);
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * Identify potential lag exploitation targets
+ */
+async function checkLagExploitation(marketTitle: string, yesPrice: number): Promise<ProphecyFactor | null> {
+    // Only check if odds are between 10% and 90%
+    if (yesPrice < 0.1 || yesPrice > 0.9) return null;
+
+    const lowerTitle = marketTitle.toLowerCase();
+
+    // Example regex: "Bitcoin to hit $100,000?"
+    const btcMatch = lowerTitle.match(/bitcoin.*\$?(\d+,?\d*)/);
+    if (btcMatch) {
+        const targetPrice = parseInt(btcMatch[1].replace(/,/g, ''));
+        const currentPrice = await fetchBinanceSpotPrice('BTCUSDT');
+
+        if (currentPrice && currentPrice >= targetPrice) {
+            return {
+                name: 'Temporal Arbitrage (Lag Exploitation)',
+                sentiment: 'bullish',
+                weight: 0.9,
+                description: `Spot price ($${currentPrice.toFixed(2)}) has ALREADY crossed the milestone ($${targetPrice}). Polymarket is lagging!`,
+            };
+        }
+    }
+
+    const ethMatch = lowerTitle.match(/ethereum.*\$?(\d+,?\d*)/);
+    if (ethMatch) {
+        const targetPrice = parseInt(ethMatch[1].replace(/,/g, ''));
+        const currentPrice = await fetchBinanceSpotPrice('ETHUSDT');
+
+        if (currentPrice && currentPrice >= targetPrice) {
+            return {
+                name: 'Temporal Arbitrage (Lag Exploitation)',
+                sentiment: 'bullish',
+                weight: 0.9,
+                description: `Spot price ($${currentPrice.toFixed(2)}) has ALREADY crossed the milestone ($${targetPrice}). Polymarket is lagging!`,
+            };
+        }
+    }
+
+    return null;
+}
 
 /**
  * Analyze market factors (simplified heuristic version)
@@ -117,6 +173,8 @@ import { analyzeMarketWhales } from './polymarket-analyzer';
  */
 async function analyzeFactors(market: {
     id: string;
+    question?: string;
+    title?: string;
     yesPrice: number;
     noPrice: number;
     volume24h?: number;
@@ -172,6 +230,36 @@ async function analyzeFactors(market: {
                 weight: 0.4, // High weight for whales
                 description: `Detected ${whaleSignal.whaleCount} whales moving volume. ${whaleSignal.description}`,
             });
+        }
+    } catch (e) {
+        // Ignore failure
+    }
+
+    // Swarm / Momentum Factor
+    try {
+        const swarmSignal = await analyzeSwarmActivity(market.id);
+        if (swarmSignal.detected && swarmSignal.side !== 'NEUTRAL') {
+            const sentimentMap: Record<string, 'bullish' | 'bearish' | 'neutral'> = {
+                'BUY': 'bullish',
+                'SELL': 'bearish',
+                'NEUTRAL': 'neutral'
+            };
+            factors.push({
+                name: 'Swarm Momentum',
+                sentiment: sentimentMap[swarmSignal.side],
+                weight: swarmSignal.intensity === 'nuclear' ? 0.7 : 0.4,
+                description: swarmSignal.description,
+            });
+        }
+    } catch (e) {
+        // Ignore failure
+    }
+
+    // Temporal Arbitrage / Lag Factor
+    try {
+        const lagFactor = await checkLagExploitation(market.question || market.title || "", market.yesPrice);
+        if (lagFactor) {
+            factors.push(lagFactor);
         }
     } catch (e) {
         // Ignore failure
